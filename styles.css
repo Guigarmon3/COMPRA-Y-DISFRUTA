@@ -1,16 +1,16 @@
 /*******************************************************************************
  * PALETA DE COLORES OFICIAL - TAQUIK / CINEO
- * 
+ *
  * Marca & Acentos:
  *   - Azul Cineo:    #1E3A8A  (Botones principales, enlaces, marcas)
  *   - Naranja Taquik: #F97316  (Hover, ofertas, elementos destacados)
  *   - Amarillo Ámbar:#FBBF24  (Calificaciones, estrellas, badges de estreno)
- * 
+ *
  * Fondos & Superficies:
  *   - Fondo Principal: #0F172A (Azul noche oscuro para el <body>)
  *   - Header/Surfaces: #1E293B (Gris slate oscuro para header, footer y modales)
- *   - Tarjetas (Cards):#334155 (Azul grisáceo para contenedores de pelis)
- * 
+ *   - Tarjetas (Cards):#334155 (Azul grisáceo para contenedores de eventos)
+ *
  * Textos & Tipografía:
  *   - Texto Primario:  #FFFFFF (Blanco puro para títulos principales y botones)
  *   - Texto Secundario:#CBD5E1 (Gris claro para enlaces, subtítulos y descripciones)
@@ -22,34 +22,60 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
+    /* Estilo sharp: esquinas rectas de 90° en toda la web */
+    border-radius: 0;
+}
+
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-    background-color: #0f172a; 
+    background-color: #0f172a;
+    color: #cbd5e1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 115px;
 }
 
+main {
+    flex: 1;
+}
+
+/* Cabecera */
+
 .main-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.8rem 3rem;
-    background-color: #1e293b; 
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-.footer-bottom {
+    transition: all 0.3s ease-in-out;
     position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0.8rem 3rem;
-    background-color: #1e293b; 
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    bottom: 0;
-    color: #cbd5e1;
-    display: grid;
-    justify-content: center;
+    background-color: #1e293b;
+    border-bottom: 3px solid #f97316;
 }
+
+.scrolled {
+    top: 6px;
+    left: 10%;
+    width: 80%;
+    align-self: center;
+    border-bottom: none;
+    margin-top: 6px;
+    padding: 5px !important;
+    background-color: rgb(30, 41, 59, 0.9);
+
+}
+.scrolled .logo-container img{
+    height: 42.5px;
+}
+
 
 .logo-container img {
     height: 85px;
@@ -71,66 +97,421 @@ body {
     transition: color 0.25s ease;
 }
 
-.nav-link:hover {color: #f97316; }
+.nav-link:hover {
+    color: #f97316;
+}
 
 .btn-login {
-    background: linear-gradient(135deg, #0f2b48, #1e40af); 
+    background: linear-gradient(135deg, #0f2b48, #1e40af);
     color: #ffffff;
-    border: none;
+    border: 1px solid #36495e;
     padding: 0.6rem 1.6rem;
     font-size: 0.95rem;
     font-weight: 600;
-    font-family: 'Poppins', sans-serif;
-    border-radius: 8px;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-login:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(98, 115, 172, 0.4);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 #f97316;
 }
 
-/* Peliculas */
+/* Títulos de sección */
 
-#peliculas {
-    background-color: none;
+#e-titulo, #s-titulo, #i-titulo {
+    color: whitesmoke;
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
 }
 
-#peliculas span {
+#eventos, #salas, #informacion {
+    padding: 3rem 2rem;
+    /* Deja espacio para que la cabecera fija no tape el título al navegar */
+    scroll-margin-top: 110px;
+}
+
+/* Eventos */
+
+#cartelera {
     display: flex;
-    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
 }
 
 .cartel {
-    border-radius: 20px;
-    display: inline-block;
-    margin: 20px;
-    background-color: #20375c;
-
+    border: 2px solid #64748b;
+    cursor: pointer;
+    width: 220px;
+    background-color: #3d4c64;
+    overflow: hidden;
+    text-align: center;
+    transition: all 0.3s ease;
 }
-.cartel img{
-    border-radius: 20px 20px 0px 0px ;
-    width: 200px;
+
+.cartel img {
+    width: 100%;
+    display: block;
 }
 
 .cartel .p-c-nombre {
-    text-align: center;
     color: #cbd5e1;
-    margin-top: -4%;
-    width: 100%;
-    border-radius: 0px 0px 20px 20px;
+    padding: 0.8rem 0.5rem 0.4rem;
+    font-weight: 500;
 }
 
+/* Cuando pasas el ratón por un cartel, los demás se desenfocan */
+#cartelera:has(.cartel:hover) .cartel:not(:hover) {
+    filter: blur(1px);
+    transform: scale(0.9);
+}
+
+/* Al pasar el ratón: borde naranja y sombra dura */
+.cartel:hover {
+    border-color: #f97316;
+    box-shadow: 6px 6px 0 #f97316;
+}
+
+.btn-comprar {
+    background-color: #f97316;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    padding: 0.5rem 1.2rem;
+    margin: 0.4rem 0 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-comprar:hover {
+    background-color: #ea580c;
+}
 
 /* Salas */
+
 #salas {
     background-color: #20375c;
 }
 
+.lista-salas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.sala {
+    border: 2px solid #64748b;
+    box-shadow: 6px 6px 0 #0f172a;
+    width: 280px;
+    background-color: #334155;
+    padding: 1.5rem;
+}
+
+.sala h3 {
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.sala p {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.sala ul {
+    list-style: none;
+    font-size: 0.9rem;
+    color: #fbbf24;
+}
+
+.sala li + li {
+    margin-top: 0.3rem;
+}
+
 /* Información */
 
-#p-titulo, #s-titulo, #i-titulo {
-    color: whitesmoke;
+.info-contenido {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.info-bloque h3 {
+    color: #ffffff;
+    margin-bottom: 0.4rem;
+}
+
+.info-bloque details {
+    border: 2px solid #475569;
+    background-color: #1e293b;
+    padding: 0.8rem 1rem;
+    margin-top: 0.6rem;
+}
+
+.info-bloque summary {
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.info-bloque details p {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+}
+
+/* Pie de página */
+
+.footer-bottom {
+    padding: 1rem 3rem;
+    background-color: #1e293b;
+    border-top: 3px solid #f97316;
+    color: #cbd5e1;
     text-align: center;
+}
+
+/* Ventana de login */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+}
+
+/* El atributo hidden necesita esto porque display:flex lo anula */
+.modal[hidden] {
+    display: none;
+}
+
+.modal-caja {
+    position: relative;
+    width: 90%;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background-color: #1e293b;
+    padding: 2rem;
+    border: 2px solid #cbd5e1;
+    box-shadow: 8px 8px 0 #f97316;
+    animation: aparecer 0.25s ease;
+}
+
+@keyframes aparecer {
+    from { opacity: 0; transform: translateY(-15px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal-logo {
+    display: block;
+    height: 60px;
+    margin: 0 auto 0.5rem;
+}
+
+.modal-caja h2 {
+    color: #ffffff;
+    text-align: center;
+    font-size: 1.3rem;
+    margin-bottom: 1.2rem;
+}
+
+.modal-cerrar {
+    position: absolute;
+    top: 0.6rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: #cbd5e1;
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+.modal-cerrar:hover {
+    color: #f97316;
+}
+
+/* Pestañas Entrar / Crear cuenta */
+
+.tabs {
+    display: flex;
+    margin-bottom: 1.2rem;
+    border-bottom: 2px solid #475569;
+}
+
+.tab {
+    flex: 1;
+    padding: 0.6rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #64748b;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.tab:hover {
+    color: #cbd5e1;
+}
+
+.tab.activa {
+    color: #ffffff;
+    border-bottom-color: #f97316;
+}
+
+/* Formularios */
+
+.form-auth {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-auth[hidden] {
+    display: none;
+}
+
+.form-auth label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 0.4rem;
+}
+
+.form-auth input {
+    width: 100%;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid #475569;
+    background-color: #0f172a;
+    color: #ffffff;
+    font-size: 0.95rem;
+}
+
+.form-auth input::placeholder {
+    color: #64748b;
+}
+
+.form-auth input:focus {
+    outline: none;
+    border-color: #f97316;
+    box-shadow: 3px 3px 0 #f97316;
+}
+
+/* Campo de contraseña con botón "Ver" */
+
+.campo-passwd {
+    position: relative;
+}
+
+.campo-passwd input {
+    padding-right: 3.5rem;
+}
+
+.btn-ver {
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-ver:hover {
+    color: #f97316;
+}
+
+.mensaje {
+    min-height: 1.3rem;
+    font-size: 0.85rem;
+    color: #f97316;
+}
+
+.mensaje.ok {
+    color: #4ade80;
+}
+
+.btn-ancho {
+    width: 100%;
+    padding: 0.75rem;
+}
+
+/* Ventana de detalle de evento */
+
+.modal-evento {
+    display: flex;
+    gap: 1.5rem;
+    max-width: 640px;
+}
+
+.evento-img {
+    border: 2px solid #64748b;
+    width: 200px;
+    align-self: flex-start;
+}
+
+.evento-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+}
+
+.modal-caja .evento-info h2 {
+    text-align: left;
+    font-size: 1.5rem;
+    margin: 0;
+    padding-right: 1.5rem;
+}
+
+.evento-categoria {
+    background-color: #fbbf24;
+    color: #0f172a;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.2rem 0.7rem;
+}
+
+.evento-resumen {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Móvil */
+
+@media (max-width: 700px) {
+    .main-header {
+        padding: 0.8rem 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .logo-container img {
+        height: 60px;
+    }
+
+    .nav-menu {
+        gap: 1rem;
+        order: 3;
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* En móvil el cartel va arriba y el texto debajo */
+    .modal-evento {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .evento-img {
+        align-self: center;
+        width: 160px;
+    }
 }

@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-  <body>
+<body>
     <header class="main-header">
         <!-- Logo -->
         <a href="#" class="logo-container">
@@ -18,40 +18,216 @@
 
         <!-- Menú de navegación -->
         <nav class="nav-menu">
-            <a href="#peliculas" class="nav-link">Películas</a>
+            <a href="#eventos" class="nav-link">Eventos</a>
             <a href="#salas" class="nav-link">Salas</a>
             <a href="#informacion" class="nav-link">Información</a>
         </nav>
 
         <!-- Zona de acciones/usuario -->
         <span class="user-actions">
-            <button class="btn-login">Entrar</button>
+            <button class="btn-login" onclick="abrirLogin()">Entrar</button>
         </span>
     </header>
 
-    <!-- Zona de peliculas -->
-    <section id="peliculas">
-        <h1 id="p-titulo">PELICULAS DISPONIBLES</h1>
-        <span>
-            <div class="cartel">
-              <img src="imagenes/Carteleras/cars.jpg" alt="cars portada">
-              <p class="p-c-nombre">Cars 20</p>
+    <main>
+        <!-- Zona de eventos -->
+        <section id="eventos">
+            <h1 id="e-titulo">EVENTOS DISPONIBLES</h1>
+            <div id="cartelera">
+                <!-- Los data-* guardan los datos del evento para el modal -->
+                <div class="cartel" onclick="abrirEvento(this)"
+                     data-imagen="imagenes/Carteleras/cars.jpg"
+                     data-nombre="Cars 20"
+                     data-categoria="Animación"
+                     data-resumen="Aquí irá el resumen del evento. Más adelante se cargará desde la base de datos.">
+                    <img src="imagenes/Carteleras/cars.jpg" alt="Cars portada">
+                    <p class="p-c-nombre">Cars 20</p>
+                </div>
+
+                <div class="cartel" onclick="abrirEvento(this)"
+                     data-imagen="imagenes/Carteleras/LaBolaNegra.jpg"
+                     data-nombre="La bola negra"
+                     data-categoria="Drama"
+                     data-resumen="Aquí irá el resumen del evento. Más adelante se cargará desde la base de datos.">
+                    <img src="imagenes/Carteleras/LaBolaNegra.jpg" alt="La bola negra portada">
+                    <p class="p-c-nombre">La bola negra</p>
+                </div>
             </div>
-        </span>
-    </section>
+        </section>
 
-    <!--Zona de Salas-->
-    <section id="salas">
-      <h1 id="s-titulo">TIPOS DE SALAS</h1>
-    </section>
+        <!-- Zona de salas -->
+        <section id="salas">
+            <h1 id="s-titulo">TIPOS DE SALAS</h1>
+            <div class="lista-salas">
+                <article class="sala">
+                    <h3>Cine</h3>
+                    <p>La sala de siempre: pantalla grande y butacas cómodas.</p>
+                    <ul>
+                        <li>Butaca aleatoria: 6,00 €</li>
+                        <li>Butaca elegida: 7,50 €</li>
+                    </ul>
+                </article>
 
-    <!--Zona de información-->
-    <section id="informacion">
-      <h1 id="i-titulo">INFORMACIÓN</h1>
-    </section>
+                <article class="sala">
+                    <h3>Cine 4D</h3>
+                    <p>Butacas que se mueven y efectos de viento, agua y aroma.</p>
+                    <ul>
+                        <li>Butaca aleatoria: 12,00 €</li>
+                        <li>Butaca elegida: 14,00 €</li>
+                    </ul>
+                </article>
 
-<footer class="footer-bottom">
-   <p>© 2026 Taquik Todos los derechos reservados.</p> 
-</footer>
+                <article class="sala">
+                    <h3>Cine 35mm</h3>
+                    <p>Proyección en película clásica, con su grano y su sonido de antes.</p>
+                    <ul>
+                        <li>Butaca aleatoria: 7,00 €</li>
+                        <li>Butaca elegida: 8,50 €</li>
+                    </ul>
+                </article>
+
+                <article class="sala">
+                    <h3>Teatro</h3>
+                    <p>Obras en directo con escenario y patio de butacas.</p>
+                    <ul>
+                        <li>Butaca aleatoria: 15,00 €</li>
+                        <li>Butaca elegida: 18,00 €</li>
+                    </ul>
+                </article>
+
+                <article class="sala">
+                    <h3>Cine VIP</h3>
+                    <p>Butacas reclinables y más espacio entre filas.</p>
+                    <ul>
+                        <li>Butaca aleatoria: 11,00 €</li>
+                        <li>Butaca elegida: 13,00 €</li>
+                    </ul>
+                </article>
+
+                <article class="sala">
+                    <h3>Cine IMAX</h3>
+                    <p>Pantalla gigante y sonido envolvente.</p>
+                    <ul>
+                        <li>Butaca aleatoria: 10,00 €</li>
+                        <li>Butaca elegida: 12,00 €</li>
+                    </ul>
+                </article>
+
+                <article class="sala">
+                    <h3>Conciertos</h3>
+                    <p>Música en directo con un sonido pensado para el escenario.</p>
+                    <ul>
+                        <li>Butaca aleatoria: 20,00 €</li>
+                        <li>Butaca elegida: 25,00 €</li>
+                    </ul>
+                </article>
+
+                <article class="sala">
+                    <h3>Cine infantil</h3>
+                    <p>Sesiones para peques con volumen suave y luz tenue.</p>
+                    <ul>
+                        <li>Butaca aleatoria: 5,00 €</li>
+                        <li>Butaca elegida: 6,00 €</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <!-- Zona de información -->
+        <section id="informacion">
+            <h1 id="i-titulo">INFORMACIÓN</h1>
+            <div class="info-contenido">
+
+                <div class="info-bloque">
+                    <h3>Contacto</h3>
+                    <p>info@taquik.com</p>
+                    <p>Teléfono: 900 000 000</p>
+                </div>
+
+                <div class="info-bloque">
+                    <h3>Preguntas frecuentes</h3>
+                    <details>
+                        <summary>¿Qué diferencia hay entre butaca elegida y aleatoria?</summary>
+                        <p>Con la elegida escoges tu sitio y con la aleatoria te lo asignamos nosotros. La aleatoria es más barata.</p>
+                    </details>
+                    <details>
+                        <summary>¿Necesito una cuenta para comprar?</summary>
+                        <p>Sí, tienes que entrar con tu email y contraseña para poder comprar entradas.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-bottom">
+        <p>© 2026 Taquik. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Ventana de detalle de evento -->
+    <div class="modal" id="modal-evento" hidden>
+        <div class="modal-caja modal-evento" role="dialog" aria-modal="true" aria-labelledby="evento-nombre">
+            <button class="modal-cerrar" onclick="cerrarEvento()" aria-label="Cerrar">&times;</button>
+
+            <img id="evento-img" class="evento-img" src="" alt="">
+
+            <div class="evento-info">
+                <h2 id="evento-nombre"></h2>
+                <span class="evento-categoria" id="evento-categoria"></span>
+                <p class="evento-resumen" id="evento-resumen"></p>
+                <button class="btn-comprar" id="btn-comprar">Comprar entradas</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventana de login / registro -->
+    <div class="modal" id="modal-login" hidden>
+        <div class="modal-caja" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+            <button class="modal-cerrar" onclick="cerrarLogin()" aria-label="Cerrar">&times;</button>
+
+            <img src="imagenes/Logo.png" alt="" class="modal-logo">
+            <h2 id="modal-titulo">Bienvenido a Taquik</h2>
+
+            <!-- Pestañas -->
+            <div class="tabs">
+                <button type="button" class="tab activa" id="tab-login" onclick="mostrarLogin()">Entrar</button>
+                <button type="button" class="tab" id="tab-registro" onclick="mostrarRegistro()">Crear cuenta</button>
+            </div>
+
+            <!-- Formulario de login -->
+            <form id="form-login" class="form-auth" onsubmit="return false;">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" placeholder="tucorreo@ejemplo.com" autocomplete="email" required>
+
+                <label for="login-passwd">Contraseña</label>
+                <div class="campo-passwd">
+                    <input type="password" id="login-passwd" autocomplete="current-password" required>
+                    <button type="button" class="btn-ver" onclick="verPassword('login-passwd', this)">Ver</button>
+                </div>
+
+                <p class="mensaje" id="mensaje-login" role="alert"></p>
+                <button type="submit" class="btn-login btn-ancho">Entrar</button>
+            </form>
+
+            <!-- Formulario de registro -->
+            <form id="form-registro" class="form-auth" onsubmit="return false;" hidden>
+                <label for="reg-nombre">Nombre</label>
+                <input type="text" id="reg-nombre" maxlength="100" autocomplete="name" required>
+
+                <label for="reg-email">Email</label>
+                <input type="email" id="reg-email" placeholder="tucorreo@ejemplo.com" autocomplete="email" required>
+
+                <label for="reg-passwd">Contraseña</label>
+                <div class="campo-passwd">
+                    <input type="password" id="reg-passwd" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required>
+                    <button type="button" class="btn-ver" onclick="verPassword('reg-passwd', this)">Ver</button>
+                </div>
+
+                <p class="mensaje" id="mensaje-registro" role="alert"></p>
+                <button type="submit" class="btn-login btn-ancho">Crear cuenta</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

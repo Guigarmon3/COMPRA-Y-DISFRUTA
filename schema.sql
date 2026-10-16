@@ -6,9 +6,10 @@ create table if not exists usuario (
   rol ENUM("ADMIN", "CLIENTE") not null
 );
 
-create table if not exists tipo_sala(
+create table if not exists tipo_sala (
   id int primary key AUTO_INCREMENT,
   nombre varchar(100) not null UNIQUE,
+  descripcion TEXT not null,
   precio_aleatorio DECIMAL(5,2) not null,
   precio_elegido DECIMAL(5,2) not null
 );
@@ -20,23 +21,24 @@ create table if not exists sala (
   foreign key (tipo_sala_id) references tipo_sala(id)
 );
 
-CREATE TABLE if not exists genero (
+create table if not exists genero (
   id int primary key AUTO_INCREMENT,
   nombre varchar(100) not null UNIQUE
 );
 
 create table if not exists pelicula (
-  id int primary key not null AUTO_INCREMENT,
+  id int primary key AUTO_INCREMENT,
   nombre VARCHAR(100) not null UNIQUE,
+  resumen TEXT not null,
   genero_id int not null,
   foreign key (genero_id) references genero(id)
-  );
+);
 
 create table if not exists butaca (
   id int primary key AUTO_INCREMENT,
   fila int not null,
   numero_butaca int not null,
-  sala_id int not null ,
+  sala_id int not null,
   foreign key (sala_id) references sala(id),
   UNIQUE (sala_id, fila, numero_butaca)
 );
