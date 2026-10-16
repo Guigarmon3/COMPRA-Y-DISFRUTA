@@ -1,0 +1,136 @@
+/*******************************************************************************
+ * PALETA DE COLORES OFICIAL - TAQUIK / CINEO
+ * 
+ * Marca & Acentos:
+ *   - Azul Cineo:    #1E3A8A  (Botones principales, enlaces, marcas)
+ *   - Naranja Taquik: #F97316  (Hover, ofertas, elementos destacados)
+ *   - Amarillo Ámbar:#FBBF24  (Calificaciones, estrellas, badges de estreno)
+ * 
+ * Fondos & Superficies:
+ *   - Fondo Principal: #0F172A (Azul noche oscuro para el <body>)
+ *   - Header/Surfaces: #1E293B (Gris slate oscuro para header, footer y modales)
+ *   - Tarjetas (Cards):#334155 (Azul grisáceo para contenedores de pelis)
+ * 
+ * Textos & Tipografía:
+ *   - Texto Primario:  #FFFFFF (Blanco puro para títulos principales y botones)
+ *   - Texto Secundario:#CBD5E1 (Gris claro para enlaces, subtítulos y descripciones)
+ *   - Texto Muted:     #64748B (Gris neutro para placeholders y texto secundario)
+ *******************************************************************************/
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #0f172a; 
+}
+
+.main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 3rem;
+    background-color: #1e293b; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.footer-bottom {
+    position: fixed;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 3rem;
+    background-color: #1e293b; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    bottom: 0;
+    color: #cbd5e1;
+    display: grid;
+    justify-content: center;
+}
+
+.logo-container img {
+    height: 85px;
+    width: auto;
+    display: block;
+    filter: drop-shadow(0px 0px 10px #7d838d);
+}
+
+.nav-menu {
+    display: flex;
+    gap: 2.5rem;
+}
+
+.nav-link {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.25s ease;
+}
+
+.nav-link:hover {color: #f97316; }
+
+.btn-login {
+    background: linear-gradient(135deg, #0f2b48, #1e40af); 
+    color: #ffffff;
+    border: none;
+    padding: 0.6rem 1.6rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(98, 115, 172, 0.4);
+}
+
+/* Peliculas */
+
+#peliculas {
+    background-color: none;
+}
+
+#peliculas span {
+    display: flex;
+    width: 100%;
+}
+
+.cartel {
+    border-radius: 20px;
+    display: inline-block;
+    margin: 20px;
+    background-color: #20375c;
+
+}
+.cartel img{
+    border-radius: 20px 20px 0px 0px ;
+    width: 200px;
+}
+
+.cartel .p-c-nombre {
+    text-align: center;
+    color: #cbd5e1;
+    margin-top: -4%;
+    width: 100%;
+    border-radius: 0px 0px 20px 20px;
+}
+
+
+/* Salas */
+#salas {
+    background-color: #20375c;
+}
+
+/* Información */
+
+#p-titulo, #s-titulo, #i-titulo {
+    color: whitesmoke;
+    text-align: center;
+}
