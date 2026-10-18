@@ -1,0 +1,42 @@
+package proyecto_intermodular.springboot.controller;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import proyecto_intermodular.springboot.service.ConsultaService;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@CrossOrigin
+public class ConsultaController {
+    private final ConsultaService cs;
+
+    public ConsultaController(ConsultaService cs) {
+        this.cs = cs;
+    }
+
+    @GetMapping("/api/Peliculas")
+    public List<Map<String, Object>> ObtenerPeliculas() {
+        return cs.ObtenerPeliculas();
+    }
+
+    @GetMapping("/api/Tickets")
+    public List<Map<String, Object>> ObtenerTodosLosTickets() {return cs.ObtenerTodosLosTickets();}
+
+    @GetMapping("/api/Usuarios")
+    public List<Map<String, Object>> ObtenerUsuarios(){return cs.ObtenerUsuarios();}
+
+    @GetMapping("/api/Salas")
+    public List<Map<String, Object>> ObtenerSalas(){return cs.ObtenerSalas();}
+
+    @GetMapping("/api/Butacas")
+    public List<Map<String, Object>> Obtenerbutacas(){return cs.Obtenerbutacas();}
+
+    @GetMapping("/api/getcat/{id}")
+    public List<Map<String, Object>> obtenerCategoria(@PathVariable int id) {
+        return cs.ObtenerCat(id);
+    }
+}
