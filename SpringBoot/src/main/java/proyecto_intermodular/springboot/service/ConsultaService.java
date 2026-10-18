@@ -28,6 +28,8 @@ public class ConsultaService {
 
     public List<Map<String, Object>> Obtenerbutacas(){return consulta.Obtenerbutacas();}
 
-    public List<Map<String, Object>> ObtenerCat(int i ){return consulta.ObtenerCategoriaDePelicula(i);}
+    public Map<String, Object> ObtenerCat(int i ){return consulta.obtenerCategoriaDePelicula(i);}
+
+    public List<Map<String, Object>> TiposDeSala(){return consulta.ObtenerTipoSala();}
 
 }

@@ -90,16 +90,22 @@ MostrarEventos();
 ╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
 */
 
+
+// Esta funcion obtiene el objeto de categoria de la pelicula con el id enviado
 async function GetCategoria(id) {
-    const respuesta = await fetch("http://localhost:8080/api/getcat/"+id);
-    const categorias = await respuesta.json();
-    return categorias;
+    const respuesta = await fetch("http://localhost:8080/api/getcat/" + id);
+    if (!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+    }
+    const categoria = await respuesta.json();
+    return categoria.nombre;
 }
 
+// Esta funcion obtiene todas las peliculas y las muestra en la cartelera
 async function MostrarEventos() {
   const div = document.getElementById("cartelera");
 
-  div.textContent="";
+  div.textContent = "";
 
   const respuesta = await fetch("http://localhost:8080/api/Peliculas");
   if (!respuesta.ok) {
@@ -108,25 +114,59 @@ async function MostrarEventos() {
   const eventos = await respuesta.json();
   console.log(eventos);
 
-  eventos.forEach(element =>  {
+  for (const element of eventos) {
     const pelicula = document.createElement("div");
-    pelicula.className="cartel";
-    
-    const portada = document.createElement("img")
-    portada.src=element.imagen;
+    pelicula.className = "cartel";
+
+    const portada = document.createElement("img");
+    portada.src = element.imagen;
     pelicula.append(portada);
 
-    const nombre = document.createElement("p")
-    nombre.textContent= element.nombre;
+    const nombre = document.createElement("p");
+    nombre.textContent = element.nombre;
     pelicula.append(nombre);
-    
-    pelicula.setAttribute("data-imagen", element.imagen); 
-    pelicula.setAttribute("data-nombre", element.nombre)
-    pelicula.setAttribute("data-categoria", GetCategoria(element.genero_id));
 
-    div.appendChild(pelicula)
+    const cat = await GetCategoria(element.id);
 
+    pelicula.setAttribute("data-imagen", element.imagen);
+    pelicula.setAttribute("data-nombre", element.nombre);
+    pelicula.setAttribute("data-categoria", cat);
+    pelicula.setAttribute("data-resumen", element.resumen);
 
-    pelicula.addEventListener("click", () => abrirEvento(pelicula));  });
-    
+    div.appendChild(pelicula);
+
+    pelicula.addEventListener("click", () => abrirEvento(pelicula));
+  }
 }
+
+async function MostrarSalas() {
+    const resepuesta = await fetch("http://localhost:8080/api/tipos_salas/");
+    if (!resepuesta.ok) {
+        throw new Error("Error " + resepuesta.status);
+    }
+    const salas = await resepuesta.json();
+    const listaSalas = document.querySelector(".lista-salas"); 
+
+    for (const sala of salas) {
+        const tipo = document.createElement("article");
+        tipo.className = "sala";    
+        const nombre = document.createElement("h3");
+        nombre.textContent = sala.nombre;
+        const descripcion = document.createElement("p");
+        descripcion.textContent = sala.descripcion;
+        const listado = document.createElement("ul");
+        const butacaAleatoria = document.createElement("li");
+        butacaAleatoria.textContent = "Butaca aleatoria: " + sala.precio_aleatorio + " €";
+        const butacaElegida = document.createElement("li");
+        butacaElegida.textContent = "Butaca elegida: " + sala.precio_elegido + " €";
+
+        listado.appendChild(butacaAleatoria);
+        listado.appendChild(butacaElegida);
+        tipo.appendChild(nombre);
+        tipo.appendChild(descripcion);
+        tipo.appendChild(listado);
+        // console.log(tipo);
+        listaSalas.append(tipo);
+    }
+}
+MostrarSalas();

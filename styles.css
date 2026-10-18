@@ -56,7 +56,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.8rem 3rem;
+    padding: 12.8px 48px;
     background-color: #1e293b;
     border-bottom: 3px solid #f97316;
 }
@@ -86,13 +86,13 @@ main {
 
 .nav-menu {
     display: flex;
-    gap: 2.5rem;
+    gap: 40px;
 }
 
 .nav-link {
     color: #cbd5e1;
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 16px;
     font-weight: 500;
     transition: color 0.25s ease;
 }
@@ -105,8 +105,8 @@ main {
     background: linear-gradient(135deg, #0f2b48, #1e40af);
     color: #ffffff;
     border: 1px solid #36495e;
-    padding: 0.6rem 1.6rem;
-    font-size: 0.95rem;
+    padding: 9.6px 25.6px;
+    font-size: 15.2px;
     font-weight: 600;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -122,12 +122,12 @@ main {
 #e-titulo, #s-titulo, #i-titulo {
     color: whitesmoke;
     text-align: center;
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
+    font-size: 28.8px;
+    margin-bottom: 24px;
 }
 
 #eventos, #salas, #informacion {
-    padding: 3rem 2rem;
+    padding: 48px 32px;
     /* Deja espacio para que la cabecera fija no tape el título al navegar */
     scroll-margin-top: 110px;
 }
@@ -138,7 +138,7 @@ main {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 2rem;
+    gap: 32px;
 }
 
 .cartel {
@@ -158,7 +158,7 @@ main {
 
 .cartel .p-c-nombre {
     color: #cbd5e1;
-    padding: 0.8rem 0.5rem 0.4rem;
+    padding: 12.8px 8px 6.4px;
     font-weight: 500;
 }
 
@@ -178,8 +178,8 @@ main {
     background-color: #f97316;
     color: #ffffff;
     border: 2px solid #ffffff;
-    padding: 0.5rem 1.2rem;
-    margin: 0.4rem 0 1rem;
+    padding: 8px 19.2px;
+    margin: 6.4px 0 16px;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -196,10 +196,10 @@ main {
 }
 
 .lista-salas {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     justify-content: center;
-    gap: 1.5rem;
+    grid-template-columns:auto auto auto auto;
+    gap: 20px;
 }
 
 .sala {
@@ -207,27 +207,27 @@ main {
     box-shadow: 6px 6px 0 #0f172a;
     width: 280px;
     background-color: #334155;
-    padding: 1.5rem;
+    padding: 25px;
 }
 
 .sala h3 {
     color: #ffffff;
-    margin-bottom: 0.5rem;
+    margin-bottom: 8px;
 }
 
 .sala p {
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
+    font-size: 14.4px;
+    margin-bottom: 16px;
 }
 
 .sala ul {
     list-style: none;
-    font-size: 0.9rem;
+    font-size: 14.4px;
     color: #fbbf24;
 }
 
 .sala li + li {
-    margin-top: 0.3rem;
+    margin-top: 4.8px;
 }
 
 /* Información */
@@ -237,19 +237,19 @@ main {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 24px;
 }
 
 .info-bloque h3 {
     color: #ffffff;
-    margin-bottom: 0.4rem;
+    margin-bottom: 6.4px;
 }
 
 .info-bloque details {
     border: 2px solid #475569;
     background-color: #1e293b;
-    padding: 0.8rem 1rem;
-    margin-top: 0.6rem;
+    padding: 12.8px 16px;
+    margin-top: 9.6px;
 }
 
 .info-bloque summary {
@@ -258,14 +258,14 @@ main {
 }
 
 .info-bloque details p {
-    margin-top: 0.6rem;
-    font-size: 0.9rem;
+    margin-top: 9.6px;
+    font-size: 14.4px;
 }
 
 /* Pie de página */
 
 .footer-bottom {
-    padding: 1rem 3rem;
+    padding: 16px 48px;
     background-color: #1e293b;
     border-top: 3px solid #f97316;
     color: #cbd5e1;
@@ -296,7 +296,7 @@ main {
     max-height: 90vh;
     overflow-y: auto;
     background-color: #1e293b;
-    padding: 2rem;
+    padding: 32px;
     border: 2px solid #cbd5e1;
     box-shadow: 8px 8px 0 #f97316;
     animation: aparecer 0.25s ease;
@@ -311,24 +311,24 @@ main {
 .modal-logo {
     display: block;
     height: 60px;
-    margin: 0 auto 0.5rem;
+    margin: 0 auto 8px;
 }
 
 .modal-caja h2 {
     color: #ffffff;
     text-align: center;
-    font-size: 1.3rem;
-    margin-bottom: 1.2rem;
+    font-size: 20.8px;
+    margin-bottom: 19.2px;
 }
 
 .modal-cerrar {
     position: absolute;
-    top: 0.6rem;
-    right: 1rem;
+    top: 9.6px;
+    right: 16px;
     background: none;
     border: none;
     color: #cbd5e1;
-    font-size: 1.8rem;
+    font-size: 28.8px;
     cursor: pointer;
 }
 
@@ -340,13 +340,13 @@ main {
 
 .tabs {
     display: flex;
-    margin-bottom: 1.2rem;
+    margin-bottom: 19.2px;
     border-bottom: 2px solid #475569;
 }
 
 .tab {
     flex: 1;
-    padding: 0.6rem;
+    padding: 9.6px;
     background: none;
     border: none;
     border-bottom: 3px solid transparent;
@@ -370,7 +370,7 @@ main {
 .form-auth {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 6.4px;
 }
 
 .form-auth[hidden] {
@@ -378,18 +378,18 @@ main {
 }
 
 .form-auth label {
-    font-size: 0.85rem;
+    font-size: 13.6px;
     font-weight: 500;
-    margin-top: 0.4rem;
+    margin-top: 6.4px;
 }
 
 .form-auth input {
     width: 100%;
-    padding: 0.65rem 0.8rem;
+    padding: 10.4px 12.8px;
     border: 1px solid #475569;
     background-color: #0f172a;
     color: #ffffff;
-    font-size: 0.95rem;
+    font-size: 15.2px;
 }
 
 .form-auth input::placeholder {
@@ -409,18 +409,18 @@ main {
 }
 
 .campo-passwd input {
-    padding-right: 3.5rem;
+    padding-right: 56px;
 }
 
 .btn-ver {
     position: absolute;
     top: 50%;
-    right: 0.5rem;
+    right: 8px;
     transform: translateY(-50%);
     background: none;
     border: none;
     color: #64748b;
-    font-size: 0.8rem;
+    font-size: 12.8px;
     font-weight: 600;
     cursor: pointer;
 }
@@ -430,8 +430,8 @@ main {
 }
 
 .mensaje {
-    min-height: 1.3rem;
-    font-size: 0.85rem;
+    min-height: 20.8px;
+    font-size: 13.6px;
     color: #f97316;
 }
 
@@ -441,14 +441,14 @@ main {
 
 .btn-ancho {
     width: 100%;
-    padding: 0.75rem;
+    padding: 12px;
 }
 
 /* Ventana de detalle de evento */
 
 .modal-evento {
     display: flex;
-    gap: 1.5rem;
+    gap: 24px;
     max-width: 640px;
 }
 
@@ -462,26 +462,26 @@ main {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.8rem;
+    gap: 12.8px;
 }
 
 .modal-caja .evento-info h2 {
     text-align: left;
-    font-size: 1.5rem;
+    font-size: 24px;
     margin: 0;
-    padding-right: 1.5rem;
+    padding-right: 24px;
 }
 
 .evento-categoria {
     background-color: #fbbf24;
     color: #0f172a;
-    font-size: 0.8rem;
+    font-size: 12.8px;
     font-weight: 600;
-    padding: 0.2rem 0.7rem;
+    padding: 3.2px 11.2px;
 }
 
 .evento-resumen {
-    font-size: 0.95rem;
+    font-size: 15.2px;
     line-height: 1.5;
 }
 
@@ -489,9 +489,9 @@ main {
 
 @media (max-width: 700px) {
     .main-header {
-        padding: 0.8rem 1rem;
+        padding: 12.8px 16px;
         flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 8px;
     }
 
     .logo-container img {
@@ -499,7 +499,7 @@ main {
     }
 
     .nav-menu {
-        gap: 1rem;
+        gap: 16px;
         order: 3;
         width: 100%;
         justify-content: center;

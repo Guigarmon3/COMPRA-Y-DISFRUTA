@@ -27,7 +27,12 @@ public class ConsultaRepository {
 
     public List<Map<String, Object>> Obtenerbutacas() {return comando.queryForList("select * from butaca order by id");}
 
-    public List<Map<String, Object>> ObtenerCategoriaDePelicula(int id) {return comando.queryForList("select nombre from genero where id = (\"select genero_id from pelicula where id = ?\"), ?");}
+    public Map<String, Object> obtenerCategoriaDePelicula(int id) {
+        return comando.queryForMap(
+                "select * from genero where id = (select genero_id from pelicula where id = ?)", id);
+    }
+
+    public List<Map<String, Object>> ObtenerTipoSala() {return comando.queryForList("select * from tipo_sala");}
 
 
 }

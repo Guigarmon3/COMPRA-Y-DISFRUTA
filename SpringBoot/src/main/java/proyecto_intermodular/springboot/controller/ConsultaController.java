@@ -1,9 +1,6 @@
 package proyecto_intermodular.springboot.controller;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import proyecto_intermodular.springboot.service.ConsultaService;
 
 import java.util.List;
@@ -36,7 +33,12 @@ public class ConsultaController {
     public List<Map<String, Object>> Obtenerbutacas(){return cs.Obtenerbutacas();}
 
     @GetMapping("/api/getcat/{id}")
-    public List<Map<String, Object>> obtenerCategoria(@PathVariable int id) {
+    public Map<String, Object> obtenerCategoria(@PathVariable int id) {
         return cs.ObtenerCat(id);
+    }
+
+    @GetMapping("/api/tipos_salas/")
+    public List<Map<String, Object>> TiposSalas(){
+        return cs.TiposDeSala();
     }
 }
