@@ -66,4 +66,67 @@ function comprobarScroll() {
 
 window.addEventListener("scroll", comprobarScroll);
 comprobarScroll();
-//
+
+// Mostrar todos los eventos
+MostrarEventos();
+
+
+
+
+/*
+
+███████╗██████╗ ██████╗ ██╗███╗   ██╗ ██████╗       ██████╗  ██████╗  ██████╗ ████████╗   
+██╔════╝██╔══██╗██╔══██╗██║████╗  ██║██╔════╝       ██╔══██╗██╔═══██╗██╔═══██╗╚══██╔══╝
+███████╗██████╔╝██████╔╝██║██╔██╗ ██║██║  ███╗█████╗██████╔╝██║   ██║██║   ██║   ██║  
+╚════██║██╔═══╝ ██╔══██╗██║██║╚██╗██║██║   ██║╚════╝██╔══██╗██║   ██║██║   ██║   ██║
+███████║██║     ██║  ██║██║██║ ╚████║╚██████╔╝      ██████╔╝╚██████╔╝╚██████╔╝   ██║  
+╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝       ╚═════╝  ╚═════╝  ╚═════╝    ╚═╝  
+                                                                              
+██╗███╗   ██╗████████╗███████╗ ██████╗ ██████╗  █████╗ ████████╗██╗ ██████╗ ███╗   ██╗
+██║████╗  ██║╚══██╔══╝██╔════╝██╔════╝ ██╔══██╗██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║ 
+██║██╔██╗ ██║   ██║   █████╗  ██║  ███╗██████╔╝███████║   ██║   ██║██║   ██║██╔██╗ ██║
+██║██║╚██╗██║   ██║   ██╔══╝  ██║   ██║██╔══██╗██╔══██║   ██║   ██║██║   ██║██║╚██╗██║
+██║██║ ╚████║   ██║   ███████╗╚██████╔╝██║  ██║██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║
+╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+*/
+
+async function GetCategoria(id) {
+    const respuesta = await fetch("http://localhost:8080/api/getcat/"+id);
+    const categorias = await respuesta.json();
+    return categorias;
+}
+
+async function MostrarEventos() {
+  const div = document.getElementById("cartelera");
+
+  div.textContent="";
+
+  const respuesta = await fetch("http://localhost:8080/api/Peliculas");
+  if (!respuesta.ok) {
+    throw new Error("Error " + respuesta.status);
+  }
+  const eventos = await respuesta.json();
+  console.log(eventos);
+
+  eventos.forEach(element =>  {
+    const pelicula = document.createElement("div");
+    pelicula.className="cartel";
+    
+    const portada = document.createElement("img")
+    portada.src=element.imagen;
+    pelicula.append(portada);
+
+    const nombre = document.createElement("p")
+    nombre.textContent= element.nombre;
+    pelicula.append(nombre);
+    
+    pelicula.setAttribute("data-imagen", element.imagen); 
+    pelicula.setAttribute("data-nombre", element.nombre)
+    pelicula.setAttribute("data-categoria", GetCategoria(element.genero_id));
+
+    div.appendChild(pelicula)
+
+
+    pelicula.addEventListener("click", () => abrirEvento(pelicula));  });
+    
+}
