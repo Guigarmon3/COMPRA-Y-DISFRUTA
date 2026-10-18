@@ -1,0 +1,33 @@
+package proyecto_intermodular.springboot.repository;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
+
+@Repository
+public class ConsultaRepository {
+
+    private final JdbcTemplate comando;
+
+    public ConsultaRepository(JdbcTemplate comando) {
+        this.comando = comando;
+    }
+
+    public List<Map<String, Object>> ObtenerPeliculas() {
+        return comando.queryForList("select * from pelicula order by id");
+    }
+
+    public List<Map<String, Object>> ObtenerTodosLosTickets() {return comando.queryForList("select * from ticket order by id");}
+
+    public List<Map<String, Object>> ObtenerUsuarios() {return comando.queryForList("select * from usuario order by id");}
+
+    public List<Map<String, Object>> ObtenerSalas() {return comando.queryForList("select * from sala order by id");}
+
+    public List<Map<String, Object>> Obtenerbutacas() {return comando.queryForList("select * from butaca order by id");}
+
+    public List<Map<String, Object>> ObtenerCategoriaDePelicula(int id) {return comando.queryForList("select nombre from genero where id = (\"select genero_id from pelicula where id = ?\"), ?");}
+
+
+}
