@@ -47,4 +47,7 @@ public class ConsultaController {
     public void crerUsuario(@RequestBody Usuario usuario) {
         cs.CrearUsuario(usuario);
     }
+    @GetMapping("/api/login/email/passwd")
+    public boolean login(String email, String passwd) {return cs.login(email,passwd);}
+
 }

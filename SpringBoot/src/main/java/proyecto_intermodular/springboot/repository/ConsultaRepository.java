@@ -1,5 +1,6 @@
 package proyecto_intermodular.springboot.repository;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import proyecto_intermodular.springboot.Modal.Usuario;
@@ -40,5 +41,14 @@ public class ConsultaRepository {
                 "insert into usuario(nombre,email,passwd,rol) values (?,?,?,'CLIENTE')",
                 usuario.nombre, usuario.email, usuario.passwd
         );
+    }
+
+    public boolean login(String email, String passwd) {
+        try {
+            comando.queryForMap("select email, passwd from usuario where email = ? and passwd = ?", email, passwd);
+            return true;
+        } catch (EmptyResultDataAccessException e) {
+            return false;
+        }
     }
 }

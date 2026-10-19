@@ -192,5 +192,11 @@ async function crearUsuario() {
             if (!response.ok) throw new Error("Error " + response.status);
             const resultado = await response.json();
             console.log(resultado);
-        }
+        } catch (error) {}
 }
+
+// Funcion para iniciar sesión
+async function iniciarSesion() {
+    const email = document.getElementById("login-email").value;
+    const passwd = document.getElementById("login-passwd").value;
+    
