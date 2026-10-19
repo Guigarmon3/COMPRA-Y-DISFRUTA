@@ -32,4 +32,5 @@ public class ConsultaService {
 
     public List<Map<String, Object>> TiposDeSala(){return consulta.ObtenerTipoSala();}
 
+    public Map<String,Object> CrearUsuario(String nombre, String email, String passwd){return consulta.CrearUsuario(nombre,email,passwd);}
 }

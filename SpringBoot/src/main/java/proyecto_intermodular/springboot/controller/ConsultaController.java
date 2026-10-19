@@ -41,4 +41,7 @@ public class ConsultaController {
     public List<Map<String, Object>> TiposSalas(){
         return cs.TiposDeSala();
     }
+
+    @PostMapping("/api/crearUsuario")
+    public Map<String,Object> crerUsuario(@PathVariable String nombre,@PathVariable String email,@PathVariable String passwd) {return cs.CrearUsuario(nombre, email, passwd);}
 }
