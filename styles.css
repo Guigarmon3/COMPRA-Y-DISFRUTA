@@ -117,6 +117,22 @@ main {
     box-shadow: 4px 4px 0 #f97316;
 }
 
+#user-nombre {
+    background: linear-gradient(135deg, #1e40af, #0f2b48);
+    color: #ffffff;
+    border: 1px solid #36495e;
+    padding: 9.6px 25.6px;
+    font-size: 15.2px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: none;
+}
+#user-nombre:hover {
+    cursor: default;
+    box-shadow: 0px ;
+}
+
 /* Títulos de sección */
 
 #e-titulo, #s-titulo, #i-titulo {

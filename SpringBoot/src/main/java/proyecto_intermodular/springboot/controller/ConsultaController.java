@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.*;
 import proyecto_intermodular.springboot.Modal.Usuario;
 import proyecto_intermodular.springboot.service.ConsultaService;
 
+import javax.print.DocFlavor;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +49,10 @@ public class ConsultaController {
     public void crerUsuario(@RequestBody Usuario usuario) {
         cs.CrearUsuario(usuario);
     }
-    @GetMapping("/api/login/email/passwd")
-    public boolean login(String email, String passwd) {return cs.login(email,passwd);}
 
+    @GetMapping("/api/login/{email}/{passwd}")
+    public boolean login(@PathVariable String email, @PathVariable String passwd) {return cs.login(email,passwd);}
+
+    @GetMapping("/api/getnombre/{email}")
+    public String getNombre(@PathVariable String email) {return cs.getNombre(email);}
 }

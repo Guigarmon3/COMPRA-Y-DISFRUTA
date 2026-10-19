@@ -1,3 +1,9 @@
+
+// ----------Inicio-----------
+const button_loggin = document.querySelector(".btn-login");
+const nombre = document.getElementById("user-nombre");
+nombre.style.display = "none"
+
 // ---------- Login ----------
 function abrirLogin() {
     mostrarLogin();
@@ -165,12 +171,10 @@ async function MostrarSalas() {
         tipo.appendChild(nombre);
         tipo.appendChild(descripcion);
         tipo.appendChild(listado);
-        // console.log(tipo);
         listaSalas.append(tipo);
     }
 }
 MostrarSalas();
-
 // Funcion para crear los usuarios en la bdd
 async function crearUsuario() {
     const nombre = document.getElementById("reg-nombre").value;
@@ -184,19 +188,41 @@ async function crearUsuario() {
     };  
 
     try {
-            const response = await fetch("http://localhost:8080/api/crearUsuario", {
+            const resepuesta = await fetch("http://localhost:8080/api/crearUsuario", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(usuario)
             });
-            if (!response.ok) throw new Error("Error " + response.status);
-            const resultado = await response.json();
+            if (!resepuesta.ok) throw new Error("Error " + resepuesta.status);
+            const resultado = await resepuesta.json();
             console.log(resultado);
         } catch (error) {}
 }
-
 // Funcion para iniciar sesión
 async function iniciarSesion() {
     const email = document.getElementById("login-email").value;
     const passwd = document.getElementById("login-passwd").value;
+    const respuesta = await fetch("http://localhost:8080/api/login/"+email+"/"+passwd)
+    if (!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+    } else {
+        alert("Correcto " + email+": " + passwd);
+        nombre.style.display = "block";
+        nombre.textContent = await getNombre(email)+"";
+        button_loggin.style.display = "none";
+        cerrarLogin();
+    }
+}
+
+// FUncio
+async function getNombre(email) {
+    const respuesta = await fetch("http://localhost:8080/api/getnombre/"+email);
+    if (!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+    } else {
+        const nombre = await respuesta.text();
+        console.log(nombre);
+        return nombre;
+    }   
+}
     

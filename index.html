@@ -23,9 +23,13 @@
             <a href="#informacion" class="nav-link">Información</a>
         </nav>
 
+
+
         <!-- Zona de acciones/usuario -->
         <span class="user-actions">
             <button class="btn-login" onclick="abrirLogin()">Entrar</button>
+            <p id="user-nombre">Nombre de usuario</p>
+
         </span>
     </header>
 
@@ -116,7 +120,7 @@
                 </div>
 
                 <p class="mensaje" id="mensaje-login" role="alert"></p>
-                <button type="submit" class="btn-login btn-ancho">Entrar</button>
+                <button type="submit" class="btn-login btn-ancho" onclick="iniciarSesion()">Entrar</button>
             </form>
 
             <!-- Formulario de registro -->

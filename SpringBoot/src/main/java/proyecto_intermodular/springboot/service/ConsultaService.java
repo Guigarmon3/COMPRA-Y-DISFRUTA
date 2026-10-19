@@ -35,4 +35,5 @@ public class ConsultaService {
 
     public void CrearUsuario(Usuario usuario){consulta.CrearUsuario(usuario);}
     public boolean login(String email, String passwd) {return consulta.login(email,passwd);}
+    public String getNombre(String email){return consulta.getName(email);}
 }

@@ -51,4 +51,12 @@ public class ConsultaRepository {
             return false;
         }
     }
+
+    public String getName(String email) {
+        try {
+            return String.valueOf(comando.queryForObject("select nombre from usuario where email = ?",String.class, email));
+        } catch(Error e){
+            return "Error";
+        }
+    }
 }
