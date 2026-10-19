@@ -1,6 +1,7 @@
 package proyecto_intermodular.springboot.service;
 
 import org.springframework.stereotype.Service;
+import proyecto_intermodular.springboot.Modal.Usuario;
 import proyecto_intermodular.springboot.repository.ConsultaRepository;
 
 import java.util.List;
@@ -32,5 +33,5 @@ public class ConsultaService {
 
     public List<Map<String, Object>> TiposDeSala(){return consulta.ObtenerTipoSala();}
 
-    public Map<String,Object> CrearUsuario(String nombre, String email, String passwd){return consulta.CrearUsuario(nombre,email,passwd);}
+    public void CrearUsuario(Usuario usuario){consulta.CrearUsuario(usuario);}
 }

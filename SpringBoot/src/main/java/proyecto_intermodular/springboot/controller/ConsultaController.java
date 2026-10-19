@@ -1,6 +1,7 @@
 package proyecto_intermodular.springboot.controller;
 
 import org.springframework.web.bind.annotation.*;
+import proyecto_intermodular.springboot.Modal.Usuario;
 import proyecto_intermodular.springboot.service.ConsultaService;
 
 import java.util.List;
@@ -43,5 +44,7 @@ public class ConsultaController {
     }
 
     @PostMapping("/api/crearUsuario")
-    public Map<String,Object> crerUsuario(@PathVariable String nombre,@PathVariable String email,@PathVariable String passwd) {return cs.CrearUsuario(nombre, email, passwd);}
+    public void crerUsuario(@RequestBody Usuario usuario) {
+        cs.CrearUsuario(usuario);
+    }
 }

@@ -170,3 +170,27 @@ async function MostrarSalas() {
     }
 }
 MostrarSalas();
+
+// Funcion para crear los usuarios en la bdd
+async function crearUsuario() {
+    const nombre = document.getElementById("reg-nombre").value;
+    const email = document.getElementById("reg-email").value;
+    const passwd = document.getElementById("reg-passwd").value;
+
+    const usuario = {
+        nombre: nombre,
+        email: email,
+        passwd: passwd
+    };  
+
+    try {
+            const response = await fetch("http://localhost:8080/api/crearUsuario", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(usuario)
+            });
+            if (!response.ok) throw new Error("Error " + response.status);
+            const resultado = await response.json();
+            console.log(resultado);
+        }
+}

@@ -2,6 +2,7 @@ package proyecto_intermodular.springboot.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import proyecto_intermodular.springboot.Modal.Usuario;
 
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,10 @@ public class ConsultaRepository {
 
     public List<Map<String, Object>> ObtenerTipoSala() {return comando.queryForList("select * from tipo_sala");}
 
-    public Map<String,Object> CrearUsuario(String nombre, String email, String passwd) {return  comando.queryForMap("insert into usuario(nombre,email,passwd,rol) values ('?'','?','?','CLIENTE');",nombre, email, passwd);}
-
+    public void CrearUsuario(Usuario usuario) {
+        comando.update(
+                "insert into usuario(nombre,email,passwd,rol) values (?,?,?,'CLIENTE')",
+                usuario.nombre, usuario.email, usuario.passwd
+        );
+    }
 }
