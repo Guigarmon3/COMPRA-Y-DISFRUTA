@@ -60,4 +60,7 @@ public class ConsultaController {
     @GetMapping("/api/getrol/{email}")
     public ROL getRol(@PathVariable String email){return cs.getRol(email);}
 
+    @GetMapping("/api/contuser/{nombre}/{email}")
+    public int countUser(@PathVariable String nombre, @PathVariable String email){return cs.contUser(nombre, email);}
+
 }

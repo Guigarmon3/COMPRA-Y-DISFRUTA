@@ -62,4 +62,12 @@ public class ConsultaRepository {
     }
 
     public ROL getRol(String email) {return comando.queryForObject("select rol from usuario where email = ?", ROL.class, email);}
+
+    public int contUser(String nombre, String email) {
+        try {
+            return comando.queryForObject("select count(*) from usuario where nombre = ? and email = ?", int.class, nombre, email);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 }

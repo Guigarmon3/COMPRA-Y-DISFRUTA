@@ -41,7 +41,10 @@ async function crearUsuarioTest() {
     const nombre = document.getElementById("admin-register-nombre").value;
     const email = document.getElementById("admin-register-email").value;
     const passwd = document.getElementById("admin-register-passwd").value;
-
+if (!nombre || !email || !passwd) {
+        pushNotifyError("Error", "Por favor, complete todos los campos");
+        return;
+    }
     const usuario = {
         nombre: nombre,
         email: email,
@@ -54,10 +57,17 @@ async function crearUsuarioTest() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(usuario)
             });
-            if (!resepuesta.ok) {
-                throw new Error("Error " + resepuesta.status);
-            }
+            if (!resepuesta.ok) throw new Error("Error " + resepuesta.status);
             const resultado = await resepuesta.json();
+
+            if (verificarUsuario(nombre.textContent, email) === 1) {
+                PushNotify("Creación de Usuario", "Usuario creado correctamente");
+            } else {
+                pushNotifyError("Error", "Usuario no encontrado");
+            }
             console.log(resultado);
-    } catch (error) {}
+            
+        } catch (error) {
+            pushNotifyError("Error", "No se pudo crear el usuario");
+        }
 }

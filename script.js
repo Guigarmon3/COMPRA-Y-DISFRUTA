@@ -63,7 +63,7 @@ function cerrarEvento() {
 function comprobarScroll() {
     let header = document.querySelector("header");
 
-    if (window.scrollY > 0) {
+    if (window.scrollY >= 150) {
         header.classList.add("scrolled");
     } else {
         header.classList.remove("scrolled");
@@ -83,7 +83,6 @@ function cerrarAdmin() {
 function abrirAdmin() {
     document.getElementById("modal-admin").hidden = false;
 }
-
 
 /*
 
@@ -108,6 +107,7 @@ async function GetCategoria(id) {
     const respuesta = await fetch("http://localhost:8080/api/getcat/" + id);
     if (!respuesta.ok) {
         throw new Error("Error " + respuesta.status);
+        pushNotifyError("Error", "No se pudo obtener la categoría");
     }
     const categoria = await respuesta.json();
     return categoria.nombre;
@@ -187,7 +187,10 @@ async function crearUsuario() {
     const nombre = document.getElementById("reg-nombre").value;
     const email = document.getElementById("reg-email").value;
     const passwd = document.getElementById("reg-passwd").value;
-
+    if (!nombre || !email || !passwd) {
+        pushNotifyError("Error", "Por favor, complete todos los campos");
+        return;
+    }
     const usuario = {
         nombre: nombre,
         email: email,
@@ -202,8 +205,17 @@ async function crearUsuario() {
             });
             if (!resepuesta.ok) throw new Error("Error " + resepuesta.status);
             const resultado = await resepuesta.json();
+
+            if (await verificarUsuario(nombre.textContent, email) === 1) {
+                PushNotify("Creación de Usuario", "Usuario creado correctamente");
+            } else {
+                pushNotifyError("Error", "Usuario no encontrado");
+            }
             console.log(resultado);
-        } catch (error) {}
+            
+        } catch (error) {
+            pushNotifyError("Error", "No se pudo crear el usuario");
+        }
 }
 // Funcion para iniciar sesión
 async function iniciarSesion() {
@@ -212,12 +224,12 @@ async function iniciarSesion() {
     const respuesta = await fetch("http://localhost:8080/api/login/"+email+"/"+passwd)
     if (!respuesta.ok) {
         throw new Error("Error " + respuesta.status);
+        pushNotifyError("Error", "No se pudo iniciar sesión");
     } else {
         alert("Correcto " + email+": " + passwd);
         nombre.style.display = "block";
         nombre.textContent = await getNombre(email)+"";
         button_loggin.style.display = "none";
-        
         cerrarLogin();
     }
 }
@@ -227,6 +239,7 @@ async function getNombre(email) {
     const respuesta = await fetch("http://localhost:8080/api/getnombre/"+email);
     if (!respuesta.ok) {
         throw new Error("Error " + respuesta.status);
+        pushNotifyError("Error", "No se pudo obtener el nombre del usuario");
     } else {
         const nombre = await respuesta.text();
         console.log(nombre);
@@ -241,7 +254,7 @@ async function getRol(email) {
         throw new Error("Error " + respuesta.status);
     } else {
         try {
-            const nombre = await respuesta.text();
+        const nombre = await respuesta.text();
         console.log(nombre);
         return nombre;
         } catch (error) {
@@ -249,4 +262,22 @@ async function getRol(email) {
         }
     }   
 }
+
+// Funcion para verificar si el usuario ha sido creado
+async function verificarUsuario(nombre, email) {
+    const url = `http://localhost:8080/api/contuser/${nombre}/${email}`;
+    const respuesta = await fetch(url);
     
+    if (!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+    }
+    
+    const textoBruto = await respuesta.text();
+    // Limpiamos espacios o saltos de línea por si acaso
+    const existe = textoBruto.trim(); 
+    
+    console.log("Lo que devuelve la API de verificación:", JSON.stringify(existe));
+
+    // Aceptamos tanto "1" como 1 por seguridad
+    return existe === "1" || existe === 1;
+}
