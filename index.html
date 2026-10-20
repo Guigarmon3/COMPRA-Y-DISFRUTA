@@ -164,10 +164,20 @@
                 </div>
                 <div class="button-admin">
                     <h3>Crear Usuario</h3>
-                    <input type="text" id="admin-register-nombre" placeholder="nombre"> 
-                    <input type="text" id="admin-register-email" placeholder="email"> 
-                    <input type="text" id="admin-register-passwd" placeholder="contraseña">
+                    <input type="text" id="admin-register-nombre" placeholder="nombre" required> 
+                    <input type="text" id="admin-register-email" placeholder="email" required> 
+                    <input type="text" id="admin-register-passwd" placeholder="contraseña" required>
                     <button id="getcategoria" onclick="crearUsuarioTest()">Ejecutar</button>
+                </div>
+                <div class="button-admin">
+                    <h3>Obtener Nombre</h3>
+                    <input type="email" id="admin-getNombre-email" placeholder="Email" required>
+                    <button id="getcategoria" onclick="getNombreTest()">Ejecutar</button>
+                </div>
+                <div class="button-admin">
+                    <h3>Obtener Rol</h3>
+                    <input type="email" id="admin-getRol-email" placeholder="Email" required>
+                    <button id="getcategoria" onclick="getRolTest()">Ejecutar</button>
                 </div>
             </div>
         </div>

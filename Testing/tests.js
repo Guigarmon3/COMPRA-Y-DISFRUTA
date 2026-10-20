@@ -58,16 +58,44 @@ if (!nombre || !email || !passwd) {
                 body: JSON.stringify(usuario)
             });
             if (!resepuesta.ok) throw new Error("Error " + resepuesta.status);
-            const resultado = await resepuesta.json();
+            const existe = await verificarUsuario(nombre, email);
 
-            if (verificarUsuario(nombre.textContent, email) === 1) {
+            if (existe) {
                 PushNotify("Creación de Usuario", "Usuario creado correctamente");
             } else {
                 pushNotifyError("Error", "Usuario no encontrado");
             }
-            console.log(resultado);
             
         } catch (error) {
             pushNotifyError("Error", "No se pudo crear el usuario");
         }
+}
+
+async function getNombreTest() {
+    const email = document.getElementById("admin-getNombre-email").value;
+    const respuesta = await fetch("http://localhost:8080/api/getnombre/"+email);
+    if (!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+        pushNotifyError("Error", "No se pudo obtener el nombre del usuario");
+    } else {
+        const nombre = await respuesta.text();
+        console.log(nombre);
+        alert(nombre);
+    }   
+}
+
+async function getRolTest() {
+    const email = document.getElementById("").value
+        const respuesta = await fetch("http://localhost:8080/api/getrol/"+email);
+    if (!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+    } else {
+        try {
+        const nombre = await respuesta.text();
+        console.log(nombre);
+        return nombre;
+        } catch (error) {
+            console.log(error);
+        }
+    }   
 }
