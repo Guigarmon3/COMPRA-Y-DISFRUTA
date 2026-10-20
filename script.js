@@ -76,7 +76,13 @@ comprobarScroll();
 // Mostrar todos los eventos
 MostrarEventos();
 
-
+// Panel de adminstrador
+function cerrarAdmin() {
+    document.getElementById("modal-admin").hidden = true;
+}
+function abrirAdmin() {
+    document.getElementById("modal-admin").hidden = false;
+}
 
 
 /*
@@ -145,6 +151,7 @@ async function MostrarEventos() {
   }
 }
 
+// Funcion para mostrar todos los tipos de salas
 async function MostrarSalas() {
     const resepuesta = await fetch("http://localhost:8080/api/tipos_salas/");
     if (!resepuesta.ok) {
@@ -210,11 +217,12 @@ async function iniciarSesion() {
         nombre.style.display = "block";
         nombre.textContent = await getNombre(email)+"";
         button_loggin.style.display = "none";
+        
         cerrarLogin();
     }
 }
 
-// FUncio
+// Funcion para obtener el nombre del usuario en el que inicias sesión
 async function getNombre(email) {
     const respuesta = await fetch("http://localhost:8080/api/getnombre/"+email);
     if (!respuesta.ok) {
@@ -223,6 +231,22 @@ async function getNombre(email) {
         const nombre = await respuesta.text();
         console.log(nombre);
         return nombre;
+    }   
+}
+
+// Funcion para obtener el rol de un usuario
+async function getRol(email) {
+        const respuesta = await fetch("http://localhost:8080/api/getrol/"+email);
+    if (!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+    } else {
+        try {
+            const nombre = await respuesta.text();
+        console.log(nombre);
+        return nombre;
+        } catch (error) {
+            console.log(error);
+        }
     }   
 }
     

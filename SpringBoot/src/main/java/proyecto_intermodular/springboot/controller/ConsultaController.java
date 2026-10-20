@@ -1,6 +1,7 @@
 package proyecto_intermodular.springboot.controller;
 
 import org.springframework.web.bind.annotation.*;
+import proyecto_intermodular.springboot.Modal.ROL;
 import proyecto_intermodular.springboot.Modal.Usuario;
 import proyecto_intermodular.springboot.service.ConsultaService;
 
@@ -55,4 +56,8 @@ public class ConsultaController {
 
     @GetMapping("/api/getnombre/{email}")
     public String getNombre(@PathVariable String email) {return cs.getNombre(email);}
+
+    @GetMapping("/api/getrol/{email}")
+    public ROL getRol(@PathVariable String email){return cs.getRol(email);}
+
 }

@@ -3,6 +3,7 @@ package proyecto_intermodular.springboot.repository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import proyecto_intermodular.springboot.Modal.ROL;
 import proyecto_intermodular.springboot.Modal.Usuario;
 
 import java.util.List;
@@ -59,4 +60,6 @@ public class ConsultaRepository {
             return "Error";
         }
     }
+
+    public ROL getRol(String email) {return comando.queryForObject("select rol from usuario where email = ?", ROL.class, email);}
 }

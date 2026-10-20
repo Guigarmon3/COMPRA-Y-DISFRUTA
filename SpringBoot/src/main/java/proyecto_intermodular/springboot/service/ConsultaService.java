@@ -1,6 +1,7 @@
 package proyecto_intermodular.springboot.service;
 
 import org.springframework.stereotype.Service;
+import proyecto_intermodular.springboot.Modal.ROL;
 import proyecto_intermodular.springboot.Modal.Usuario;
 import proyecto_intermodular.springboot.repository.ConsultaRepository;
 
@@ -36,4 +37,5 @@ public class ConsultaService {
     public void CrearUsuario(Usuario usuario){consulta.CrearUsuario(usuario);}
     public boolean login(String email, String passwd) {return consulta.login(email,passwd);}
     public String getNombre(String email){return consulta.getName(email);}
+    public ROL getRol(String email){return consulta.getRol(email);}
 }

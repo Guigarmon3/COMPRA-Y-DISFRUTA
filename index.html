@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="Testing/testis.css">
 </head>
 <body>
     <header class="main-header">
@@ -29,7 +30,7 @@
         <span class="user-actions">
             <button class="btn-login" onclick="abrirLogin()">Entrar</button>
             <p id="user-nombre">Nombre de usuario</p>
-
+            <button id="admin-pannel" onclick="abrirAdmin()">ADMIN PANNEL</button>
         </span>
     </header>
 
@@ -143,6 +144,31 @@
         </div>
     </div>
 
+    <div class="modal" id="modal-admin" >
+        <div class="modal-caja modal-evento" role="dialog" aria-modal="true" aria-labelledby="evento-nombre">
+            <button class="modal-cerrar" onclick="cerrarAdmin()" aria-label="Cerrar">&times;</button>
+            <div class="botones-admin-test">
+                <div class="button-admin">
+                    <h3>Obtener Nombre Categoria</h3>
+                    <input type="number" id="getcatest"> 
+                    <button id="getcategoria" onclick="GetCategoriatests()">Ejecutar</button>
+                </div>
+                <div class="button-admin">
+                    <h3>Mostrar Eventos</h3>
+                    <button id="getcategoria" onclick="MostrarEventosTest()">Ejecutar</button>
+                </div>
+                <div class="button-admin">
+                    <h3>Crear Usuario</h3>
+                    <input type="text" id="admin-register-nombre" placeholder="nombre"> 
+                    <input type="text" id="admin-register-email" placeholder="email"> 
+                    <input type="text" id="admin-register-passwd" placeholder="contraseña">
+                    <button id="getcategoria" onclick="crearUsuarioTest()">Ejecutar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    <script src="Testing/tests.js"></script>
 </body>
 </html>
