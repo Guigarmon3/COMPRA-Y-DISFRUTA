@@ -75,6 +75,14 @@
                         <summary>¿Necesito una cuenta para comprar?</summary>
                         <p>Sí, tienes que entrar con tu email y contraseña para poder comprar entradas.</p>
                     </details>
+                    <details>
+                        <summary>¿Puedo hacer una devolución?</summary>
+                        <p>Sí, puedes hacer una devolución. Si el error es nuestro te devolvemos el 100%; si no, el 80%.</p>                    
+                    </details>
+                    <details>
+                        <summary>¿Como puedo hacer una devolución?</summary>
+                        <p>Para hacer una devolucion, tendrás que llamar a el numero de telefono 900 000 000 y solicitarla ante un operador</p>
+                    </details>
                 </div>
             </div>
         </section>
@@ -95,7 +103,7 @@
                 <h2 id="evento-nombre"></h2>
                 <span class="evento-categoria" id="evento-categoria"></span>
                 <p class="evento-resumen" id="evento-resumen"></p>
-                <button class="btn-comprar" id="btn-comprar">Comprar entradas</button>
+                <button class="btn-comprar" id="btn-comprar" onclick="comprarEntrada()">Comprar entradas</button>
             </div>
         </div>
     </div>
@@ -149,39 +157,61 @@
         </div>
     </div>
 
-    <div class="modal" id="modal-admin" >
+    <!-- Ventana de admministración -->
+    <div class="modal" id="modal-admin" hidden>
         <div class="modal-caja modal-evento" role="dialog" aria-modal="true" aria-labelledby="evento-nombre">
             <button class="modal-cerrar" onclick="cerrarAdmin()" aria-label="Cerrar">&times;</button>
             <div class="botones-admin-test">
                 <div class="button-admin">
                     <h3>Obtener Nombre Categoria</h3>
                     <input type="number" id="getcatest"> 
-                    <button id="getcategoria" onclick="GetCategoriatests()">Ejecutar</button>
+                    <button class="getcategoria" onclick="GetCategoriatests()">Ejecutar</button>
                 </div>
                 <div class="button-admin">
                     <h3>Mostrar Eventos</h3>
-                    <button id="getcategoria" onclick="MostrarEventosTest()">Ejecutar</button>
+                    <button class="getcategoria" onclick="MostrarEventosTest()">Ejecutar</button>
                 </div>
                 <div class="button-admin">
                     <h3>Crear Usuario</h3>
                     <input type="text" id="admin-register-nombre" placeholder="nombre" required> 
                     <input type="text" id="admin-register-email" placeholder="email" required> 
                     <input type="text" id="admin-register-passwd" placeholder="contraseña" required>
-                    <button id="getcategoria" onclick="crearUsuarioTest()">Ejecutar</button>
+                    <button class="getcategoria" onclick="crearUsuarioTest()">Ejecutar</button>
                 </div>
                 <div class="button-admin">
                     <h3>Obtener Nombre</h3>
                     <input type="email" id="admin-getNombre-email" placeholder="Email" required>
-                    <button id="getcategoria" onclick="getNombreTest()">Ejecutar</button>
+                    <button class="getcategoria" onclick="getNombreTest()">Ejecutar</button>
                 </div>
                 <div class="button-admin">
                     <h3>Obtener Rol</h3>
                     <input type="email" id="admin-getRol-email" placeholder="Email" required>
-                    <button id="getcategoria" onclick="getRolTest()">Ejecutar</button>
+                    <button class="getcategoria" onclick="getRolTest()">Ejecutar</button>
+                </div>
+                <div class="button-admin">
+                    <h3>Verificar Usuario</h3>
+                    <input type="email" id="admin-verificar-email" placeholder="Email" required>
+                    <input type="text" id="admin-verificar-nombre" placeholder="Nombre" required>
+                    <button class="getcategoria" onclick="verificarUsuarioTest()">Ejecutar</button>
+                </div>
+                </div>
+            </div>
+    </div>
+
+    <!-- Carrito -->
+    <div class="carrito">
+        <button class="carrito-borrar" onclick="cerrarCarrito()" aria-label="Cerrar">🗑</button>
+        <div class="PreTicket">
+            <div class="Object">
+                <img src="https://images.pexels.com/photos/371159/pexels-photo-371159.jpeg?cs=tinysrgb&dpr=1&w=500" class="imgPreTicket">
+                <div class="info">
+                    <p class="PreTicketNombre">La Ultima Gota</p>
+                    <p class="PreaTicketSala">Cine 4D</p>
                 </div>
             </div>
         </div>
     </div>
+
 
     <script src="script.js"></script>
     <script src="Testing/tests.js"></script>

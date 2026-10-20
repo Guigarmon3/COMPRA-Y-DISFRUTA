@@ -1,6 +1,5 @@
-
-
 async function GetCategoriatests() {
+    console.clear();
     const id = document.getElementById("getcatest").value;
     const respuesta = await fetch("http://localhost:8080/api/getcat/" + id);
     if (!respuesta.ok) {
@@ -12,19 +11,20 @@ async function GetCategoriatests() {
 }
 
 async function MostrarEventosTest() {
-
-  const respuesta = await fetch("http://localhost:8080/api/Peliculas");
-  if (!respuesta.ok) {
+    console.clear();
+    const respuesta = await fetch("http://localhost:8080/api/Peliculas");
+    if (!respuesta.ok) {
     throw new Error("Error " + respuesta.status);
-  }
-  const eventos = await respuesta.json();
+    }
+    const eventos = await respuesta.json();
 
-  for (const element of eventos) {
-    console.log(element)
-  }
+    for (const element of eventos) {
+        console.log(element)
+    }
 }
 
 async function MostrarSalasTest() {
+    console.clear();
     const resepuesta = await fetch("http://localhost:8080/api/tipos_salas/");
     if (!resepuesta.ok) {
         throw new Error("Error " + resepuesta.status);
@@ -38,6 +38,7 @@ async function MostrarSalasTest() {
 }
 
 async function crearUsuarioTest() {
+    console.clear();
     const nombre = document.getElementById("admin-register-nombre").value;
     const email = document.getElementById("admin-register-email").value;
     const passwd = document.getElementById("admin-register-passwd").value;
@@ -72,6 +73,7 @@ if (!nombre || !email || !passwd) {
 }
 
 async function getNombreTest() {
+    console.clear();
     const email = document.getElementById("admin-getNombre-email").value;
     const respuesta = await fetch("http://localhost:8080/api/getnombre/"+email);
     if (!respuesta.ok) {
@@ -85,17 +87,48 @@ async function getNombreTest() {
 }
 
 async function getRolTest() {
-    const email = document.getElementById("").value
+    console.clear();
+    const email = document.getElementById("admin-getRol-email").value
         const respuesta = await fetch("http://localhost:8080/api/getrol/"+email);
     if (!respuesta.ok) {
         throw new Error("Error " + respuesta.status);
     } else {
         try {
-        const nombre = await respuesta.text();
-        console.log(nombre);
+        alert(await respuesta.text());
         return nombre;
         } catch (error) {
             console.log(error);
         }
     }   
+}
+
+async function verificarUsuarioTest() {
+    console.clear();
+    const email = document.getElementById("admin-verificar-email").value;
+    const nombre = document.getElementById("admin-verificar-nombre").value;
+    const url = `http://localhost:8080/api/contuser/${nombre}/${email}`;
+    const respuesta = await fetch(url);
+    
+    if (!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+    }
+    
+    const textoBruto = await respuesta.text();
+// trim() quita los espacios por si hay algun error
+    const existe = textoBruto.trim(); 
+    
+    console.log("Lo que devuelve la API de verificación:", JSON.stringify(existe));
+
+    // Aceptamos tanto "1" como 1 por seguridad
+    if (existe === 1 || existe==="1"){
+        PushNotify(
+            "Existe",
+            "El usuario "+ nombre +" existe"
+        );
+    } else {
+        pushNotifyError(
+            "Error",
+            nombre+" no existe"
+        );
+    }
 }

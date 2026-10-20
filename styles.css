@@ -318,7 +318,7 @@ main {
 }
 
 /* El atributo hidden necesita esto porque display:flex lo anula */
-.modal[hidden] {
+.modal[hidden], .carrito[hidden] { 
     display: none;
 }
 
@@ -354,7 +354,7 @@ main {
     margin-bottom: 19.2px;
 }
 
-.modal-cerrar {
+.modal-cerrar, .carrito-borrar {
     position: absolute;
     top: 9.6px;
     right: 16px;
@@ -365,7 +365,42 @@ main {
     cursor: pointer;
 }
 
-.modal-cerrar:hover {
+
+.carrito {
+    padding: 10px;
+    padding-top: 5%;
+}
+.carrito-borrar{
+    font-size: 20px;
+    display: grid;
+}
+.PreTicket {
+    background-color: #806e51;
+    font-weight: bolder;
+    height: 15%;
+}
+.Object {
+    height: 100%;
+    display: flex;
+}
+
+.info {
+    flex: 1;
+    display: grid;
+    grid-template-columns: auto;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.imgPreTicket {
+    width: 30%;
+    height: 100%;
+}
+
+
+
+.modal-cerrar:hover, .carrito-borrar:hover {
     color: #f97316;
 }
 
@@ -516,6 +551,21 @@ main {
 .evento-resumen {
     font-size: 15.2px;
     line-height: 1.5;
+}
+
+.carrito {
+    position: fixed;
+    background-color: #334155;
+    border: 2px solid #64748b;
+    box-shadow: 6px 6px 0 #0f172a;
+    margin-top: 10px;
+    height: 75%;
+    align-items: center;
+    justify-content: center;
+    right: 0;
+    margin-right: 10px;
+    width: 25%;
+    z-index: 9;
 }
 
 /* Móvil */

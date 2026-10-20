@@ -44,7 +44,11 @@ function verPassword(idInput, boton) {
 }
 
 // ---------- Evento ----------
-// "cartel" es el div del evento que se ha pulsado
+
+function comprarEntrada(cartel) {
+    
+}
+
 function abrirEvento(cartel) {
     // Los datos están en los atributos data-* del cartel
     document.getElementById("evento-img").src = cartel.getAttribute("data-imagen");
@@ -58,8 +62,7 @@ function cerrarEvento() {
     document.getElementById("modal-evento").hidden = true;
 }
 
-// TODO: botón "Comprar entradas" -> pantalla de sesiones y butacas
-
+// Funcion para cambiar el header de completo a desplazado
 function comprobarScroll() {
     let header = document.querySelector("header");
 
@@ -69,7 +72,6 @@ function comprobarScroll() {
         header.classList.remove("scrolled");
     }
 }
-
 window.addEventListener("scroll", comprobarScroll);
 comprobarScroll();
 
@@ -83,7 +85,19 @@ function cerrarAdmin() {
 function abrirAdmin() {
     document.getElementById("modal-admin").hidden = false;
 }
+// Carrito
+function cerrarCarrito() {
+    const cerrar = confirm("Quieres borrar todo tu carrito?");
+    if (cerrar) {
+        document.querySelector(".carrito").hidden = true;
 
+    }   
+}
+
+
+function abrirCarrito() {
+    document.querySelector(".carrito").hidden = false;
+}
 /*
 
 ███████╗██████╗ ██████╗ ██╗███╗   ██╗ ██████╗       ██████╗  ██████╗  ██████╗ ████████╗   
@@ -92,7 +106,7 @@ function abrirAdmin() {
 ╚════██║██╔═══╝ ██╔══██╗██║██║╚██╗██║██║   ██║╚════╝██╔══██╗██║   ██║██║   ██║   ██║
 ███████║██║     ██║  ██║██║██║ ╚████║╚██████╔╝      ██████╔╝╚██████╔╝╚██████╔╝   ██║  
 ╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝       ╚═════╝  ╚═════╝  ╚═════╝    ╚═╝  
-                                                                              
+
 ██╗███╗   ██╗████████╗███████╗ ██████╗ ██████╗  █████╗ ████████╗██╗ ██████╗ ███╗   ██╗
 ██║████╗  ██║╚══██╔══╝██╔════╝██╔════╝ ██╔══██╗██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║ 
 ██║██╔██╗ ██║   ██║   █████╗  ██║  ███╗██████╔╝███████║   ██║   ██║██║   ██║██╔██╗ ██║
@@ -115,40 +129,40 @@ async function GetCategoria(id) {
 
 // Esta funcion obtiene todas las peliculas y las muestra en la cartelera
 async function MostrarEventos() {
-  const div = document.getElementById("cartelera");
+    const div = document.getElementById("cartelera");
 
-  div.textContent = "";
+    div.textContent = "";
 
-  const respuesta = await fetch("http://localhost:8080/api/Peliculas");
-  if (!respuesta.ok) {
-    throw new Error("Error " + respuesta.status);
-  }
-  const eventos = await respuesta.json();
-  console.log(eventos);
+    const respuesta = await fetch("http://localhost:8080/api/Peliculas");
+    if (!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+    }
+    const eventos = await respuesta.json();
+    console.log(eventos);
 
-  for (const element of eventos) {
-    const pelicula = document.createElement("div");
-    pelicula.className = "cartel";
+    for (const element of eventos) {
+        const pelicula = document.createElement("div");
+        pelicula.className = "cartel";
 
-    const portada = document.createElement("img");
-    portada.src = element.imagen;
-    pelicula.append(portada);
+        const portada = document.createElement("img");
+        portada.src = element.imagen;
+        pelicula.append(portada);
 
-    const nombre = document.createElement("p");
-    nombre.textContent = element.nombre;
-    pelicula.append(nombre);
+        const nombre = document.createElement("p");
+        nombre.textContent = element.nombre;
+        pelicula.append(nombre);
 
-    const cat = await GetCategoria(element.id);
+        const cat = await GetCategoria(element.id);
 
-    pelicula.setAttribute("data-imagen", element.imagen);
-    pelicula.setAttribute("data-nombre", element.nombre);
-    pelicula.setAttribute("data-categoria", cat);
-    pelicula.setAttribute("data-resumen", element.resumen);
+        pelicula.setAttribute("data-imagen", element.imagen);
+        pelicula.setAttribute("data-nombre", element.nombre);
+        pelicula.setAttribute("data-categoria", cat);
+        pelicula.setAttribute("data-resumen", element.resumen);
 
-    div.appendChild(pelicula);
+        div.appendChild(pelicula);
 
-    pelicula.addEventListener("click", () => abrirEvento(pelicula));
-  }
+        pelicula.addEventListener("click", () => abrirEvento(pelicula));
+    }
 }
 
 // Funcion para mostrar todos los tipos de salas
