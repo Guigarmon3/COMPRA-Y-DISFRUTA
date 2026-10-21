@@ -41,7 +41,7 @@ public class ConsultaController {
         return cs.ObtenerCat(id);
     }
 
-    @GetMapping("/api/tipos_salas/")
+    @GetMapping("/api/tipos_salas")
     public List<Map<String, Object>> TiposSalas(){
         return cs.TiposDeSala();
     }
@@ -63,4 +63,6 @@ public class ConsultaController {
     @GetMapping("/api/contuser/{nombre}/{email}")
     public int countUser(@PathVariable String nombre, @PathVariable String email){return cs.contUser(nombre, email);}
 
+    @GetMapping("/api/getImage/{nombre}")
+    public String getImage(@PathVariable String nombre) {return cs.getImagen(nombre);}
 }

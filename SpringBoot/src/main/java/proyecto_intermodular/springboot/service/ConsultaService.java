@@ -39,4 +39,5 @@ public class ConsultaService {
     public String getNombre(String email){return consulta.getName(email);}
     public ROL getRol(String email){return consulta.getRol(email);}
     public int contUser(String nombre, String email){return consulta.contUser(nombre, email);}
+    public String getImagen(String nombre) {return consulta.getImage(nombre);}
 }

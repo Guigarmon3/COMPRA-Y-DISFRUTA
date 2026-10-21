@@ -70,4 +70,6 @@ public class ConsultaRepository {
             return 0;
         }
     }
+
+    public String getImage(String nombre) {return  comando.queryForObject("select comprarEntrada from pelicula where nombre = ?", String.class, nombre);}
 }

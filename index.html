@@ -103,7 +103,7 @@
                 <h2 id="evento-nombre"></h2>
                 <span class="evento-categoria" id="evento-categoria"></span>
                 <p class="evento-resumen" id="evento-resumen"></p>
-                <button class="btn-comprar" id="btn-comprar" onclick="comprarEntrada()">Comprar entradas</button>
+                <button class="btn-comprar" id="btn-comprar" onclick="comprarEntrada(document.getElementById('evento-nombre').textContent)">Comprar entradas</button>
             </div>
         </div>
     </div>
@@ -201,15 +201,30 @@
     <!-- Carrito -->
     <div class="carrito">
         <button class="carrito-borrar" onclick="cerrarCarrito()" aria-label="Cerrar">🗑</button>
+
         <div class="PreTicket">
             <div class="Object">
                 <img src="https://images.pexels.com/photos/371159/pexels-photo-371159.jpeg?cs=tinysrgb&dpr=1&w=500" class="imgPreTicket">
                 <div class="info">
                     <p class="PreTicketNombre">La Ultima Gota</p>
-                    <p class="PreaTicketSala">Cine 4D</p>
+                    <p class="PreTicketSala">Cine 4D</p>
+                </div>
+                <select name="tipo_sala" class="tipoTicket">
+                </select>
+                <p class="cantidadTicket">199</p>
+                <div class="PreTicketInputs">
+                    <button class="Mas">+</button>
+                    <button class="Menos">-</button>
                 </div>
             </div>
         </div>
+
+
+        <div class="precioTotalCarrito">
+            <p>Total: 40€</p>
+            <button class="comprarCarrito">REALIZAR PAGO</button>
+        </div>
+        
     </div>
 
 

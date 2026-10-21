@@ -45,8 +45,21 @@ function verPassword(idInput, boton) {
 
 // ---------- Evento ----------
 
+
+// funcion para obtener la imagen de un evento
+async function getImagen(nombre) {
+    const url = "http://localhost:8080/api/getImage/"+nombre;
+    const respuesta = await fetch(url);
+}
+
+
+
+// funcion para añadir la entrada
 function comprarEntrada(cartel) {
-    
+    console.log(cartel);
+    const PreTicket = document.createElement("div");
+    const Object = document.createElement("div");
+    // const imagen = 
 }
 
 function abrirEvento(cartel) {
@@ -167,7 +180,7 @@ async function MostrarEventos() {
 
 // Funcion para mostrar todos los tipos de salas
 async function MostrarSalas() {
-    const resepuesta = await fetch("http://localhost:8080/api/tipos_salas/");
+    const resepuesta = await fetch("http://localhost:8080/api/tipos_salas");
     if (!resepuesta.ok) {
         throw new Error("Error " + resepuesta.status);
     }
@@ -247,7 +260,7 @@ async function iniciarSesion() {
         cerrarLogin();
     }
 }
-
+name
 // Funcion para obtener el nombre del usuario en el que inicias sesión
 async function getNombre(email) {
     const respuesta = await fetch("http://localhost:8080/api/getnombre/"+email);
@@ -294,4 +307,34 @@ async function verificarUsuario(nombre, email) {
 
     // Aceptamos tanto "1" como 1 por seguridad
     return existe === "1" || existe === 1;
+}
+
+
+// Funcion para crear cada ticket de compra
+async function creteTicket(nombre) {
+    
+}
+
+// Funcion para mostrar todas las salsas en el ticket de compra
+async function optionTipoSala() {
+    const respuesta = await fetch("http://localhost:8080/api/tipos_salas")
+    if (!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+    }
+
+    const desplegables = document.querySelectorAll(".tipoTicket");
+    try {
+        const salas = await respuesta.json();
+        desplegables.forEach(desplegable => {
+            salas.forEach(sala => {
+                console.log(sala.nombre)
+                const opcion = document.createElement("option");
+                opcion.value = sala.nombre;
+                opcion.textContent = sala.nombre;
+                desplegable.appendChild(opcion)
+            });
+        });
+    } catch (error) {
+        console.log(error)
+    }
 }

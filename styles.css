@@ -366,38 +366,150 @@ main {
 }
 
 
+
 .carrito {
+    position: fixed;
+    background-color: #334155;
+    border: 2px solid #64748b;
+    box-shadow: 6px 6px 0 #0f172a;
+    margin-top: 10px;
+    height: 75%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: none;
+    right: 0;
+    margin-right: 10px;
+    width: max-content;
+    z-index: 9;
     padding: 10px;
-    padding-top: 5%;
+    padding-top: 3%;
+    overflow-y:auto;
 }
-.carrito-borrar{
-    font-size: 20px;
+
+.carrito-borrar {
+    font-size: 30px;
     display: grid;
+    position: absolute;
+    top: 9.6px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
 }
+
+.carrito-borrar:hover {
+    color: #f97316;
+}
+
 .PreTicket {
-    background-color: #806e51;
+    background-color: #1e293b;
+    border: 1px solid #475569;
+    border-left: 4px solid #fbbf24; 
     font-weight: bolder;
     height: 15%;
+    width: 100%;
+    margin-top: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
+
+.PreTicket:hover {
+    border-color: #f97316;
+    box-shadow: 4px 4px 0 #0f172a;
+}
+
 .Object {
     height: 100%;
     display: flex;
-}
-
-.info {
-    flex: 1;
-    display: grid;
-    grid-template-columns: auto;
     align-items: center;
-    justify-content: center;
-    text-align: center;
 }
 
 .imgPreTicket {
     width: 30%;
     height: 100%;
+    object-fit: cover;
+    border-right: 1px solid #475569;
+    display: block;
 }
 
+.info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+    padding-left: 10px;
+    gap: 2px;
+}
+
+.PreTicketNombre {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.PreTicketSala {
+    color: #fbbf24;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.Object * {
+    /* border:  1px solid red; */
+}
+
+.cantidadTicket {
+    flex: 0.4;
+    font-weight: bolder;
+    text-align: center;
+    font-size: xx-large;
+}
+
+.PreTicketInputs {
+    flex: 0.2;
+    display: grid;
+    padding-right: 20px;
+}
+.PreTicketInputs button {
+    background-color: transparent;
+    border: none;
+    align-self: center;
+    justify-self: center;
+    font-weight: bolder;
+    font-size: x-large;
+    color: #fbbf24;
+    width: 35px;
+    height: 35px;
+}
+.PreTicketInputs button:hover {
+    cursor: pointer;
+}
+
+.precioTotalCarrito {
+    position: absolute;
+    border-top: 2px solid #65768d;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+
+}
+
+.comprarCarrito {
+    width: max-content;
+    padding: 2%;
+    font-weight: bolder;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+.tipoTicket {
+    width: min-content;
+}
 
 
 .modal-cerrar:hover, .carrito-borrar:hover {
@@ -553,20 +665,7 @@ main {
     line-height: 1.5;
 }
 
-.carrito {
-    position: fixed;
-    background-color: #334155;
-    border: 2px solid #64748b;
-    box-shadow: 6px 6px 0 #0f172a;
-    margin-top: 10px;
-    height: 75%;
-    align-items: center;
-    justify-content: center;
-    right: 0;
-    margin-right: 10px;
-    width: 25%;
-    z-index: 9;
-}
+
 
 /* Móvil */
 
