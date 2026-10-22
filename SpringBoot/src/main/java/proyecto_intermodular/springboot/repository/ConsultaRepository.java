@@ -71,5 +71,9 @@ public class ConsultaRepository {
         }
     }
 
-    public String getImage(String nombre) {return  comando.queryForObject("select comprarEntrada from pelicula where nombre = ?", String.class, nombre);}
+    public String getImage(String nombre) {return  comando.queryForObject("select imagen from pelicula where nombre = ?", String.class, nombre);}
+
+    public int getIdPelia(String nombre) {return comando.queryForObject("select id from pelicula where nombre = ?", int.class, nombre);}
+
+    public List<Map<String, Object>> getSesiones(int id) {return comando.queryForList("select ts.nombre from pelicula p inner join sesion s  on s.pelicula_id = p.id inner join sala sa  on s.sala_id = sa.id inner join tipo_sala ts on sa.tipo_sala_id = ts.id where s.pelicula_id = ?;", id);}
 }

@@ -83,6 +83,10 @@
                         <summary>¿Como puedo hacer una devolución?</summary>
                         <p>Para hacer una devolucion, tendrás que llamar a el numero de telefono 900 000 000 y solicitarla ante un operador</p>
                     </details>
+                    <details>
+                        <summary>¿Cuantas butacas hay en cada sala?</summary>
+                        <p>Hay un total de 12 filas con 14 butacas en cada una, lo que viene a ser unas 170 por sala</p>
+                    </details>
                 </div>
             </div>
         </section>
@@ -103,7 +107,7 @@
                 <h2 id="evento-nombre"></h2>
                 <span class="evento-categoria" id="evento-categoria"></span>
                 <p class="evento-resumen" id="evento-resumen"></p>
-                <button class="btn-comprar" id="btn-comprar" onclick="comprarEntrada(document.getElementById('evento-nombre').textContent)">Comprar entradas</button>
+                <button class="btn-comprar" id="btn-comprar" onclick="creteTicket(document.getElementById('evento-nombre').textContent)">Comprar entradas</button>
             </div>
         </div>
     </div>
@@ -199,29 +203,10 @@
     </div>
 
     <!-- Carrito -->
-    <div class="carrito">
+    <div class="carrito" hidden>
         <button class="carrito-borrar" onclick="cerrarCarrito()" aria-label="Cerrar">🗑</button>
-
-        <div class="PreTicket">
-            <div class="Object">
-                <img src="https://images.pexels.com/photos/371159/pexels-photo-371159.jpeg?cs=tinysrgb&dpr=1&w=500" class="imgPreTicket">
-                <div class="info">
-                    <p class="PreTicketNombre">La Ultima Gota</p>
-                    <p class="PreTicketSala">Cine 4D</p>
-                </div>
-                <select name="tipo_sala" class="tipoTicket">
-                </select>
-                <p class="cantidadTicket">199</p>
-                <div class="PreTicketInputs">
-                    <button class="Mas">+</button>
-                    <button class="Menos">-</button>
-                </div>
-            </div>
-        </div>
-
-
         <div class="precioTotalCarrito">
-            <p>Total: 40€</p>
+            <p>Total: 0€</p>
             <button class="comprarCarrito">REALIZAR PAGO</button>
         </div>
         

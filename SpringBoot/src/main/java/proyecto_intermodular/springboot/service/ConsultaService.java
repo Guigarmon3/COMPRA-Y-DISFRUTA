@@ -40,4 +40,6 @@ public class ConsultaService {
     public ROL getRol(String email){return consulta.getRol(email);}
     public int contUser(String nombre, String email){return consulta.contUser(nombre, email);}
     public String getImagen(String nombre) {return consulta.getImage(nombre);}
+    public int getIdPeli(String nombre) {return consulta.getIdPelia(nombre);}
+    public List<Map<String, Object>> getSesiones(int id) {return consulta.getSesiones(id);}
 }

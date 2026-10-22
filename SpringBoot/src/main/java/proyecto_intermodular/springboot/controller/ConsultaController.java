@@ -65,4 +65,10 @@ public class ConsultaController {
 
     @GetMapping("/api/getImage/{nombre}")
     public String getImage(@PathVariable String nombre) {return cs.getImagen(nombre);}
+
+    @GetMapping("/api/getidpeli/{nombre}")
+    public int getIdPeli(@PathVariable String nombre) {return cs.getIdPeli(nombre);}
+
+    @GetMapping("/api/getsesiones/{id}")
+    public List<Map<String, Object>> getSesiones(@PathVariable int id) {return cs.getSesiones(id);}
 }

@@ -46,21 +46,6 @@ function verPassword(idInput, boton) {
 // ---------- Evento ----------
 
 
-// funcion para obtener la imagen de un evento
-async function getImagen(nombre) {
-    const url = "http://localhost:8080/api/getImage/"+nombre;
-    const respuesta = await fetch(url);
-}
-
-
-
-// funcion para añadir la entrada
-function comprarEntrada(cartel) {
-    console.log(cartel);
-    const PreTicket = document.createElement("div");
-    const Object = document.createElement("div");
-    // const imagen = 
-}
 
 function abrirEvento(cartel) {
     // Los datos están en los atributos data-* del cartel
@@ -103,7 +88,7 @@ function cerrarCarrito() {
     const cerrar = confirm("Quieres borrar todo tu carrito?");
     if (cerrar) {
         document.querySelector(".carrito").hidden = true;
-
+        borrarCarro()
     }   
 }
 
@@ -310,31 +295,127 @@ async function verificarUsuario(nombre, email) {
 }
 
 
-// Funcion para crear cada ticket de compra
-async function creteTicket(nombre) {
-    
-}
 
-// Funcion para mostrar todas las salsas en el ticket de compra
-async function optionTipoSala() {
-    const respuesta = await fetch("http://localhost:8080/api/tipos_salas")
+async function getImagen(nombre) {
+    const url = `http://localhost:8080/api/getImage/${nombre}`;
+    const respuesta = await fetch(url);
     if (!respuesta.ok) {
         throw new Error("Error " + respuesta.status);
     }
-
-    const desplegables = document.querySelectorAll(".tipoTicket");
     try {
-        const salas = await respuesta.json();
-        desplegables.forEach(desplegable => {
-            salas.forEach(sala => {
-                console.log(sala.nombre)
-                const opcion = document.createElement("option");
-                opcion.value = sala.nombre;
-                opcion.textContent = sala.nombre;
-                desplegable.appendChild(opcion)
+        const imagen = await respuesta.text();
+        return imagen;
+    } catch (error) {
+        console.log("error");
+    }
+}
+
+// Funcion para crear cada ticket de compra
+async function creteTicket(nombre) {
+    if (document.querySelector(".carrito").hidden === true) {
+        document.querySelector(".carrito").hidden = false
+    } 
+
+    const PreTicket = document.createElement("div");
+    PreTicket.className = "PreTicket";
+        const Objeto = document.createElement("div");
+        Objeto.className = "Object";
+            const img = document.createElement("img");
+            img.src = await getImagen(nombre);
+            img.className="imgPreTicket";
+            const info = document.createElement("div");
+            info.className="info";
+                const PreTicketNombre = document.createElement("p");
+                PreTicketNombre.className = "PreTicketNombre";
+                PreTicketNombre.textContent=nombre;
+                const PreTicketSala = document.createElement("p");
+                PreTicketSala.className = "PreTicketSala";
+            info.append(PreTicketNombre, PreTicketSala);
+            const select = document.createElement("select");
+            select.className="tipoTicket";
+
+            const id = await getIdPeli(nombre);
+            const arraySesiones = await getSesionesPeli(id);
+
+            arraySesiones.forEach(sesion => {
+                    const opcion = document.createElement("option");
+                    opcion.value = sesion.nombre;
+                    opcion.textContent = sesion.nombre;
+                    select.appendChild(opcion);
             });
-        });
+            
+            select.addEventListener("change", function(){
+                var selection = select.value;
+                console.log("Option selected: " + select.value);
+                PreTicketSala.textContent = select.value
+            });
+            PreTicketSala.textContent = select.value
+            const cantidadTicket = document.createElement("p");
+            cantidadTicket.className="cantidadTicket";
+            let numero = 1;
+            cantidadTicket.textContent=numero;
+            const PreTicketInputs = document.createElement("div");
+            PreTicketInputs.className = "PreTicketInputs";
+            const Mas = document.createElement("button");
+            Mas.className="Mas";
+            Mas.textContent="+";
+            Mas.addEventListener("click", () => {
+                if (numero < 170) {
+                    numero++;
+                    cantidadTicket.textContent = numero;
+                } else {
+                    numero = 170
+                    cantidadTicket.textContent = numero;
+                    pushNotifyError("Limite alcanzado", "No puedes reservar mas butacas que las que hay en la sala")
+                }
+            });
+            const Menos = document.createElement("button");
+            Menos.className="Menos";
+            Menos.textContent="-"
+
+
+            Menos.addEventListener("click", () => {
+                if (numero-1 == 0) {
+                    PreTicket.remove();
+                }
+                if (numero > 0) {
+                    numero--;
+                    cantidadTicket.textContent = numero;
+                } 
+            });
+
+            PreTicketInputs.append(Mas, Menos);
+        Objeto.append(img, info, select, cantidadTicket, PreTicketInputs)
+    PreTicket.appendChild(Objeto)
+    const carrito = document.querySelector(".carrito");
+    carrito.appendChild(PreTicket);
+}
+
+
+async function getIdPeli(nombre) {
+    const respuesta = await fetch("http://localhost:8080/api/getidpeli/"+nombre);
+    if (!respuesta.ok) {
+        console.log(new Error("Error: " + respuesta.status));
+    }
+    try {
+        return await respuesta.text();
     } catch (error) {
         console.log(error)
     }
+}
+
+async function getSesionesPeli(id) {
+    const respuesta = await fetch("http://localhost:8080/api/getsesiones/"+id);
+    if (!respuesta.ok) {
+        return console.log("Error: " + respuesta.status)
+    }
+    try {
+        return await respuesta.json()
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+function borrarCarro() {
+   document.querySelectorAll(".PreTicket").forEach(e => e.remove());
 }
