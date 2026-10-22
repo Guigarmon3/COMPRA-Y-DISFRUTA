@@ -229,23 +229,7 @@ async function crearUsuario() {
             pushNotifyError("Error", "No se pudo crear el usuario");
         }
 }
-// Funcion para iniciar sesión
-async function iniciarSesion() {
-    const email = document.getElementById("login-email").value;
-    const passwd = document.getElementById("login-passwd").value;
-    const respuesta = await fetch("http://localhost:8080/api/login/"+email+"/"+passwd)
-    if (!respuesta.ok) {
-        throw new Error("Error " + respuesta.status);
-        pushNotifyError("Error", "No se pudo iniciar sesión");
-    } else {
-        alert("Correcto " + email+": " + passwd);
-        nombre.style.display = "block";
-        nombre.textContent = await getNombre(email)+"";
-        button_loggin.style.display = "none";
-        cerrarLogin();
-    }
-}
-name
+
 // Funcion para obtener el nombre del usuario en el que inicias sesión
 async function getNombre(email) {
     const respuesta = await fetch("http://localhost:8080/api/getnombre/"+email);
@@ -261,12 +245,12 @@ async function getNombre(email) {
 
 // Funcion para obtener el rol de un usuario
 async function getRol(email) {
-        const respuesta = await fetch("http://localhost:8080/api/getrol/"+email);
+    const respuesta = await fetch("http://localhost:8080/api/getrol/"+email);
     if (!respuesta.ok) {
         throw new Error("Error " + respuesta.status);
     } else {
         try {
-        const nombre = await respuesta.text();
+        const nombre = await respuesta.json();
         console.log(nombre);
         return nombre;
         } catch (error) {
@@ -293,6 +277,31 @@ async function verificarUsuario(nombre, email) {
     // Aceptamos tanto "1" como 1 por seguridad
     return existe === "1" || existe === 1;
 }
+const sesion = false;
+// Funcion para iniciar sesión
+async function iniciarSesion() {
+    const email = document.getElementById("login-email").value;
+    const passwd = document.getElementById("login-passwd").value;
+    const respuesta = await fetch("http://localhost:8080/api/login/"+email+"/"+passwd)
+    if (!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+        pushNotifyError("Error", "No se pudo iniciar sesión");
+    } else {
+        alert("Correcto " + email+": " + passwd);
+        const rol = await getRol(email)
+        if (rol === "ADMIN") {
+            console.log(rol);
+            document.getElementById("admin-pannel").removeAttribute("hidden");
+        } else {
+            document.getElementById("modal-admin").remove();
+        }
+        nombre.style.display = "block";
+        nombre.textContent = await getNombre(email)+"";
+        button_loggin.style.display = "none";
+        cerrarLogin();
+    }
+}
+
 
 
 

@@ -53,9 +53,9 @@ main {
     left: 0;
     width: 100%;
     z-index: 10;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
     padding: 12.8px 48px;
     background-color: #1e293b;
     border-bottom: 3px solid #f97316;
@@ -117,6 +117,11 @@ main {
     box-shadow: 4px 4px 0 #f97316;
 }
 
+.user-actions {
+    display: flex;
+    gap: 12px;
+}
+
 #user-nombre {
     background: linear-gradient(135deg, #1e40af, #0f2b48);
     color: #ffffff;
@@ -149,6 +154,20 @@ main {
     transform: translate(-2px, -2px);
     box-shadow: 4px 4px 0 #f97316;
 }
+
+
+.logo-container {
+    justify-self: start;
+}
+
+.nav-menu {
+    justify-self: center;
+}
+
+.user-actions {
+    justify-self: end;
+}
+
 
 /* Títulos de sección */
 
@@ -318,7 +337,7 @@ main {
 }
 
 /* El atributo hidden necesita esto porque display:flex lo anula */
-.modal[hidden], .carrito[hidden] { 
+.modal[hidden], .carrito[hidden], #admin-pannel[hidden] { 
     display: none;
 }
 
