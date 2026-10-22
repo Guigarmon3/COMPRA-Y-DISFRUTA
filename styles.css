@@ -187,10 +187,11 @@ main {
 /* Eventos */
 
 #cartelera {
-    display: flex;
-    flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
     gap: 32px;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
 }
 
 .cartel {
@@ -399,7 +400,7 @@ main {
     justify-content: none;
     right: 0;
     margin-right: 10px;
-    width: 25%;
+    width: 20%;
     z-index: 9;
     padding: 10px;
     padding-top: 3%;
@@ -427,8 +428,8 @@ main {
     border: 1px solid #475569;
     border-left: 4px solid #fbbf24; 
     font-weight: bolder;
-    height: 23%;
     width: 95%;
+    height: 15%;
     margin-top: 10px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -445,7 +446,7 @@ main {
 }
 
 .imgPreTicket {
-    width: 30%;
+    width: auto;
     height: 100%;
     object-fit: cover;
     border-right: 1px solid #475569;

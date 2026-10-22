@@ -7,7 +7,7 @@ function PushNotify(titulo, texto) {
         speed: 300,
         autoclose: true,
         autotimeout: 3000,
-        position: "right top"
+        position: "right bottom"
     });
 }
 
@@ -20,6 +20,6 @@ function pushNotifyError(titulo, texto) {
         speed: 300,
         autoclose: true,
         autotimeout: 3000,
-        position: "right top"
+        position: "right bottom"
     });
 }

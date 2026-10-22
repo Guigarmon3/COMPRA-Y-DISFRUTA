@@ -63,6 +63,8 @@ public class ConsultaRepository {
 
     public ROL getRol(String email) {return comando.queryForObject("select rol from usuario where email = ?", ROL.class, email);}
 
+    public ROL getRolAdmin(String nombre) {return comando.queryForObject("select rol from usuario where nombre = ?", ROL.class, nombre);}
+
     public int contUser(String nombre, String email) {
         try {
             return comando.queryForObject("select count(*) from usuario where nombre = ? and email = ?", int.class, nombre, email);
@@ -76,4 +78,7 @@ public class ConsultaRepository {
     public int getIdPelia(String nombre) {return comando.queryForObject("select id from pelicula where nombre = ?", int.class, nombre);}
 
     public List<Map<String, Object>> getSesiones(int id) {return comando.queryForList("select ts.nombre from pelicula p inner join sesion s  on s.pelicula_id = p.id inner join sala sa  on s.sala_id = sa.id inner join tipo_sala ts on sa.tipo_sala_id = ts.id where s.pelicula_id = ?;", id);}
+
+    public boolean estaRegistrado(String nombre) {return comando.queryForObject("select nombre from ")}
+
 }

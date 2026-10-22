@@ -3,7 +3,9 @@ USE Compra_Y_Disfruta;
 INSERT INTO genero (id, nombre) VALUES
 (1, 'drama'),
 (2, 'animación'),
-(3, 'ciencia ficción');
+(3, 'ciencia ficción'),
+(4, 'terror'),
+(5, 'comedia');
 
 INSERT INTO tipo_sala (id, nombre, precio_aleatorio, precio_elegido, descripcion) VALUES
 (1,  'Cine',              6.00,  7.50, 'La sala de siempre: pantalla grande y butacas cómodas.'),
@@ -18,22 +20,33 @@ INSERT INTO tipo_sala (id, nombre, precio_aleatorio, precio_elegido, descripcion
 (10, 'Cine Dolby Atmos', 10.00, 12.00, 'Sonido tridimensional con altavoces sobre y alrededor del público.');
 
 INSERT INTO pelicula (id, nombre, genero_id, resumen, imagen) VALUES
-(1, 'Cars',      2, 'Un coche de carreras novato descubre que hay cosas más importantes que ganar.', 'https://picsum.photos/seed/cars/400/600'),
-(2, 'Inception', 3, 'Un ladrón que roba secretos a través de los sueños recibe una misión imposible.', 'https://picsum.photos/seed/inception/400/600');
+(1, 'Cars',                    2, 'Un coche de carreras novato descubre que hay cosas más importantes que ganar.', 'https://en.wikipedia.org/wiki/Special:FilePath/Cars_2006.jpg?width=400'),
+(2, 'Inception',               3, 'Un ladrón que roba secretos a través de los sueños recibe una misión imposible.', 'https://en.wikipedia.org/wiki/Special:FilePath/Inception_(2010)_theatrical_poster.jpg?width=400'),
+(3, 'La bola negra',           1, 'Tres historias en distintas épocas unidas por un mismo secreto y por el peso de la fe y el deseo.', 'imagenes/Carteleras/LaBolaNegra.jpg'),
+(4, 'Tiburón',                 4, 'Un tiburón blanco siembra el pánico en una playa y tres hombres salen a cazarlo en alta mar.', 'https://en.wikipedia.org/wiki/Special:FilePath/Jaws_movie_poster.jpg?width=400'),
+(5, 'El gran hotel Budapest',  5, 'Un conserje legendario y su joven aprendiz se ven envueltos en el robo de un cuadro famoso.', 'https://en.wikipedia.org/wiki/Special:FilePath/The_Grand_Budapest_Hotel.png?width=400');
 
 INSERT INTO sala (id, nombre, tipo_sala_id) VALUES
 (1, 'Sala 1', 8),
 (2, 'Sala 2', 9),
 (3, 'Sala 3', 6),
 (4, 'Sala 4', 5),
-(5, 'Sala 5', 10);
+(5, 'Sala 5', 10),
+(6, 'Sala 6', 1),
+(7, 'Sala 7', 3);
 
 INSERT INTO sesion (id, fecha_hora, pelicula_id, sala_id) VALUES
 (1, '2026-10-24 17:00:00', 1, 1),
 (2, '2026-10-24 18:30:00', 1, 2),
 (3, '2026-10-24 20:00:00', 1, 3),
 (4, '2026-10-24 19:00:00', 2, 4),
-(5, '2026-10-24 21:30:00', 2, 5);
+(5,  '2026-10-24 21:30:00', 2, 5),
+(6,  '2026-10-23 18:00:00', 3, 6),
+(7,  '2026-10-25 20:00:00', 3, 4),
+(8,  '2026-10-24 22:00:00', 4, 7),
+(9,  '2026-10-25 17:30:00', 4, 6),
+(10, '2026-10-24 16:30:00', 5, 6),
+(11, '2026-10-25 18:00:00', 5, 5);
 
 INSERT INTO butaca (fila, numero_butaca, sala_id)
 SELECT f.n, b.n, s.id
@@ -52,7 +65,3 @@ INSERT INTO usuario (id, nombre, email, passwd, rol) VALUES
 (8,  'Sofía',  'sofia@mail.com',  '1234',     'CLIENTE'),
 (9,  'Diego',  'diego@mail.com',  '1234',     'CLIENTE'),
 (10, 'Laura',  'laura@mail.com',  '1234',     'CLIENTE');
-
-INSERT INTO ticket (usuario_id, sesion_id, butaca_id, seleccion, precio_total) VALUES
-(2, 1, (SELECT id FROM butaca WHERE sala_id = 1 AND fila = 1 AND numero_butaca = 1), 'Elegida', 6.00),
-(3, 4, (SELECT id FROM butaca WHERE sala_id = 4 AND fila = 2 AND numero_butaca = 3), 'Aleatoria', 11.00);

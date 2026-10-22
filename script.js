@@ -80,8 +80,12 @@ MostrarEventos();
 function cerrarAdmin() {
     document.getElementById("modal-admin").hidden = true;
 }
-function abrirAdmin() {
-    document.getElementById("modal-admin").hidden = false;
+async function abrirAdmin() {
+    if (await getLogin() === true) {
+        if (await getRolLogin() === "ADMIN") {
+            document.getElementById("modal-admin").hidden = false;
+        }
+    }
 }
 // Carrito
 function cerrarCarrito() {
@@ -208,7 +212,6 @@ async function crearUsuario() {
         email: email,
         passwd: passwd
     };  
-
     try {
             const resepuesta = await fetch("http://localhost:8080/api/crearUsuario", {
                 method: "POST",
@@ -225,9 +228,9 @@ async function crearUsuario() {
             }
             console.log(resultado);
             
-        } catch (error) {
+    } catch (error) {
             pushNotifyError("Error", "No se pudo crear el usuario");
-        }
+    }
 }
 
 // Funcion para obtener el nombre del usuario en el que inicias sesión
@@ -244,7 +247,7 @@ async function getNombre(email) {
 }
 
 // Funcion para obtener el rol de un usuario
-async function getRol(email) {
+async function getRolEmail(email) {
     const respuesta = await fetch("http://localhost:8080/api/getrol/"+email);
     if (!respuesta.ok) {
         throw new Error("Error " + respuesta.status);
@@ -258,6 +261,47 @@ async function getRol(email) {
         }
     }   
 }
+
+async function getLogin() {
+    const nombre = document.getElementById("user-nombre").textContent
+    if (nombre !== "") {
+        const respuesta = await fetch("http://localhost:8080/api/getrol2/"+nombre);
+        if (!respuesta.ok) {
+            throw new Error("Error " + respuesta.status);
+        } else {
+            try {
+            const nombre = await respuesta.json();
+                return true;
+            } catch (error) {
+                console.log(error);
+            }
+        }   
+    } else {
+        pushNotifyError("Error", "No has iniciado sesion")
+        return false;
+    }
+}
+async function getRolLogin() {
+    const nombre = document.getElementById("user-nombre").textContent
+    if (nombre !== "") {
+        const respuesta = await fetch("http://localhost:8080/api/getrol2/"+nombre);
+        if (!respuesta.ok) {
+            throw new Error("Error " + respuesta.status);
+        } else {
+            try {
+                const rol = await respuesta.json();
+                console.log(rol);
+                return rol;
+            } catch (error) {
+                console.log(error);
+            }
+        }   
+    } else {
+        pushNotifyError("Error", "No has iniciado sesion")
+        return false;
+    }
+}
+
 
 // Funcion para verificar si el usuario ha sido creado
 async function verificarUsuario(nombre, email) {
@@ -277,8 +321,8 @@ async function verificarUsuario(nombre, email) {
     // Aceptamos tanto "1" como 1 por seguridad
     return existe === "1" || existe === 1;
 }
-const sesion = false;
 // Funcion para iniciar sesión
+let sesion = false;
 async function iniciarSesion() {
     const email = document.getElementById("login-email").value;
     const passwd = document.getElementById("login-passwd").value;
@@ -288,12 +332,13 @@ async function iniciarSesion() {
         pushNotifyError("Error", "No se pudo iniciar sesión");
     } else {
         alert("Correcto " + email+": " + passwd);
-        const rol = await getRol(email)
-        if (rol === "ADMIN") {
-            console.log(rol);
+        const rol = await getRolEmail(email)
+        if (rol == "ADMIN") {
             document.getElementById("admin-pannel").removeAttribute("hidden");
+            sesion = true;
         } else {
             document.getElementById("modal-admin").remove();
+            sesion = true;
         }
         nombre.style.display = "block";
         nombre.textContent = await getNombre(email)+"";
@@ -301,8 +346,6 @@ async function iniciarSesion() {
         cerrarLogin();
     }
 }
-
-
 
 
 async function getImagen(nombre) {
@@ -321,85 +364,89 @@ async function getImagen(nombre) {
 
 // Funcion para crear cada ticket de compra
 async function creteTicket(nombre) {
-    if (document.querySelector(".carrito").hidden === true) {
-        document.querySelector(".carrito").hidden = false
-    } 
+    if (sesion) {
+        if (document.querySelector(".carrito").hidden === true) {
+            document.querySelector(".carrito").hidden = false
+        } 
 
-    const PreTicket = document.createElement("div");
-    PreTicket.className = "PreTicket";
-        const Objeto = document.createElement("div");
-        Objeto.className = "Object";
-            const img = document.createElement("img");
-            img.src = await getImagen(nombre);
-            img.className="imgPreTicket";
-            const info = document.createElement("div");
-            info.className="info";
-                const PreTicketNombre = document.createElement("p");
-                PreTicketNombre.className = "PreTicketNombre";
-                PreTicketNombre.textContent=nombre;
-                const PreTicketSala = document.createElement("p");
-                PreTicketSala.className = "PreTicketSala";
-            info.append(PreTicketNombre, PreTicketSala);
-            const select = document.createElement("select");
-            select.className="tipoTicket";
+        const PreTicket = document.createElement("div");
+        PreTicket.className = "PreTicket";
+            const Objeto = document.createElement("div");
+            Objeto.className = "Object";
+                const img = document.createElement("img");
+                img.src = await getImagen(nombre);
+                img.className="imgPreTicket";
+                const info = document.createElement("div");
+                info.className="info";
+                    const PreTicketNombre = document.createElement("p");
+                    PreTicketNombre.className = "PreTicketNombre";
+                    PreTicketNombre.textContent=nombre;
+                    const PreTicketSala = document.createElement("p");
+                    PreTicketSala.className = "PreTicketSala";
+                info.append(PreTicketNombre, PreTicketSala);
+                const select = document.createElement("select");
+                select.className="tipoTicket";
 
-            const id = await getIdPeli(nombre);
-            const arraySesiones = await getSesionesPeli(id);
+                const id = await getIdPeli(nombre);
+                const arraySesiones = await getSesionesPeli(id);
 
-            arraySesiones.forEach(sesion => {
-                    const opcion = document.createElement("option");
-                    opcion.value = sesion.nombre;
-                    opcion.textContent = sesion.nombre;
-                    select.appendChild(opcion);
-            });
-            
-            select.addEventListener("change", function(){
-                var selection = select.value;
-                console.log("Option selected: " + select.value);
+                arraySesiones.forEach(sesion => {
+                        const opcion = document.createElement("option");
+                        opcion.value = sesion.nombre;
+                        opcion.textContent = sesion.nombre;
+                        select.appendChild(opcion);
+                });
+                
+                select.addEventListener("change", function(){
+                    var selection = select.value;
+                    console.log("Option selected: " + select.value);
+                    PreTicketSala.textContent = select.value
+                });
                 PreTicketSala.textContent = select.value
-            });
-            PreTicketSala.textContent = select.value
-            const cantidadTicket = document.createElement("p");
-            cantidadTicket.className="cantidadTicket";
-            let numero = 1;
-            cantidadTicket.textContent=numero;
-            const PreTicketInputs = document.createElement("div");
-            PreTicketInputs.className = "PreTicketInputs";
-            const Mas = document.createElement("button");
-            Mas.className="Mas";
-            Mas.textContent="+";
-            Mas.addEventListener("click", () => {
-                if (numero < 170) {
-                    numero++;
-                    cantidadTicket.textContent = numero;
-                } else {
-                    numero = 170
-                    cantidadTicket.textContent = numero;
-                    pushNotifyError("Limite alcanzado", "No puedes reservar mas butacas que las que hay en la sala")
-                }
-            });
-            const Menos = document.createElement("button");
-            Menos.className="Menos";
-            Menos.textContent="-"
+                const cantidadTicket = document.createElement("p");
+                cantidadTicket.className="cantidadTicket";
+                let numero = 1;
+                cantidadTicket.textContent=numero;
+                const PreTicketInputs = document.createElement("div");
+                PreTicketInputs.className = "PreTicketInputs";
+                const Mas = document.createElement("button");
+                Mas.className="Mas";
+                Mas.textContent="+";
+                Mas.addEventListener("click", () => {
+                    if (numero < 170) {
+                        numero++;
+                        cantidadTicket.textContent = numero;
+                    } else {
+                        numero = 170
+                        cantidadTicket.textContent = numero;
+                        pushNotifyError("Limite alcanzado", "No puedes reservar mas butacas que las que hay en la sala")
+                    }
+                });
+                const Menos = document.createElement("button");
+                Menos.className="Menos";
+                Menos.textContent="-"
 
 
-            Menos.addEventListener("click", () => {
-                if (numero-1 == 0) {
-                    PreTicket.remove();
-                }
-                if (numero > 0) {
-                    numero--;
-                    cantidadTicket.textContent = numero;
-                } 
-            });
+                Menos.addEventListener("click", () => {
+                    if (numero-1 == 0) {
+                        PreTicket.remove();
+                    }
+                    if (numero > 0) {
+                        numero--;
+                        cantidadTicket.textContent = numero;
+                    } 
+                });
 
-            PreTicketInputs.append(Mas, Menos);
-        Objeto.append(img, info, select, cantidadTicket, PreTicketInputs)
-    PreTicket.appendChild(Objeto)
-    const carrito = document.querySelector(".carrito");
-    carrito.appendChild(PreTicket);
+                PreTicketInputs.append(Mas, Menos);
+            Objeto.append(img, info, select, cantidadTicket, PreTicketInputs)
+        PreTicket.appendChild(Objeto)
+        const carrito = document.querySelector(".carrito");
+        carrito.appendChild(PreTicket);
+    } else {
+        pushNotifyError("Error", "No has iniciado sesión");
+    }
+
 }
-
 
 async function getIdPeli(nombre) {
     const respuesta = await fetch("http://localhost:8080/api/getidpeli/"+nombre);

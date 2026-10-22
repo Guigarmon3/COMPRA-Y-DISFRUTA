@@ -1,5 +1,6 @@
 package proyecto_intermodular.springboot.service;
 
+import org.hibernate.boot.model.relational.NamedAuxiliaryDatabaseObject;
 import org.springframework.stereotype.Service;
 import proyecto_intermodular.springboot.Modal.ROL;
 import proyecto_intermodular.springboot.Modal.Usuario;
@@ -38,6 +39,7 @@ public class ConsultaService {
     public boolean login(String email, String passwd) {return consulta.login(email,passwd);}
     public String getNombre(String email){return consulta.getName(email);}
     public ROL getRol(String email){return consulta.getRol(email);}
+    public ROL getRolAdmin(String nombre){return consulta.getRolAdmin(nombre);}
     public int contUser(String nombre, String email){return consulta.contUser(nombre, email);}
     public String getImagen(String nombre) {return consulta.getImage(nombre);}
     public int getIdPeli(String nombre) {return consulta.getIdPelia(nombre);}
