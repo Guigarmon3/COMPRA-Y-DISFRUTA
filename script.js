@@ -140,7 +140,6 @@ async function MostrarEventos() {
         throw new Error("Error " + respuesta.status);
     }
     const eventos = await respuesta.json();
-    console.log(eventos);
 
     for (const element of eventos) {
         const pelicula = document.createElement("div");
@@ -226,7 +225,6 @@ async function crearUsuario() {
             } else {
                 pushNotifyError("Error", "Usuario no encontrado");
             }
-            console.log(resultado);
             
     } catch (error) {
             pushNotifyError("Error", "No se pudo crear el usuario");
@@ -254,7 +252,6 @@ async function getRolEmail(email) {
     } else {
         try {
         const nombre = await respuesta.json();
-        console.log(nombre);
         return nombre;
         } catch (error) {
             console.log(error);
@@ -290,7 +287,6 @@ async function getRolLogin() {
         } else {
             try {
                 const rol = await respuesta.json();
-                console.log(rol);
                 return rol;
             } catch (error) {
                 console.log(error);
@@ -315,8 +311,6 @@ async function verificarUsuario(nombre, email) {
     const textoBruto = await respuesta.text();
     // Limpiamos espacios o saltos de línea por si acaso
     const existe = textoBruto.trim(); 
-    
-    console.log("Lo que devuelve la API de verificación:", JSON.stringify(existe));
 
     // Aceptamos tanto "1" como 1 por seguridad
     return existe === "1" || existe === 1;
@@ -331,19 +325,22 @@ async function iniciarSesion() {
         throw new Error("Error " + respuesta.status);
         pushNotifyError("Error", "No se pudo iniciar sesión");
     } else {
-        alert("Correcto " + email+": " + passwd);
-        const rol = await getRolEmail(email)
-        if (rol == "ADMIN") {
-            document.getElementById("admin-pannel").removeAttribute("hidden");
-            sesion = true;
+        if(await respuesta.json()) {
+            const rol = await getRolEmail(email)
+            if (rol == "ADMIN") {
+                document.getElementById("admin-pannel").removeAttribute("hidden");
+                sesion = true;
+            } else {
+                document.getElementById("modal-admin").remove();
+                sesion = true;
+            }
+            nombre.style.display = "block";
+            nombre.textContent = await getNombre(email)+"";
+            button_loggin.style.display = "none";
+            cerrarLogin();
         } else {
-            document.getElementById("modal-admin").remove();
-            sesion = true;
+            pushNotifyError("Error", "No existe ningun usuario con esas credenciales")
         }
-        nombre.style.display = "block";
-        nombre.textContent = await getNombre(email)+"";
-        button_loggin.style.display = "none";
-        cerrarLogin();
     }
 }
 
@@ -399,7 +396,6 @@ async function creteTicket(nombre) {
                 
                 select.addEventListener("change", function(){
                     var selection = select.value;
-                    console.log("Option selected: " + select.value);
                     PreTicketSala.textContent = select.value
                 });
                 PreTicketSala.textContent = select.value

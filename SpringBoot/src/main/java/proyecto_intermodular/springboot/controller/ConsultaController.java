@@ -52,7 +52,9 @@ public class ConsultaController {
     }
 
     @GetMapping("/api/login/{email}/{passwd}")
-    public boolean login(@PathVariable String email, @PathVariable String passwd) {return cs.login(email,passwd);}
+    public boolean login(@PathVariable String email, @PathVariable String passwd) {
+        return cs.login(email, passwd);
+    }
 
     @GetMapping("/api/getnombre/{email}")
     public String getNombre(@PathVariable String email) {return cs.getNombre(email);}
