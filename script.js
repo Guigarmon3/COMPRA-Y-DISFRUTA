@@ -99,6 +99,10 @@ function cerrarCarrito() {
 
 function abrirCarrito() {
     document.querySelector(".carrito").hidden = false;
+    document.getElementById("eventos").style.paddingRight = "20%";
+    document.getElementById("salas").style.paddingRight = "20%";
+    document.getElementById("informacion").style.paddingRight = "20%";
+
 }
 /*
 
@@ -363,8 +367,9 @@ async function getImagen(nombre) {
 async function creteTicket(nombre) {
     if (sesion) {
         if (document.querySelector(".carrito").hidden === true) {
-            document.querySelector(".carrito").hidden = false
+            abrirCarrito();
         } 
+        cerrarEvento();
 
         const PreTicket = document.createElement("div");
         PreTicket.className = "PreTicket";

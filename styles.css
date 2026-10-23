@@ -47,7 +47,7 @@ main {
 /* Cabecera */
 
 .main-header {
-    transition: all 0.3s ease-in-out;
+    transition: width 0.3s ease-in-out; 
     position: fixed;
     top: 0;
     left: 0;
@@ -62,16 +62,13 @@ main {
 }
 
 .scrolled {
-    top: 6px;
-    left: 10%;
-    width: 80%;
-    align-self: center;
-    border-bottom: none;
-    margin-top: 6px;
-    padding: 5px !important;
-    background-color: rgb(30, 41, 59, 0.9);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    border-right: 3px solid #f97316;
+    border-left: 3px solid #f97316;
+} 
 
-}
 .scrolled .logo-container img{
     height: 42.5px;
 }
@@ -400,9 +397,10 @@ main {
     justify-content: none;
     right: 0;
     margin-right: 10px;
-    width: 20%;
+    width: max-content;
+    min-width: 20%;
     z-index: 9;
-    padding: 10px;
+    padding: 15px;
     padding-top: 3%;
     overflow-y:auto;
 }
@@ -428,7 +426,8 @@ main {
     border: 1px solid #475569;
     border-left: 4px solid #fbbf24; 
     font-weight: bolder;
-    width: 95%;
+    min-width: max-content;
+    width: max-content;
     height: 15%;
     margin-top: 10px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -446,7 +445,8 @@ main {
 }
 
 .imgPreTicket {
-    width: auto;
+    width: max-content;
+    padding: 1px;
     height: 100%;
     object-fit: cover;
     border-right: 1px solid #475569;
@@ -455,6 +455,7 @@ main {
 
 .info {
     flex: 1;
+    width: max-content;
     display: flex;
     flex-direction: column;
     justify-content: center;
