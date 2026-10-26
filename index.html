@@ -13,6 +13,9 @@
     <!-- Libreria de NOTIFICACIONES -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify/dist/simple-notify.css" />
     <script src="https://cdn.jsdelivr.net/npm/simple-notify/dist/simple-notify.min.js"></script>
+
+    <!-- Libreria de CONFIRMACIONES -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.all.min.js"></script>
     
 </head>
 <body>
@@ -85,7 +88,7 @@
                     </details>
                     <details>
                         <summary>¿Cuantas butacas hay en cada sala?</summary>
-                        <p>Hay un total de 12 filas con 14 butacas en cada una, lo que viene a ser unas 170 por sala</p>
+                        <p>Hay un total de 12 filas con 14 butacas en cada una, lo que viene a ser unas 168 por sala</p>
                     </details>
                 </div>
             </div>
@@ -204,12 +207,26 @@
 
     <!-- Carrito -->
     <div class="carrito" hidden>
-        <button class="carrito-borrar" onclick="cerrarCarrito()" aria-label="Cerrar">🗑</button>
+        <div class="carrito-cabecera">
+            <h2>Tu compra</h2>
+            <button class="carrito-borrar" onclick="cerrarCarrito()" aria-label="Cerrar">&times;</button>
+        </div>
+        <div class="carrito-lista"></div>
         <div class="precioTotalCarrito">
             <p>Total: 0€</p>
             <button class="comprarCarrito">REALIZAR PAGO</button>
         </div>
         
+    </div>
+
+    <!-- Ventana de butacas -->
+    <div class="modal" id="modal-butacas" hidden>
+        <div class="butacas">
+            <button class="modal-cerrar" onclick="cerrarButacas()" aria-label="Cerrar">&times;</button>
+            <h1>Selecciona tu Butaca</h1>
+            <div class="lista_butacas">
+            </div>
+        </div>
     </div>
 
 

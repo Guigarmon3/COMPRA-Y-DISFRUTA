@@ -25,12 +25,11 @@ async function MostrarEventosTest() {
 
 async function MostrarSalasTest() {
     console.clear();
-    const resepuesta = await fetch("http://localhost:8080/api/tipos_salas/");
+    const resepuesta = await fetch("http://localhost:8080/api/Salas");
     if (!resepuesta.ok) {
         throw new Error("Error " + resepuesta.status);
     }
     const salas = await resepuesta.json();
-    const listaSalas = document.querySelector(".lista-salas"); 
 
     for (const sala of salas) {
         console.log(sala);

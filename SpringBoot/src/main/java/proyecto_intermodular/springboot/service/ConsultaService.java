@@ -1,6 +1,5 @@
 package proyecto_intermodular.springboot.service;
 
-import org.hibernate.boot.model.relational.NamedAuxiliaryDatabaseObject;
 import org.springframework.stereotype.Service;
 import proyecto_intermodular.springboot.Modal.ROL;
 import proyecto_intermodular.springboot.Modal.Usuario;
@@ -23,17 +22,9 @@ public class ConsultaService {
         return consulta.ObtenerPeliculas();
     }
 
-    public List<Map<String, Object>> ObtenerTodosLosTickets() {return consulta.ObtenerTodosLosTickets();}
-
-    public List<Map<String, Object>> ObtenerUsuarios(){return consulta.ObtenerUsuarios();}
-
     public List<Map<String, Object>> ObtenerSalas(){return consulta.ObtenerSalas();}
 
-    public List<Map<String, Object>> Obtenerbutacas(){return consulta.Obtenerbutacas();}
-
     public Map<String, Object> ObtenerCat(int i ){return consulta.obtenerCategoriaDePelicula(i);}
-
-    public List<Map<String, Object>> TiposDeSala(){return consulta.ObtenerTipoSala();}
 
     public void CrearUsuario(Usuario usuario){consulta.CrearUsuario(usuario);}
     public boolean login(String email, String passwd) {return consulta.login(email,passwd);}
@@ -44,4 +35,5 @@ public class ConsultaService {
     public String getImagen(String nombre) {return consulta.getImage(nombre);}
     public int getIdPeli(String nombre) {return consulta.getIdPelia(nombre);}
     public List<Map<String, Object>> getSesiones(int id) {return consulta.getSesiones(id);}
-}
+    public List<Map<String, Object>> getButacasFromSala(int sala) {return consulta.getButacasFromSala(sala);}
+    }

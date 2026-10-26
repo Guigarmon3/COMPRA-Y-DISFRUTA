@@ -22,20 +22,12 @@ public class ConsultaRepository {
         return comando.queryForList("select * from pelicula order by id");
     }
 
-    public List<Map<String, Object>> ObtenerTodosLosTickets() {return comando.queryForList("select * from ticket order by id");}
-
-    public List<Map<String, Object>> ObtenerUsuarios() {return comando.queryForList("select * from usuario order by id");}
-
     public List<Map<String, Object>> ObtenerSalas() {return comando.queryForList("select * from sala order by id");}
-
-    public List<Map<String, Object>> Obtenerbutacas() {return comando.queryForList("select * from butaca order by id");}
 
     public Map<String, Object> obtenerCategoriaDePelicula(int id) {
         return comando.queryForMap(
                 "select * from genero where id = (select genero_id from pelicula where id = ?)", id);
     }
-
-    public List<Map<String, Object>> ObtenerTipoSala() {return comando.queryForList("select * from tipo_sala");}
 
     public void CrearUsuario(Usuario usuario) {
         comando.update(
@@ -77,6 +69,20 @@ public class ConsultaRepository {
 
     public int getIdPelia(String nombre) {return comando.queryForObject("select id from pelicula where nombre = ?", int.class, nombre);}
 
-    public List<Map<String, Object>> getSesiones(int id) {return comando.queryForList("select ts.nombre from pelicula p inner join sesion s  on s.pelicula_id = p.id inner join sala sa  on s.sala_id = sa.id inner join tipo_sala ts on sa.tipo_sala_id = ts.id where s.pelicula_id = ?;", id);}
+    public List<Map<String, Object>> getSesiones(int id) {return comando.queryForList("select sa.tipo, sa.precio_aleatorio, sa.precio_elegido from pelicula p inner join sesion s  on s.pelicula_id = p.id inner join sala sa  on s.sala_id = sa.id where s.pelicula_id = ?;", id);}
 
+    public List<Map<String, Object>> getButacasFromSala(int sala) {
+        return comando.queryForList("""
+        
+                SELECT butaca.*,
+               IF(ticket.butaca_id IS NULL, 'LIBRE', 'OCUPADA') AS estado
+        FROM butaca
+        LEFT JOIN ticket ON ticket.butaca_id = butaca.id
+        WHERE butaca.sala_id = ?
+        """, sala);
+    }
+
+    public boolean estaRegistrado(String nombre) {
+        return comando.queryForObject("select count(*) from usuario where nombre = ?", int.class, nombre) > 0;
+    }
 }

@@ -1,4 +1,3 @@
-
 // ----------Inicio-----------
 const button_loggin = document.querySelector(".btn-login");
 const nombre = document.getElementById("user-nombre");
@@ -80,6 +79,11 @@ MostrarEventos();
 function cerrarAdmin() {
     document.getElementById("modal-admin").hidden = true;
 }
+
+// Ventana de butacas
+function cerrarButacas() {
+    document.getElementById("modal-butacas").hidden = true;
+}
 async function abrirAdmin() {
     if (await getLogin() === true) {
         if (await getRolLogin() === "ADMIN") {
@@ -88,9 +92,20 @@ async function abrirAdmin() {
     }
 }
 // Carrito
-function cerrarCarrito() {
-    const cerrar = confirm("Quieres borrar todo tu carrito?");
-    if (cerrar) {
+async function cerrarCarrito() {
+    const resultado = await Swal.fire({
+        title: "¿Cerrar la compra?",
+        text: "Se borrarán todas las entradas de tu carrito.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, borrar",
+        cancelButtonText: "Cancelar",
+        background: "#1e293b",
+        color: "#cbd5e1",
+        confirmButtonColor: "#f97316",
+        cancelButtonColor: "#475569"
+    });
+    if (resultado.isConfirmed) {
         document.querySelector(".carrito").hidden = true;
         borrarCarro()
     }   
@@ -127,7 +142,6 @@ async function GetCategoria(id) {
     const respuesta = await fetch("http://localhost:8080/api/getcat/" + id);
     if (!respuesta.ok) {
         throw new Error("Error " + respuesta.status);
-        pushNotifyError("Error", "No se pudo obtener la categoría");
     }
     const categoria = await respuesta.json();
     return categoria.nombre;
@@ -170,9 +184,9 @@ async function MostrarEventos() {
     }
 }
 
-// Funcion para mostrar todos los tipos de salas
+// Funcion para mostrar todas las salas (una por cada tipo)
 async function MostrarSalas() {
-    const resepuesta = await fetch("http://localhost:8080/api/tipos_salas");
+    const resepuesta = await fetch("http://localhost:8080/api/Salas");
     if (!resepuesta.ok) {
         throw new Error("Error " + resepuesta.status);
     }
@@ -183,7 +197,7 @@ async function MostrarSalas() {
         const tipo = document.createElement("article");
         tipo.className = "sala";    
         const nombre = document.createElement("h3");
-        nombre.textContent = sala.nombre;
+        nombre.textContent = sala.tipo;
         const descripcion = document.createElement("p");
         descripcion.textContent = sala.descripcion;
         const listado = document.createElement("ul");
@@ -229,6 +243,7 @@ async function crearUsuario() {
             } else {
                 pushNotifyError("Error", "Usuario no encontrado");
             }
+            console.log(resultado);
             
     } catch (error) {
             pushNotifyError("Error", "No se pudo crear el usuario");
@@ -240,10 +255,8 @@ async function getNombre(email) {
     const respuesta = await fetch("http://localhost:8080/api/getnombre/"+email);
     if (!respuesta.ok) {
         throw new Error("Error " + respuesta.status);
-        pushNotifyError("Error", "No se pudo obtener el nombre del usuario");
     } else {
         const nombre = await respuesta.text();
-        console.log(nombre);
         return nombre;
     }   
 }
@@ -327,7 +340,6 @@ async function iniciarSesion() {
     const respuesta = await fetch("http://localhost:8080/api/login/"+email+"/"+passwd)
     if (!respuesta.ok) {
         throw new Error("Error " + respuesta.status);
-        pushNotifyError("Error", "No se pudo iniciar sesión");
     } else {
         if(await respuesta.json()) {
             const rol = await getRolEmail(email)
@@ -366,10 +378,33 @@ async function getImagen(nombre) {
 // Funcion para crear cada ticket de compra
 async function creteTicket(nombre) {
     if (sesion) {
+        // Solo se puede comprar para una pelicula a la vez
+        const peliEnCarrito = document.querySelector(".PreTicketNombre");
+        if (peliEnCarrito && peliEnCarrito.textContent !== nombre) {
+            const resultado = await Swal.fire({
+                title: "Ya tienes otra película",
+                text: "Tu carrito tiene entradas de \"" + peliEnCarrito.textContent + "\". ¿Quieres borrarlas y comprar para \"" + nombre + "\"?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Sí, cambiar",
+                cancelButtonText: "No, mantener",
+                background: "#1e293b",
+                color: "#cbd5e1",
+                confirmButtonColor: "#f97316",
+                cancelButtonColor: "#475569"
+            });
+            if (!resultado.isConfirmed) {
+                return;
+            }
+            borrarCarro();
+        }
+
+        // La ventana de la pelicula se cierra al comprar
+        cerrarEvento();
+
         if (document.querySelector(".carrito").hidden === true) {
             abrirCarrito();
         } 
-        cerrarEvento();
 
         const PreTicket = document.createElement("div");
         PreTicket.className = "PreTicket";
@@ -394,14 +429,16 @@ async function creteTicket(nombre) {
 
                 arraySesiones.forEach(sesion => {
                         const opcion = document.createElement("option");
-                        opcion.value = sesion.nombre;
-                        opcion.textContent = sesion.nombre;
+                        opcion.value = sesion.tipo;
+                        opcion.textContent = sesion.tipo;
+                        opcion.dataset.aleatoria = sesion.precio_aleatorio;
+                        opcion.dataset.elegida = sesion.precio_elegido;
                         select.appendChild(opcion);
                 });
                 
                 select.addEventListener("change", function(){
-                    var selection = select.value;
-                    PreTicketSala.textContent = select.value
+                    PreTicketSala.textContent = select.value;
+                    actualizarTotal();
                 });
                 PreTicketSala.textContent = select.value
                 const cantidadTicket = document.createElement("p");
@@ -417,6 +454,7 @@ async function creteTicket(nombre) {
                     if (numero < 170) {
                         numero++;
                         cantidadTicket.textContent = numero;
+                        actualizarTotal();
                     } else {
                         numero = 170
                         cantidadTicket.textContent = numero;
@@ -431,18 +469,35 @@ async function creteTicket(nombre) {
                 Menos.addEventListener("click", () => {
                     if (numero-1 == 0) {
                         PreTicket.remove();
+                        // Si era la ultima entrada, se cierra el carrito
+                        if (document.querySelectorAll(".PreTicket").length === 0) {
+                            document.querySelector(".carrito").hidden = true;
+                        }
                     }
                     if (numero > 0) {
                         numero--;
                         cantidadTicket.textContent = numero;
-                    } 
+                    }
+                    actualizarTotal();
                 });
 
-                PreTicketInputs.append(Mas, Menos);
-            Objeto.append(img, info, select, cantidadTicket, PreTicketInputs)
+                // Selector de tipo de butaca (los valores coinciden con el enum de la tabla ticket)
+                const tipoButaca = document.createElement("select");
+                tipoButaca.className = "tipoButaca";
+                ["Aleatoria", "Elegida"].forEach(valor => {
+                    const opcion = document.createElement("option");
+                    opcion.value = valor;
+                    opcion.textContent = valor;
+                    tipoButaca.appendChild(opcion);
+                });
+                tipoButaca.addEventListener("change", actualizarTotal);
+
+                PreTicketInputs.append(Menos, cantidadTicket, Mas, tipoButaca);
+            Objeto.append(img, info, select, PreTicketInputs)
         PreTicket.appendChild(Objeto)
-        const carrito = document.querySelector(".carrito");
-        carrito.appendChild(PreTicket);
+        const lista = document.querySelector(".carrito-lista");
+        lista.appendChild(PreTicket);
+        actualizarTotal();
     } else {
         pushNotifyError("Error", "No has iniciado sesión");
     }
@@ -475,4 +530,115 @@ async function getSesionesPeli(id) {
 
 function borrarCarro() {
    document.querySelectorAll(".PreTicket").forEach(e => e.remove());
+   actualizarTotal();
+}
+
+// Suma de todas las entradas del carrito: cantidad x precio (segun sala y tipo de butaca)
+function actualizarTotal() {
+    let total = 0;
+    document.querySelectorAll(".PreTicket").forEach(ticket => {
+        const sala = ticket.querySelector(".tipoTicket").selectedOptions[0];
+        if (!sala) return;
+        const tipo = ticket.querySelector(".tipoButaca").value;
+        const precio = tipo === "Aleatoria" ? sala.dataset.aleatoria : sala.dataset.elegida;
+        const cantidad = Number(ticket.querySelector(".cantidadTicket").textContent);
+        total += Number(precio) * cantidad;
+    });
+    document.querySelector(".precioTotalCarrito p").textContent = "Total: " + total.toFixed(2).replace(".", ",") + "€";
+}
+
+async function crearLineasButacas(sala) {
+    const butacas_lista = document.querySelector(".lista_butacas");
+
+    for (let i = 1; i <= 12; i++) {
+        const linea = document.createElement("div")
+        linea.className = "butaca_linea";
+        const butacasDeLaLinea = await generadorButacasPorLinea(sala, i);
+
+        butacasDeLaLinea.forEach(butca => {
+            const butaca = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            butaca.setAttribute("width", "22");
+            butaca.setAttribute("height", "22");
+            butaca.setAttribute("viewBox", "0 0 22 22");
+
+            // Crear los 5 rectangulos con rect
+            for (let k = 1; k <= 5; k++) {
+                const rectangulo = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+
+                if (k === 1) { // respaldo
+                    rectangulo.setAttribute("x", "3");
+                    rectangulo.setAttribute("y", "1");
+                    rectangulo.setAttribute("width", "16");
+                    rectangulo.setAttribute("height", "12");
+                    rectangulo.setAttribute("rx", "4");
+                    rectangulo.setAttribute("fill", "#cbd5e1");
+                    rectangulo.setAttribute("stroke", "#475569");
+                    rectangulo.setAttribute("stroke-width", "1");
+                }
+                if (k === 2) { // brillo del respaldo
+                    rectangulo.setAttribute("x", "6");
+                    rectangulo.setAttribute("y", "3");
+                    rectangulo.setAttribute("width", "10");
+                    rectangulo.setAttribute("height", "6");
+                    rectangulo.setAttribute("rx", "2");
+                    rectangulo.setAttribute("fill", "#e2e8f0");
+                }
+                if (k === 3) { // asiento
+                    rectangulo.setAttribute("x", "4");
+                    rectangulo.setAttribute("y", "12");
+                    rectangulo.setAttribute("width", "14");
+                    rectangulo.setAttribute("height", "8");
+                    rectangulo.setAttribute("rx", "3");
+                    rectangulo.setAttribute("fill", "#94a3b8");
+                    rectangulo.setAttribute("stroke", "#475569");
+                    rectangulo.setAttribute("stroke-width", "1");
+                }
+                if (k === 4) { // brazo izquierdo
+                    rectangulo.setAttribute("x", "1");
+                    rectangulo.setAttribute("y", "9");
+                    rectangulo.setAttribute("width", "4");
+                    rectangulo.setAttribute("height", "11");
+                    rectangulo.setAttribute("rx", "2");
+                    rectangulo.setAttribute("fill", "#64748b");
+                    rectangulo.setAttribute("stroke", "#334155");
+                    rectangulo.setAttribute("stroke-width", "1");
+                }
+                if (k === 5) { // brazo derecho
+                    rectangulo.setAttribute("x", "17");
+                    rectangulo.setAttribute("y", "9");
+                    rectangulo.setAttribute("width", "4");
+                    rectangulo.setAttribute("height", "11");
+                    rectangulo.setAttribute("rx", "2");
+                    rectangulo.setAttribute("fill", "#64748b");
+                    rectangulo.setAttribute("stroke", "#334155");
+                    rectangulo.setAttribute("stroke-width", "1");
+                }
+                butaca.appendChild(rectangulo);   // el rectangulo dentro del svg
+            }
+            if (butca.estado === "OCUPADA") {
+               butaca.setAttribute("data-nodisponible", "true");
+            }
+            linea.appendChild(butaca);            // el svg dentro de la fila
+        });
+
+        butacas_lista.appendChild(linea);         // la fila dentro de .lista_butacas
+    }
+}
+
+async function generadorButacasPorLinea(sala, linea) {
+    const respuesta = await fetch("http://localhost:8080/api/getButacasFromSala/"+sala);
+    if(!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+    }
+
+    const mensaje = await respuesta.json();
+
+    const butacasDeLaLinea = [];
+    mensaje.forEach(butaca => {
+        if (butaca.fila === linea) {
+            butacasDeLaLinea.push(butaca);
+        }
+    });
+
+    return butacasDeLaLinea;
 }

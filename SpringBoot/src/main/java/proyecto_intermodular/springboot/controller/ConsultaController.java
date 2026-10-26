@@ -5,8 +5,6 @@ import proyecto_intermodular.springboot.Modal.ROL;
 import proyecto_intermodular.springboot.Modal.Usuario;
 import proyecto_intermodular.springboot.service.ConsultaService;
 
-import javax.print.DocFlavor;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -24,26 +22,12 @@ public class ConsultaController {
         return cs.ObtenerPeliculas();
     }
 
-    @GetMapping("/api/Tickets")
-    public List<Map<String, Object>> ObtenerTodosLosTickets() {return cs.ObtenerTodosLosTickets();}
-
-    @GetMapping("/api/Usuarios")
-    public List<Map<String, Object>> ObtenerUsuarios(){return cs.ObtenerUsuarios();}
-
     @GetMapping("/api/Salas")
     public List<Map<String, Object>> ObtenerSalas(){return cs.ObtenerSalas();}
-
-    @GetMapping("/api/Butacas")
-    public List<Map<String, Object>> Obtenerbutacas(){return cs.Obtenerbutacas();}
 
     @GetMapping("/api/getcat/{id}")
     public Map<String, Object> obtenerCategoria(@PathVariable int id) {
         return cs.ObtenerCat(id);
-    }
-
-    @GetMapping("/api/tipos_salas")
-    public List<Map<String, Object>> TiposSalas(){
-        return cs.TiposDeSala();
     }
 
     @PostMapping("/api/crearUsuario")
@@ -76,4 +60,7 @@ public class ConsultaController {
 
     @GetMapping("/api/getsesiones/{id}")
     public List<Map<String, Object>> getSesiones(@PathVariable int id) {return cs.getSesiones(id);}
+
+    @GetMapping("/api/getButacasFromSala/{id_sala}")
+    public List<Map<String, Object>> getButacasFromSala(@PathVariable int id_sala) {return cs.getButacasFromSala(id_sala);}
 }

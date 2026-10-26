@@ -8,23 +8,12 @@ DROP TABLE IF EXISTS butaca;
 DROP TABLE IF EXISTS sala;
 DROP TABLE IF EXISTS pelicula;
 DROP TABLE IF EXISTS genero;
-DROP TABLE IF EXISTS tipo_sala;
 DROP TABLE IF EXISTS usuario;
 SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE genero (
   id int NOT NULL AUTO_INCREMENT,
   nombre varchar(100) NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE KEY nombre (nombre)
-);
-
-CREATE TABLE tipo_sala (
-  id int NOT NULL AUTO_INCREMENT,
-  nombre varchar(100) NOT NULL,
-  precio_aleatorio decimal(5,2) NOT NULL,
-  precio_elegido decimal(5,2) NOT NULL,
-  descripcion text,
   PRIMARY KEY (id),
   UNIQUE KEY nombre (nombre)
 );
@@ -54,11 +43,13 @@ CREATE TABLE pelicula (
 CREATE TABLE sala (
   id int NOT NULL AUTO_INCREMENT,
   nombre varchar(100) NOT NULL,
-  tipo_sala_id int NOT NULL,
+  tipo varchar(100) NOT NULL,
+  precio_aleatorio decimal(5,2) NOT NULL,
+  precio_elegido decimal(5,2) NOT NULL,
+  descripcion text,
   PRIMARY KEY (id),
   UNIQUE KEY nombre (nombre),
-  KEY tipo_sala_id (tipo_sala_id),
-  CONSTRAINT sala_ibfk_1 FOREIGN KEY (tipo_sala_id) REFERENCES tipo_sala (id)
+  UNIQUE KEY tipo (tipo)
 );
 
 CREATE TABLE sesion (
