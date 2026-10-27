@@ -82,7 +82,7 @@ public class ConsultaRepository {
         """, sala);
     }
 
-    public boolean estaRegistrado(String nombre) {
-        return comando.queryForObject("select count(*) from usuario where nombre = ?", int.class, nombre) > 0;
-    }
+    public boolean estaRegistrado(String nombre) {return comando.queryForObject("select count(*) from usuario where nombre = ?", int.class, nombre) > 0;}
+
+    public List<Map<String, Object>> getIdSesion(String nombrePelicula) {return comando.queryForList("select s.sala_id, sa.tipo from sesion s inner join sala sa on s.sala_id=sa.id  where pelicula_id = (select id from pelicula where nombre = ?)", nombrePelicula);}
 }

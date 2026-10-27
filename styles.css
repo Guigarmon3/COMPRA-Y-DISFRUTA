@@ -112,7 +112,7 @@ main {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.btn-login:hover {
+.btn-login:hover, .btn-tickets:hover {
     transform: translate(-2px, -2px);
     box-shadow: 4px 4px 0 #f97316;
 }
@@ -439,6 +439,22 @@ body:has(.modal:not([hidden])) {
     color: #f97316;
 }
 
+.carrito-botones {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Carrito minimizado: solo se ve la cabecera */
+.carrito.minimizado .carrito-lista,
+.carrito.minimizado .precioTotalCarrito {
+    display: none;
+}
+
+.carrito.minimizado .carrito-cabecera {
+    border-bottom: none;
+}
+
 /* Lista de entradas: ocupa el espacio libre y tiene scroll propio */
 .carrito-lista {
     flex: 1 1 auto;
@@ -762,9 +778,8 @@ body:has(.modal:not([hidden])) {
 .butacas {
     text-align: center;
     padding: 20px;
-    border: 5px solid red;
     width: max-content;
-    height: 70%;
+    height: 80%;
     background-color: rgb(30, 41, 59, 0.99);
     position: fixed;
     display: grid;
@@ -772,6 +787,7 @@ body:has(.modal:not([hidden])) {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
 
 .lista_butacas {
     display: grid;
@@ -801,6 +817,61 @@ body:has(.modal:not([hidden])) {
 .butaca_linea svg[data-nodisponible]:hover {
     cursor: not-allowed;
     filter: none;
+}
+
+.pantalla {
+    background-color: rgb(71, 70, 70);
+    height: max-content;
+    padding: 5px;
+    border-radius: 10px;
+    border: 3px solid gray;
+    box-shadow: 0px 15px 10px -6px rgba(255, 255, 255, 0.5);
+    color: #cbd5e1;
+    margin-bottom: 20px;
+}
+#textoButaca {
+    margin-top: 10px;
+}
+
+
+.btn-tickets {
+    background: linear-gradient(135deg, #dbce0d, #918416);
+    color: #ffffff;
+    border: 1px solid #36495e;
+    padding: 9.6px 25.6px;
+    font-size: 15.2px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tickets {
+    border: 1px solid red;
+    text-align: center;
+    padding: 20px;
+    width: max-content;
+    height: 80%;
+    background-color: rgb(30, 41, 59, 0.99);
+    position: fixed;
+    display: grid;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#lista-tickets {
+    border: 5px solid red;
+    display: grid;
+    grid-template-columns: auto;
+}
+.ticket {
+    display: flex;
+    border: 1px solid green;
+    height: max-content;
+    padding: 2px;
+}
+.img-ticket {
+    width: 80px;
 }
 
 /* Móvil */

@@ -36,6 +36,7 @@
 
         <!-- Zona de acciones/usuario -->
         <span class="user-actions">
+            <button class="btn-tickets" onclick="abrirTickets()">Tickets</button>
             <button class="btn-login" onclick="abrirLogin()">Entrar</button>
             <p id="user-nombre"></p>
             <button id="admin-pannel" onclick="abrirAdmin()" hidden>ADMIN PANNEL</button>
@@ -209,26 +210,48 @@
     <div class="carrito" hidden>
         <div class="carrito-cabecera">
             <h2>Tu compra</h2>
-            <button class="carrito-borrar" onclick="cerrarCarrito()" aria-label="Cerrar">&times;</button>
+            <div class="carrito-botones">
+                <button class="carrito-borrar" id="btn-minimizar" onclick="minimizarCarrito()" aria-label="Minimizar">&minus;</button>
+                <button class="carrito-borrar" onclick="cerrarCarrito()" aria-label="Cerrar">&times;</button>
+            </div>
         </div>
         <div class="carrito-lista"></div>
         <div class="precioTotalCarrito">
             <p>Total: 0€</p>
-            <button class="comprarCarrito">REALIZAR PAGO</button>
+            <button class="comprarCarrito" onclick="abrirButacas()">REALIZAR PAGO</button>
         </div>
         
     </div>
 
     <!-- Ventana de butacas -->
-    <div class="modal" id="modal-butacas" hidden>
+    <div class="modal" id="modal-butacas" hidden>  
         <div class="butacas">
             <button class="modal-cerrar" onclick="cerrarButacas()" aria-label="Cerrar">&times;</button>
-            <h1>Selecciona tu Butaca</h1>
+            <h1 id="textoButaca">Selecciona tu Butaca</h1>
+            <span class="pantalla">
+                <h1>PANTALLA</h1>
+            </span>
             <div class="lista_butacas">
             </div>
         </div>
     </div>
-
+    
+    <!-- Ventana Tickets -->
+    <div class="modal" id="modal-tickets">
+        <div class="tickets">
+            <h1>TUS TICKETS</h1>
+            <div id="lista-tickets">
+                <div class="ticket">
+                    <img src="./imagenes/Carteleras/cars.jpg" alt="Imagen Pelicula" class="img-ticket">
+                    <h1>CARS</h1>
+                    <p>Fecha pelicula</p>
+                    <p>Hola pelicula</p>
+                    <p>Tipo de sala</p>
+                    <button>Devolución</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
     <script src="Testing/tests.js"></script>

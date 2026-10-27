@@ -63,4 +63,8 @@ public class ConsultaController {
 
     @GetMapping("/api/getButacasFromSala/{id_sala}")
     public List<Map<String, Object>> getButacasFromSala(@PathVariable int id_sala) {return cs.getButacasFromSala(id_sala);}
+
+    @GetMapping("/api/getIdSesion/{nombrePelicula}")
+    public List<Map<String, Object>> getIdSesion(@PathVariable String nombrePelicula) {return cs.getIdSesion(nombrePelicula);}
+
 }

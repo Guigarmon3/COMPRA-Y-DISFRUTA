@@ -36,4 +36,5 @@ public class ConsultaService {
     public int getIdPeli(String nombre) {return consulta.getIdPelia(nombre);}
     public List<Map<String, Object>> getSesiones(int id) {return consulta.getSesiones(id);}
     public List<Map<String, Object>> getButacasFromSala(int sala) {return consulta.getButacasFromSala(sala);}
+    public List<Map<String, Object>> getIdSesion(String nombrePelicula) {return consulta.getIdSesion(nombrePelicula);}
     }

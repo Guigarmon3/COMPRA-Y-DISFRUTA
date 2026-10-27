@@ -112,6 +112,20 @@ async function cerrarCarrito() {
 }
 
 
+// Minimizar / restaurar el carrito (solo queda visible la cabecera)
+function minimizarCarrito() {
+    const carrito = document.querySelector(".carrito");
+    const boton = document.getElementById("btn-minimizar");
+    carrito.classList.toggle("minimizado");
+    if (carrito.classList.contains("minimizado")) {
+        boton.innerHTML = "&#9660;";
+        boton.setAttribute("aria-label", "Restaurar");
+    } else {
+        boton.innerHTML = "&minus;";
+        boton.setAttribute("aria-label", "Minimizar");
+    }
+}
+
 function abrirCarrito() {
     document.querySelector(".carrito").hidden = false;
     document.getElementById("eventos").style.paddingRight = "20%";
@@ -647,7 +661,7 @@ async function generadorButacasPorLinea(sala, linea) {
     return butacasDeLaLinea;
 }
 
-async function abrirButacas(sala) {
+async function abrirButacas() {
     const modalButaca = document.getElementById("modal-butacas");
 
     document.querySelectorAll(".butaca_linea").forEach(linea => {
@@ -656,7 +670,33 @@ async function abrirButacas(sala) {
 
     const login = await getLogin();
     if (login) {
-        crearLineasButacas(sala);
+        crearLineasButacas(await getidSala());
         modalButaca.hidden = false;
+
     }
 }
+
+// Obtiene la id y tipo de las salas en las que se reproduce la pelicula
+async function getIdAndTipoSala() {
+    const nombrePeli = document.querySelector(".PreTicketNombre").textContent;
+    const respuesta = await fetch("http://localhost:8080/api/getIdSesion/" + encodeURIComponent(nombrePeli));
+    if (!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+    }
+    const datos = await respuesta.json();
+    return datos;
+}
+
+async function getidSala() {
+    const array = await getIdAndTipoSala();
+    const tipoSeleccionado = document.querySelector(".PreTicketSala").textContent.trim();
+
+    const sala = array.find(s => s.tipo === tipoSeleccionado);
+    if (!sala) {
+        console.warn("No se encontró sala de tipo:", tipoSeleccionado);
+        return null;
+    }
+    console.log("Encontrado, la sala es: " + sala.sala_id + " | " + sala.tipo);
+    return sala.sala_id;
+}
+
