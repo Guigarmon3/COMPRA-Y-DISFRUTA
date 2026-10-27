@@ -360,7 +360,6 @@ async function iniciarSesion() {
     }
 }
 
-
 async function getImagen(nombre) {
     const url = `http://localhost:8080/api/getImage/${nombre}`;
     const respuesta = await fetch(url);
@@ -529,8 +528,8 @@ async function getSesionesPeli(id) {
 }
 
 function borrarCarro() {
-   document.querySelectorAll(".PreTicket").forEach(e => e.remove());
-   actualizarTotal();
+    document.querySelectorAll(".PreTicket").forEach(e => e.remove());
+    actualizarTotal();
 }
 
 // Suma de todas las entradas del carrito: cantidad x precio (segun sala y tipo de butaca)
@@ -548,6 +547,7 @@ function actualizarTotal() {
 }
 
 async function crearLineasButacas(sala) {
+    
     const butacas_lista = document.querySelector(".lista_butacas");
 
     for (let i = 1; i <= 12; i++) {
@@ -616,7 +616,11 @@ async function crearLineasButacas(sala) {
                 butaca.appendChild(rectangulo);   // el rectangulo dentro del svg
             }
             if (butca.estado === "OCUPADA") {
-               butaca.setAttribute("data-nodisponible", "true");
+                butaca.setAttribute("data-nodisponible", "true");
+            } else {
+                butaca.addEventListener("click", (e) => {
+                    console.log("hola");
+                })
             }
             linea.appendChild(butaca);            // el svg dentro de la fila
         });
@@ -641,4 +645,18 @@ async function generadorButacasPorLinea(sala, linea) {
     });
 
     return butacasDeLaLinea;
+}
+
+async function abrirButacas(sala) {
+    const modalButaca = document.getElementById("modal-butacas");
+
+    document.querySelectorAll(".butaca_linea").forEach(linea => {
+        linea.remove();
+    });
+
+    const login = await getLogin();
+    if (login) {
+        crearLineasButacas(sala);
+        modalButaca.hidden = false;
+    }
 }
