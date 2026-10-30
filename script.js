@@ -84,6 +84,15 @@ function cerrarAdmin() {
 function cerrarButacas() {
     document.getElementById("modal-butacas").hidden = true;
 }
+
+// Ventana de tickets
+function abrirTickets() {
+    document.getElementById("modal-tickets").hidden = false;
+}
+
+function cerrarTickets() {
+    document.getElementById("modal-tickets").hidden = true;
+}
 async function abrirAdmin() {
     if (await getLogin() === true) {
         if (await getRolLogin() === "ADMIN") {
@@ -699,4 +708,3 @@ async function getidSala() {
     console.log("Encontrado, la sala es: " + sala.sala_id + " | " + sala.tipo);
     return sala.sala_id;
 }
-

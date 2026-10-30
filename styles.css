@@ -31,6 +31,11 @@ html {
     scroll-behavior: smooth;
 }
 
+:focus-visible {
+    outline: 3px solid #fbbf24;
+    outline-offset: 2px;
+}
+
 body {
     background-color: #0f172a;
     color: #cbd5e1;
@@ -97,8 +102,14 @@ main {
     transition: color 0.25s ease;
 }
 
+.nav-link {
+    padding-bottom: 4px;
+    border-bottom: 2px solid transparent;
+}
+
 .nav-link:hover {
-    color: #f97316;
+    color: #ffffff;
+    border-bottom-color: #f97316;
 }
 
 .btn-login {
@@ -175,7 +186,17 @@ main {
     color: whitesmoke;
     text-align: center;
     font-size: 28.8px;
-    margin-bottom: 24px;
+    font-weight: 600;
+    margin-bottom: 36px;
+}
+
+#e-titulo::after, #s-titulo::after, #i-titulo::after {
+    content: "";
+    display: block;
+    width: 56px;
+    height: 4px;
+    margin: 12px auto 0;
+    background-color: #f97316;
 }
 
 #eventos, #salas, #informacion {
@@ -191,14 +212,14 @@ main {
     align-items: center;
     gap: 32px;
     display: grid;
-    grid-template-columns: auto auto auto auto auto;
+    grid-template-columns: repeat(auto-fill, 220px);
 }
 
 .cartel {
     border: 2px solid #64748b;
     cursor: pointer;
     width: 220px;
-    background-color: #3d4c64;
+    background-color: #334155;
     overflow: hidden;
     text-align: center;
     transition: all 0.3s ease;
@@ -206,13 +227,18 @@ main {
 
 .cartel img {
     width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
     display: block;
+    border-bottom: 3px solid #f97316;
 }
 
-.cartel .p-c-nombre {
-    color: #cbd5e1;
-    padding: 12.8px 8px 6.4px;
+/* El nombre se crea sin clase desde el JS, por eso se apunta al <p> */
+.cartel > p {
+    color: #ffffff;
+    padding: 14px 10px;
     font-weight: 500;
+    font-size: 15px;
 }
 
 /* Cuando pasas el ratón por un cartel, los demás se desenfocan */
@@ -251,8 +277,8 @@ main {
 .lista-salas {
     display: grid;
     justify-content: center;
-    grid-template-columns:auto auto auto auto;
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, 280px);
+    gap: 24px;
 }
 
 .sala {
@@ -260,7 +286,14 @@ main {
     box-shadow: 6px 6px 0 #0f172a;
     width: 280px;
     background-color: #334155;
-    padding: 25px;
+    border-top: 4px solid #fbbf24;
+    padding: 24px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sala:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 #0f172a;
 }
 
 .sala h3 {
@@ -308,6 +341,16 @@ main {
 .info-bloque summary {
     cursor: pointer;
     font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.info-bloque summary:hover,
+.info-bloque details[open] summary {
+    color: #f97316;
+}
+
+.info-bloque details[open] {
+    border-left: 4px solid #f97316;
 }
 
 .info-bloque details p {
@@ -330,7 +373,8 @@ main {
 .modal {
     position: fixed;
     inset: 0;
-    background-color: rgba(0, 0, 0, 0.65);
+    background-color: rgba(2, 6, 23, 0.75);
+    backdrop-filter: blur(3px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -358,7 +402,11 @@ body:has(.modal:not([hidden])) {
     border: 2px solid #cbd5e1;
     box-shadow: 8px 8px 0 #f97316;
     animation: aparecer 0.25s ease;
-    transition: all 1s ease-in-out;
+}
+
+/* Variante ancha para las ventanas grandes (butacas, tickets, administración) */
+.modal-ancho {
+    max-width: 760px;
 }
 
 @keyframes aparecer {
@@ -617,6 +665,14 @@ body:has(.modal:not([hidden])) {
 }
 
 
+.modal-cerrar {
+    z-index: 1;
+    width: 36px;
+    height: 36px;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
 .modal-cerrar:hover {
     color: #f97316;
 }
@@ -740,7 +796,10 @@ body:has(.modal:not([hidden])) {
 .evento-img {
     border: 2px solid #64748b;
     width: 200px;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
     align-self: flex-start;
+    flex: none;
 }
 
 .evento-info {
@@ -770,73 +829,102 @@ body:has(.modal:not([hidden])) {
     line-height: 1.5;
 }
 
-#modal-butacas {
-    width: max-content;
-    padding: 10px;
-}
+/* ---------- Ventana de butacas ---------- */
 
 .butacas {
     text-align: center;
-    padding: 20px;
-    width: max-content;
-    height: 80%;
-    background-color: rgb(30, 41, 59, 0.99);
-    position: fixed;
-    display: grid;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    padding: 28px 32px 32px;
 }
 
+#textoButaca {
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 28px;
+    padding: 0 32px;
+}
+
+/* Pantalla: barra inclinada con el brillo naranja de la marca */
+.pantalla {
+    display: block;
+    width: 80%;
+    margin: 0 auto 36px;
+    padding: 6px 0;
+    background: linear-gradient(180deg, #e2e8f0, #94a3b8);
+    border-bottom: 4px solid #f97316;
+    box-shadow: 0 20px 36px -12px rgba(249, 115, 22, 0.55);
+    transform: perspective(420px) rotateX(-14deg);
+    transform-origin: bottom center;
+}
+
+.pantalla h1 {
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5em;
+    text-indent: 0.5em;
+}
 
 .lista_butacas {
-    display: grid;
-    grid-template-columns: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 }
+
 .butaca_linea {
     display: flex;
     justify-content: center;
-    gap: 6px;
-    padding: 3px;
-}
-.butaca_linea svg {
-    width: 36px;
-    height: 36px;
-    cursor: pointer;
-}
-.butaca_linea svg:hover {
-    filter: brightness(1.2);
+    gap: 5px;
 }
 
-.butaca_linea svg[data-nodisponible] rect {
-    fill: #ef4444;
-    stroke: #7f1d1d;
+/* Las butacas se giran para que miren hacia la pantalla (arriba) */
+.butaca_linea svg {
+    flex: none;
+    width: clamp(17px, 4.4vw, 30px);
+    height: clamp(17px, 4.4vw, 30px);
+    transform: scaleY(-1);
+    cursor: pointer;
+    transition: transform 0.15s ease, filter 0.15s ease;
 }
+
+/* Pasillo central */
+.butaca_linea svg:nth-child(7) {
+    margin-right: clamp(8px, 2.5vw, 18px);
+}
+
+.butaca_linea svg rect {
+    transition: fill 0.15s ease;
+}
+
+.butaca_linea svg:hover {
+    transform: translateY(-2px) scaleY(-1);
+    filter: drop-shadow(0 0 4px rgba(249, 115, 22, 0.8));
+}
+
+.butaca_linea svg:hover rect:nth-child(1) { fill: #fbbf24; }
+.butaca_linea svg:hover rect:nth-child(2) { fill: #fde68a; }
+.butaca_linea svg:hover rect:nth-child(3) { fill: #f59e0b; }
+
+/* Ocupadas: rojas y sin interacción */
+.butaca_linea svg[data-nodisponible] rect:nth-child(1) { fill: #dc2626; stroke: #7f1d1d; }
+.butaca_linea svg[data-nodisponible] rect:nth-child(2) { fill: #ef4444; }
+.butaca_linea svg[data-nodisponible] rect:nth-child(3) { fill: #b91c1c; stroke: #7f1d1d; }
+.butaca_linea svg[data-nodisponible] rect:nth-child(4),
+.butaca_linea svg[data-nodisponible] rect:nth-child(5) { fill: #7f1d1d; stroke: #450a0a; }
 
 .butaca_linea svg[data-nodisponible],
 .butaca_linea svg[data-nodisponible]:hover {
     cursor: not-allowed;
     filter: none;
+    transform: scaleY(-1);
 }
 
-.pantalla {
-    background-color: rgb(71, 70, 70);
-    height: max-content;
-    padding: 5px;
-    border-radius: 10px;
-    border: 3px solid gray;
-    box-shadow: 0px 15px 10px -6px rgba(255, 255, 255, 0.5);
-    color: #cbd5e1;
-    margin-bottom: 20px;
-}
-#textoButaca {
-    margin-top: 10px;
-}
-
+/* ---------- Botón de tickets (cabecera) ---------- */
 
 .btn-tickets {
-    background: linear-gradient(135deg, #dbce0d, #918416);
-    color: #ffffff;
+    background: #fbbf24;
+    color: #0f172a;
     border: 1px solid #36495e;
     padding: 9.6px 25.6px;
     font-size: 15.2px;
@@ -845,33 +933,175 @@ body:has(.modal:not([hidden])) {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* ---------- Ventana de tickets ---------- */
+
 .tickets {
-    border: 1px solid red;
-    text-align: center;
-    padding: 20px;
-    width: max-content;
-    height: 80%;
-    background-color: rgb(30, 41, 59, 0.99);
-    position: fixed;
-    display: grid;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    padding: 28px;
+}
+
+.tickets > h1 {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: left;
+    padding-right: 36px;
 }
 
 #lista-tickets {
-    border: 5px solid red;
-    display: grid;
-    grid-template-columns: auto;
-}
-.ticket {
+    margin-top: 24px;
     display: flex;
-    border: 1px solid green;
-    height: max-content;
-    padding: 2px;
+    flex-direction: column;
+    gap: 18px;
 }
+
+/* Cada ticket: cartel | datos | fecha y hora (con perforado) | devolver */
+.ticket {
+    display: grid;
+    grid-template-columns: 88px 1fr auto auto;
+    grid-template-rows: 1fr 1fr;
+    align-items: stretch;
+    text-align: left;
+    background-color: #334155;
+    border: 2px solid #64748b;
+    border-left: 6px solid #fbbf24;
+    box-shadow: 5px 5px 0 #0f172a;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ticket:hover {
+    transform: translate(-2px, -2px);
+    border-color: #f97316;
+    box-shadow: 7px 7px 0 #0f172a;
+}
+
 .img-ticket {
-    width: 80px;
+    grid-column: 1;
+    grid-row: 1 / 3;
+    width: 88px;
+    height: 100%;
+    min-height: 124px;
+    object-fit: cover;
+    display: block;
+}
+
+.ticket > span {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: center;
+    min-width: 0;
+    padding: 14px 18px;
+}
+
+.ticket > span h1 {
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.ticket > span h2 {
+    color: #fbbf24;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: left;
+    margin: 4px 0 0;
+}
+
+.ticket > p {
+    grid-column: 3;
+    display: flex;
+    padding: 0 22px;
+    border-left: 2px dashed #64748b;
+    color: #cbd5e1;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.ticket > p:nth-of-type(1) {
+    grid-row: 1;
+    align-items: flex-end;
+    padding-bottom: 2px;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.ticket > p:nth-of-type(2) {
+    grid-row: 2;
+    align-items: flex-start;
+    padding-top: 2px;
+}
+
+.ticket > button {
+    grid-column: 4;
+    grid-row: 1 / 3;
+    align-self: center;
+    margin: 0 18px;
+    padding: 9px 16px;
+    background: none;
+    color: #cbd5e1;
+    border: 2px solid #64748b;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.ticket > button:hover {
+    color: #ffffff;
+    border-color: #f97316;
+    background-color: #f97316;
+}
+
+/* ---------- Ventana de administración ---------- */
+
+.botones-admin-test {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.button-admin {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    background-color: #334155;
+    border: 2px solid #475569;
+    border-top: 4px solid #fbbf24;
+}
+
+.button-admin h3 {
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.button-admin input {
+    padding: 8px 10px;
+    background-color: #0f172a;
+    color: #ffffff;
+    border: 1px solid #475569;
+    font-size: 14px;
+}
+
+.button-admin input:focus {
+    outline: none;
+    border-color: #f97316;
+}
+
+.button-admin .getcategoria {
+    margin-top: auto;
+    padding: 9px;
+    background-color: #f97316;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.button-admin .getcategoria:hover {
+    background-color: #ea580c;
 }
 
 /* Móvil */
@@ -910,5 +1140,61 @@ body:has(.modal:not([hidden])) {
         top: 170px;
         right: 5%;
         width: 90%;
+    }
+}
+
+@media (max-width: 600px) {
+    #eventos, #salas, #informacion {
+        padding: 36px 16px;
+    }
+
+    .modal-caja {
+        padding: 24px 16px;
+    }
+
+    .butacas {
+        padding: 24px 12px;
+    }
+
+    .ticket {
+        grid-template-columns: 72px 1fr;
+        grid-template-rows: auto auto auto auto;
+    }
+
+    .img-ticket {
+        grid-row: 1 / 5;
+        width: 72px;
+    }
+
+    .ticket > span {
+        grid-column: 2;
+        grid-row: 1;
+        padding: 12px 14px 4px;
+    }
+
+    .ticket > p,
+    .ticket > p:nth-of-type(1),
+    .ticket > p:nth-of-type(2) {
+        grid-column: 2;
+        padding: 0 14px;
+        border-left: none;
+        align-items: center;
+    }
+
+    .ticket > p:nth-of-type(1) { grid-row: 2; }
+    .ticket > p:nth-of-type(2) { grid-row: 3; }
+
+    .ticket > button {
+        grid-column: 2;
+        grid-row: 4;
+        margin: 10px 14px 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
     }
 }

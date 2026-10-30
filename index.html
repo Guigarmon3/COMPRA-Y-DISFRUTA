@@ -167,8 +167,9 @@
 
     <!-- Ventana de admministración -->
     <div class="modal" id="modal-admin" hidden>
-        <div class="modal-caja modal-evento" role="dialog" aria-modal="true" aria-labelledby="evento-nombre">
+        <div class="modal-caja modal-ancho" role="dialog" aria-modal="true" aria-labelledby="admin-titulo">
             <button class="modal-cerrar" onclick="cerrarAdmin()" aria-label="Cerrar">&times;</button>
+            <h2 id="admin-titulo">Panel de administración</h2>
             <div class="botones-admin-test">
                 <div class="button-admin">
                     <h3>Obtener Nombre Categoria</h3>
@@ -224,8 +225,8 @@
     </div>
 
     <!-- Ventana de butacas -->
-    <div class="modal" id="modal-butacas" hidden>  
-        <div class="butacas">
+    <div class="modal" id="modal-butacas" hidden>
+        <div class="butacas modal-caja modal-ancho" role="dialog" aria-modal="true" aria-labelledby="textoButaca">
             <button class="modal-cerrar" onclick="cerrarButacas()" aria-label="Cerrar">&times;</button>
             <h1 id="textoButaca">Selecciona tu Butaca</h1>
             <span class="pantalla">
@@ -238,16 +239,30 @@
     
     <!-- Ventana Tickets -->
     <div class="modal" id="modal-tickets">
-        <div class="tickets">
-            <h1>TUS TICKETS</h1>
+        <div class="tickets modal-caja modal-ancho" role="dialog" aria-modal="true" aria-labelledby="tickets-titulo">
+            <button class="modal-cerrar" onclick="cerrarTickets()" aria-label="Cerrar">&times;</button>
+            <h1 id="tickets-titulo">Tus Tickets</h1>
             <div id="lista-tickets">
                 <div class="ticket">
                     <img src="./imagenes/Carteleras/cars.jpg" alt="Imagen Pelicula" class="img-ticket">
-                    <h1>CARS</h1>
-                    <p>Fecha pelicula</p>
-                    <p>Hola pelicula</p>
-                    <p>Tipo de sala</p>
-                    <button>Devolución</button>
+                    <span>
+                        <h1>nombrePeli</h1>
+                        <h2>salaSeleccioanda</h2>
+                    </span>
+                    <p>Fecha de la cita</p>
+                    <p>Hora cita</p>
+                    <button>DevolverEntradas</button>
+                </div>
+
+                <div class="ticket">
+                    <img src="./imagenes/Carteleras/LaBolaNegra.jpg" alt="Imagen Pelicula" class="img-ticket">
+                    <span>
+                        <h1>nombrePeli</h1>
+                        <h2>salaSeleccioanda</h2>
+                    </span>
+                    <p>Fecha de la cita</p>
+                    <p>Hora cita</p>
+                    <button>DevolverEntradas</button>
                 </div>
             </div>
         </div>
