@@ -86,8 +86,71 @@ function cerrarButacas() {
 }
 
 // Ventana de tickets
-function abrirTickets() {
-    document.getElementById("modal-tickets").hidden = false;
+async function abrirTickets() {
+    const modal = document.getElementById("modal-tickets");
+    const lista = document.getElementById("lista-tickets");
+    lista.textContent = "";
+
+    const login = await getLogin();
+    if (!login) return;
+
+    const nombre = document.getElementById("user-nombre").textContent;
+    try {
+        const resp = await fetch("http://localhost:8080/api/tickets/" + encodeURIComponent(nombre));
+        if (!resp.ok) throw new Error("Error " + resp.status);
+        const tickets = await resp.json();
+
+        if (tickets.length === 0) {
+            const p = document.createElement("p");
+            p.textContent = "No tienes tickets comprados.";
+            lista.appendChild(p);
+            modal.hidden = false;
+            return;
+        }
+
+        tickets.forEach(t => {
+            const card = document.createElement("div");
+            card.className = "ticket";
+
+            const img = document.createElement("img");
+            img.src = t.imagen;
+            img.alt = "Imagen Pelicula";
+            img.className = "img-ticket";
+
+            const span = document.createElement("span");
+            const h1 = document.createElement("h1");
+            h1.textContent = t.pelicula;
+            const h2 = document.createElement("h2");
+            h2.textContent = t.sala + " (" + t.tipo_sala + ")";
+            span.append(h1, h2);
+
+            const pFecha = document.createElement("p");
+            pFecha.textContent = "Fecha: " + formatearFechaHoraSesion(t.fecha_hora);
+            const pButaca = document.createElement("p");
+            pButaca.textContent = "Butaca - Fila: " + t.fila + ", Número: " + t.numero_butaca;
+            const pSel = document.createElement("p");
+            pSel.textContent = "Tipo: " + t.seleccion + " - " + Number(t.precio_total).toFixed(2).replace(".", ",") + " €";
+
+            const btn = document.createElement("button");
+            btn.textContent = "Devolver entrada";
+            btn.addEventListener("click", async () => {
+                const r = await fetch("http://localhost:8080/api/ticket/" + t.id, { method: "DELETE" });
+                if (r.ok) {
+                    PushNotify("Devolución", "Entrada devuelta correctamente");
+                    abrirTickets();
+                } else {
+                    pushNotifyError("Error", "No se pudo devolver la entrada");
+                }
+            });
+
+            card.append(img, span, pFecha, pButaca, pSel, btn);
+            lista.appendChild(card);
+        });
+    } catch (e) {
+        pushNotifyError("Error", "No se pudieron cargar los tickets");
+    }
+
+    modal.hidden = false;
 }
 
 function cerrarTickets() {
@@ -115,7 +178,7 @@ async function cerrarCarrito() {
         cancelButtonColor: "#475569"
     });
     if (resultado.isConfirmed) {
-        document.querySelector(".carrito").hidden = true;
+        ocultarCarrito();
         borrarCarro()
     }   
 }
@@ -137,10 +200,32 @@ function minimizarCarrito() {
 
 function abrirCarrito() {
     document.querySelector(".carrito").hidden = false;
-    document.getElementById("eventos").style.paddingRight = "20%";
-    document.getElementById("salas").style.paddingRight = "20%";
-    document.getElementById("informacion").style.paddingRight = "20%";
+    // Desplaza el contenido principal a la izquierda para dejar sitio al carrito
+    document.body.classList.add("carrito-abierto");
+}
 
+// Deja el contenido exactamente como estaba al cargar la página
+function restaurarPosicionPrincipal() {
+    document.body.classList.remove("carrito-abierto");
+    ["eventos", "salas", "informacion"].forEach(id => {
+        const seccion = document.getElementById(id);
+        if (seccion) seccion.style.paddingRight = "";
+    });
+}
+
+function ocultarCarrito() {
+    document.querySelector(".carrito").hidden = true;
+    restaurarPosicionPrincipal();
+}
+
+// Si el carrito se oculta por cualquier motivo, se restaura la posición original
+const carritoPrincipal = document.querySelector(".carrito");
+if (carritoPrincipal) {
+    new MutationObserver(() => {
+        if (carritoPrincipal.hidden) {
+            restaurarPosicionPrincipal();
+        }
+    }).observe(carritoPrincipal, { attributes: true, attributeFilter: ["hidden"] });
 }
 /*
 
@@ -238,38 +323,90 @@ async function MostrarSalas() {
     }
 }
 MostrarSalas();
+// Devuelve un motivo claro cuando el registro falla
+function motivoErrorCrearUsuario(respuesta, datos) {
+    const mensajeBackend = datos && (datos.mensaje || datos.message || datos.error);
+    if (mensajeBackend && mensajeBackend !== "Internal Server Error") {
+        return mensajeBackend;
+    }
+
+    switch (respuesta.status) {
+        case 400:
+            return "Los datos del registro no son válidos. Revisa el nombre, el email y la contraseña.";
+        case 404:
+            return "El servidor no tiene disponible el servicio de registro de usuarios.";
+        case 409:
+            return "Ese email ya está registrado o los datos entran en conflicto con otro usuario.";
+        case 500:
+            return "El servidor no pudo guardar el usuario. Puede que el email ya esté registrado.";
+        default:
+            return "No se pudo crear el usuario (error " + respuesta.status + ").";
+    }
+}
+
 // Funcion para crear los usuarios en la bdd
 async function crearUsuario() {
-    const nombre = document.getElementById("reg-nombre").value;
-    const email = document.getElementById("reg-email").value;
+    const boton = document.getElementById("btn-crear-cuenta");
+    // Evita enviar dos registros si se hace doble clic o se pulsa Enter varias veces
+    if (boton && boton.disabled) return;
+
+    const nombre = document.getElementById("reg-nombre").value.trim();
+    const email = document.getElementById("reg-email").value.trim();
     const passwd = document.getElementById("reg-passwd").value;
+
     if (!nombre || !email || !passwd) {
         pushNotifyError("Error", "Por favor, complete todos los campos");
         return;
     }
-    const usuario = {
-        nombre: nombre,
-        email: email,
-        passwd: passwd
-    };  
-    try {
-            const resepuesta = await fetch("http://localhost:8080/api/crearUsuario", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(usuario)
-            });
-            if (!resepuesta.ok) throw new Error("Error " + resepuesta.status);
-            const resultado = await resepuesta.json();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        pushNotifyError("Error", "El email no tiene un formato válido");
+        return;
+    }
+    if (passwd.length < 6) {
+        pushNotifyError("Error", "La contraseña debe tener al menos 6 caracteres");
+        return;
+    }
 
-            if (await verificarUsuario(nombre.textContent, email) === 1) {
-                PushNotify("Creación de Usuario", "Usuario creado correctamente");
-            } else {
-                pushNotifyError("Error", "Usuario no encontrado");
-            }
-            console.log(resultado);
-            
+    const usuario = { nombre, email, passwd };
+
+    if (boton) {
+        boton.disabled = true;
+        boton.textContent = "Creando cuenta...";
+    }
+
+    try {
+        const respuesta = await fetch("http://localhost:8080/api/crearUsuario", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(usuario)
+        });
+
+        let datos = null;
+        try {
+            datos = await respuesta.json();
+        } catch (_) {
+            // La respuesta no trae JSON; se usa el mensaje genérico
+        }
+
+        if (!respuesta.ok) {
+            throw new Error(motivoErrorCrearUsuario(respuesta, datos));
+        }
+
+        PushNotify("Creación de Usuario", "Usuario creado correctamente");
+
+        document.getElementById("form-registro").reset();
+        document.getElementById("login-email").value = email;
+        mostrarLogin();
     } catch (error) {
-            pushNotifyError("Error", "No se pudo crear el usuario");
+        const mensaje = error instanceof TypeError
+            ? "No se pudo conectar con el servidor. Comprueba que el backend esté arrancado."
+            : (error.message || "No se pudo crear el usuario.");
+        pushNotifyError("Error al crear el usuario", mensaje);
+    } finally {
+        if (boton) {
+            boton.disabled = false;
+            boton.textContent = "Crear cuenta";
+        }
     }
 }
 
@@ -397,6 +534,36 @@ async function getImagen(nombre) {
     }
 }
 
+// Muestra una fecha/hora de sesión en formato dd/mm/aaaa hh:mm
+function fechaSesion(valor) {
+    if (!valor) return "";
+    return String(valor).replace("T", " ").trim().split(/\s+/)[0] || "";
+}
+
+function horaSesion(valor) {
+    if (!valor) return "";
+    const partes = String(valor).replace("T", " ").trim().split(/\s+/);
+    return (partes[1] || "").slice(0, 5);
+}
+
+function formatearFechaSesion(valor) {
+    const fecha = fechaSesion(valor);
+    const partes = fecha.split("-");
+    if (partes.length !== 3) return fecha;
+    const [anio, mes, dia] = partes;
+    return `${dia}/${mes}/${anio}`;
+}
+
+function formatearFechaHoraSesion(valor) {
+    const fecha = formatearFechaSesion(valor);
+    const hora = horaSesion(valor);
+    return `${fecha}${hora ? " " + hora : ""}`;
+}
+
+function etiquetaSesion(sesion) {
+    return `${formatearFechaHoraSesion(sesion.fecha_hora)} · ${sesion.tipo}`;
+}
+
 // Funcion para crear cada ticket de compra
 async function creteTicket(nombre) {
     if (sesion) {
@@ -443,44 +610,179 @@ async function creteTicket(nombre) {
                     const PreTicketSala = document.createElement("p");
                     PreTicketSala.className = "PreTicketSala";
                 info.append(PreTicketNombre, PreTicketSala);
-                const select = document.createElement("select");
-                select.className="tipoTicket";
-
                 const id = await getIdPeli(nombre);
-                const arraySesiones = await getSesionesPeli(id);
+                const arraySesiones = (await getSesionesPeli(id)) || [];
 
-                arraySesiones.forEach(sesion => {
-                        const opcion = document.createElement("option");
-                        opcion.value = sesion.tipo;
-                        opcion.textContent = sesion.tipo;
-                        opcion.dataset.aleatoria = sesion.precio_aleatorio;
-                        opcion.dataset.elegida = sesion.precio_elegido;
-                        select.appendChild(opcion);
-                });
-                
-                select.addEventListener("change", function(){
-                    PreTicketSala.textContent = select.value;
-                    actualizarTotal();
-                });
-                PreTicketSala.textContent = select.value
+                if (arraySesiones.length === 0) {
+                    pushNotifyError("Sin sesiones", "No hay sesiones disponibles para esta película");
+                    PreTicket.remove();
+                    if (document.querySelectorAll(".PreTicket").length === 0) {
+                        ocultarCarrito();
+                    }
+                    return;
+                }
+
+                // Ordena las sesiones por fecha y hora
+                arraySesiones.sort((a, b) => String(a.fecha_hora).localeCompare(String(b.fecha_hora)));
+
+                const sesionSelectores = document.createElement("div");
+                sesionSelectores.className = "sesionSelectores";
+
+                const crearCampoSeleccion = (texto, clase) => {
+                    const campo = document.createElement("div");
+                    campo.className = "campoSeleccion";
+                    const label = document.createElement("label");
+                    label.textContent = texto;
+                    const selector = document.createElement("select");
+                    selector.className = "selectSesion " + clase;
+                    selector.setAttribute("aria-label", texto);
+                    campo.append(label, selector);
+                    sesionSelectores.appendChild(campo);
+                    return selector;
+                };
+
+                const selectSala = crearCampoSeleccion("Sala", "selectSala");
+                const selectFecha = crearCampoSeleccion("Fecha", "selectFecha");
+                const selectHora = crearCampoSeleccion("Hora", "selectHora");
+
                 const cantidadTicket = document.createElement("p");
                 cantidadTicket.className="cantidadTicket";
                 let numero = 1;
                 cantidadTicket.textContent=numero;
+
+                let maxCantidad = 170;
+                let peticionMaxCantidad = 0;
+
+                const actualizarResumenSesion = () => {
+                    const opcionHora = selectHora.selectedOptions[0];
+                    if (!opcionHora) {
+                        PreTicketSala.textContent = "Sin sesiones disponibles";
+                        delete PreTicketSala.dataset.sesionId;
+                        return;
+                    }
+                    const partes = [];
+                    if (selectSala.selectedOptions[0]) partes.push(selectSala.selectedOptions[0].textContent);
+                    if (selectFecha.selectedOptions[0]) partes.push(selectFecha.selectedOptions[0].textContent);
+                    partes.push(opcionHora.textContent);
+                    PreTicketSala.textContent = partes.join(" · ");
+                    PreTicketSala.dataset.sesionId = opcionHora.dataset.sesionId;
+                };
+
+                // Cantidad maxima = butacas libres de la sesion seleccionada
+                const actualizarMaxCantidad = async () => {
+                    const opcionHora = selectHora.selectedOptions[0];
+                    if (!opcionHora) {
+                        maxCantidad = 1;
+                        numero = 1;
+                        cantidadTicket.textContent = numero;
+                        return;
+                    }
+                    const peticion = ++peticionMaxCantidad;
+                    const libres = await contarLibres(opcionHora.dataset.sesionId);
+                    // Ignora respuestas antiguas si el usuario cambió rápido de sesión
+                    if (peticion !== peticionMaxCantidad) return;
+                    maxCantidad = libres > 0 ? libres : 1;
+                    if (numero > maxCantidad) {
+                        numero = maxCantidad;
+                        cantidadTicket.textContent = numero;
+                    }
+                };
+
+                const rellenarHoras = () => {
+                    const sesiones = arraySesiones.filter(s =>
+                        String(s.sala_id) === String(selectSala.value) &&
+                        fechaSesion(s.fecha_hora) === selectFecha.value
+                    );
+                    selectHora.textContent = "";
+                    sesiones.forEach(sesion => {
+                        const opcion = document.createElement("option");
+                        opcion.value = sesion.sesion_id;
+                        opcion.textContent = horaSesion(sesion.fecha_hora);
+                        opcion.dataset.sesionId = sesion.sesion_id;
+                        opcion.dataset.aleatoria = sesion.precio_aleatorio;
+                        opcion.dataset.elegida = sesion.precio_elegido;
+                        selectHora.appendChild(opcion);
+                    });
+                    actualizarResumenSesion();
+                };
+
+                const rellenarFechas = () => {
+                    const fechaAnterior = selectFecha.value;
+                    const fechas = [...new Set(
+                        arraySesiones
+                            .filter(s => String(s.sala_id) === String(selectSala.value))
+                            .map(s => fechaSesion(s.fecha_hora))
+                    )].sort();
+
+                    selectFecha.textContent = "";
+                    fechas.forEach(fecha => {
+                        const opcion = document.createElement("option");
+                        opcion.value = fecha;
+                        opcion.textContent = formatearFechaSesion(fecha);
+                        selectFecha.appendChild(opcion);
+                    });
+                    if (fechas.includes(fechaAnterior)) selectFecha.value = fechaAnterior;
+                    rellenarHoras();
+                };
+
+                const rellenarSalas = () => {
+                    const salas = [];
+                    const vistas = new Set();
+                    arraySesiones.forEach(sesion => {
+                        const salaId = String(sesion.sala_id);
+                        if (!vistas.has(salaId)) {
+                            vistas.add(salaId);
+                            salas.push(sesion);
+                        }
+                    });
+                    salas.sort((a, b) => Number(a.sala_id) - Number(b.sala_id));
+
+                    const salaAnterior = selectSala.value;
+                    selectSala.textContent = "";
+                    salas.forEach(sesion => {
+                        const opcion = document.createElement("option");
+                        opcion.value = sesion.sala_id;
+                        opcion.textContent = `${sesion.sala || "Sala " + sesion.sala_id} · ${sesion.tipo}`;
+                        selectSala.appendChild(opcion);
+                    });
+                    if (salas.some(s => String(s.sala_id) === String(salaAnterior))) {
+                        selectSala.value = salaAnterior;
+                    }
+                    rellenarFechas();
+                };
+
+                selectSala.addEventListener("change", async () => {
+                    rellenarFechas();
+                    await actualizarMaxCantidad();
+                    actualizarTotal();
+                });
+                selectFecha.addEventListener("change", async () => {
+                    rellenarHoras();
+                    await actualizarMaxCantidad();
+                    actualizarTotal();
+                });
+                selectHora.addEventListener("change", async () => {
+                    actualizarResumenSesion();
+                    await actualizarMaxCantidad();
+                    actualizarTotal();
+                });
+
+                rellenarSalas();
+                await actualizarMaxCantidad();
                 const PreTicketInputs = document.createElement("div");
                 PreTicketInputs.className = "PreTicketInputs";
                 const Mas = document.createElement("button");
                 Mas.className="Mas";
                 Mas.textContent="+";
                 Mas.addEventListener("click", () => {
-                    if (numero < 170) {
+                    if (numero < maxCantidad) {
                         numero++;
                         cantidadTicket.textContent = numero;
                         actualizarTotal();
                     } else {
-                        numero = 170
+                        numero = maxCantidad;
                         cantidadTicket.textContent = numero;
-                        pushNotifyError("Limite alcanzado", "No puedes reservar mas butacas que las que hay en la sala")
+                        pushNotifyError("Limite alcanzado", "No puedes reservar mas butacas que las que quedan libres en la sala")
                     }
                 });
                 const Menos = document.createElement("button");
@@ -493,7 +795,7 @@ async function creteTicket(nombre) {
                         PreTicket.remove();
                         // Si era la ultima entrada, se cierra el carrito
                         if (document.querySelectorAll(".PreTicket").length === 0) {
-                            document.querySelector(".carrito").hidden = true;
+                            ocultarCarrito();
                         }
                     }
                     if (numero > 0) {
@@ -515,7 +817,7 @@ async function creteTicket(nombre) {
                 tipoButaca.addEventListener("change", actualizarTotal);
 
                 PreTicketInputs.append(Menos, cantidadTicket, Mas, tipoButaca);
-            Objeto.append(img, info, select, PreTicketInputs)
+            Objeto.append(img, info, sesionSelectores, PreTicketInputs)
         PreTicket.appendChild(Objeto)
         const lista = document.querySelector(".carrito-lista");
         lista.appendChild(PreTicket);
@@ -559,116 +861,120 @@ function borrarCarro() {
 function actualizarTotal() {
     let total = 0;
     document.querySelectorAll(".PreTicket").forEach(ticket => {
-        const sala = ticket.querySelector(".tipoTicket").selectedOptions[0];
-        if (!sala) return;
+        const sesionElegida = ticket.querySelector(".selectHora").selectedOptions[0];
+        if (!sesionElegida) return;
         const tipo = ticket.querySelector(".tipoButaca").value;
-        const precio = tipo === "Aleatoria" ? sala.dataset.aleatoria : sala.dataset.elegida;
+        const precio = tipo === "Aleatoria" ? sesionElegida.dataset.aleatoria : sesionElegida.dataset.elegida;
         const cantidad = Number(ticket.querySelector(".cantidadTicket").textContent);
         total += Number(precio) * cantidad;
     });
     document.querySelector(".precioTotalCarrito p").textContent = "Total: " + total.toFixed(2).replace(".", ",") + "€";
 }
 
-async function crearLineasButacas(sala) {
-    
+async function crearLineasButacas(sesionId) {
     const butacas_lista = document.querySelector(".lista_butacas");
+    butacas_lista.textContent = "";
+
+    const respuesta = await fetch("http://localhost:8080/api/getButacasFromSesion/" + sesionId);
+    if (!respuesta.ok) {
+        throw new Error("Error " + respuesta.status);
+    }
+    const butacas = await respuesta.json();
+
+    // Agrupar por fila
+    const porFila = {};
+    for (let i = 1; i <= 12; i++) porFila[i] = [];
+    butacas.forEach(b => {
+        if (!porFila[b.fila]) porFila[b.fila] = [];
+        porFila[b.fila].push(b);
+    });
 
     for (let i = 1; i <= 12; i++) {
-        const linea = document.createElement("div")
+        const linea = document.createElement("div");
         linea.className = "butaca_linea";
-        const butacasDeLaLinea = await generadorButacasPorLinea(sala, i);
 
-        butacasDeLaLinea.forEach(butca => {
+        porFila[i].sort((a,b) => a.numero_butaca - b.numero_butaca).forEach(butca => {
             const butaca = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             butaca.setAttribute("width", "22");
             butaca.setAttribute("height", "22");
             butaca.setAttribute("viewBox", "0 0 22 22");
+            butaca.dataset.id = butca.id;
 
-            // Crear los 5 rectangulos con rect
             for (let k = 1; k <= 5; k++) {
                 const rectangulo = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-
-                if (k === 1) { // respaldo
-                    rectangulo.setAttribute("x", "3");
-                    rectangulo.setAttribute("y", "1");
-                    rectangulo.setAttribute("width", "16");
-                    rectangulo.setAttribute("height", "12");
-                    rectangulo.setAttribute("rx", "4");
-                    rectangulo.setAttribute("fill", "#cbd5e1");
-                    rectangulo.setAttribute("stroke", "#475569");
-                    rectangulo.setAttribute("stroke-width", "1");
+                if (k === 1) {
+                    rectangulo.setAttribute("x", "3"); rectangulo.setAttribute("y", "1");
+                    rectangulo.setAttribute("width", "16"); rectangulo.setAttribute("height", "12");
+                    rectangulo.setAttribute("rx", "4"); rectangulo.setAttribute("fill", "#cbd5e1");
+                    rectangulo.setAttribute("stroke", "#475569"); rectangulo.setAttribute("stroke-width", "1");
                 }
-                if (k === 2) { // brillo del respaldo
-                    rectangulo.setAttribute("x", "6");
-                    rectangulo.setAttribute("y", "3");
-                    rectangulo.setAttribute("width", "10");
-                    rectangulo.setAttribute("height", "6");
-                    rectangulo.setAttribute("rx", "2");
-                    rectangulo.setAttribute("fill", "#e2e8f0");
+                if (k === 2) {
+                    rectangulo.setAttribute("x", "6"); rectangulo.setAttribute("y", "3");
+                    rectangulo.setAttribute("width", "10"); rectangulo.setAttribute("height", "6");
+                    rectangulo.setAttribute("rx", "2"); rectangulo.setAttribute("fill", "#e2e8f0");
                 }
-                if (k === 3) { // asiento
-                    rectangulo.setAttribute("x", "4");
-                    rectangulo.setAttribute("y", "12");
-                    rectangulo.setAttribute("width", "14");
-                    rectangulo.setAttribute("height", "8");
-                    rectangulo.setAttribute("rx", "3");
-                    rectangulo.setAttribute("fill", "#94a3b8");
-                    rectangulo.setAttribute("stroke", "#475569");
-                    rectangulo.setAttribute("stroke-width", "1");
+                if (k === 3) {
+                    rectangulo.setAttribute("x", "4"); rectangulo.setAttribute("y", "12");
+                    rectangulo.setAttribute("width", "14"); rectangulo.setAttribute("height", "8");
+                    rectangulo.setAttribute("rx", "3"); rectangulo.setAttribute("fill", "#94a3b8");
+                    rectangulo.setAttribute("stroke", "#475569"); rectangulo.setAttribute("stroke-width", "1");
                 }
-                if (k === 4) { // brazo izquierdo
-                    rectangulo.setAttribute("x", "1");
-                    rectangulo.setAttribute("y", "9");
-                    rectangulo.setAttribute("width", "4");
-                    rectangulo.setAttribute("height", "11");
-                    rectangulo.setAttribute("rx", "2");
-                    rectangulo.setAttribute("fill", "#64748b");
-                    rectangulo.setAttribute("stroke", "#334155");
-                    rectangulo.setAttribute("stroke-width", "1");
+                if (k === 4) {
+                    rectangulo.setAttribute("x", "1"); rectangulo.setAttribute("y", "9");
+                    rectangulo.setAttribute("width", "4"); rectangulo.setAttribute("height", "11");
+                    rectangulo.setAttribute("rx", "2"); rectangulo.setAttribute("fill", "#64748b");
+                    rectangulo.setAttribute("stroke", "#334155"); rectangulo.setAttribute("stroke-width", "1");
                 }
-                if (k === 5) { // brazo derecho
-                    rectangulo.setAttribute("x", "17");
-                    rectangulo.setAttribute("y", "9");
-                    rectangulo.setAttribute("width", "4");
-                    rectangulo.setAttribute("height", "11");
-                    rectangulo.setAttribute("rx", "2");
-                    rectangulo.setAttribute("fill", "#64748b");
-                    rectangulo.setAttribute("stroke", "#334155");
-                    rectangulo.setAttribute("stroke-width", "1");
+                if (k === 5) {
+                    rectangulo.setAttribute("x", "17"); rectangulo.setAttribute("y", "9");
+                    rectangulo.setAttribute("width", "4"); rectangulo.setAttribute("height", "11");
+                    rectangulo.setAttribute("rx", "2"); rectangulo.setAttribute("fill", "#64748b");
+                    rectangulo.setAttribute("stroke", "#334155"); rectangulo.setAttribute("stroke-width", "1");
                 }
-                butaca.appendChild(rectangulo);   // el rectangulo dentro del svg
+                butaca.appendChild(rectangulo);
             }
+
             if (butca.estado === "OCUPADA") {
                 butaca.setAttribute("data-nodisponible", "true");
+                // marcar en rojo
+                butaca.querySelectorAll("rect").forEach(r => r.setAttribute("fill", "#ef4444"));
             } else {
-                butaca.addEventListener("click", (e) => {
-                    console.log("hola");
-                })
+                butaca.style.cursor = "pointer";
+                butaca.addEventListener("click", () => {
+                    const id = Number(butca.id);
+                    if (asientosSeleccionados.has(id)) {
+                        asientosSeleccionados.delete(id);
+                        butaca.querySelectorAll("rect").forEach((r, idx) => {
+                            // restaurar colores originales aproximados
+                        });
+                        butaca.removeAttribute("data-seleccionada");
+                        // revertir fills
+                        const rects = butaca.querySelectorAll("rect");
+                        rects[0].setAttribute("fill", "#cbd5e1");
+                        rects[2].setAttribute("fill", "#94a3b8");
+                        rects[3].setAttribute("fill", "#64748b");
+                        rects[4].setAttribute("fill", "#64748b");
+                    } else {
+                        if (asientosSeleccionados.size >= maxAsientosSeleccion) {
+                            pushNotifyError("Limite", "Ya has seleccionado " + maxAsientosSeleccion + " butacas");
+                            return;
+                        }
+                        asientosSeleccionados.add(id);
+                        butaca.setAttribute("data-seleccionada", "true");
+                        butaca.querySelectorAll("rect").forEach(r => r.setAttribute("fill", "#f97316"));
+                    }
+                });
             }
-            linea.appendChild(butaca);            // el svg dentro de la fila
+            linea.appendChild(butaca);
         });
 
-        butacas_lista.appendChild(linea);         // la fila dentro de .lista_butacas
+        butacas_lista.appendChild(linea);
     }
 }
 
-async function generadorButacasPorLinea(sala, linea) {
-    const respuesta = await fetch("http://localhost:8080/api/getButacasFromSala/"+sala);
-    if(!respuesta.ok) {
-        throw new Error("Error " + respuesta.status);
-    }
-
-    const mensaje = await respuesta.json();
-
-    const butacasDeLaLinea = [];
-    mensaje.forEach(butaca => {
-        if (butaca.fila === linea) {
-            butacasDeLaLinea.push(butaca);
-        }
-    });
-
-    return butacasDeLaLinea;
-}
+// Variables globales de seleccion de butacas
+const asientosSeleccionados = new Set();
+let maxAsientosSeleccion = 1;
 
 async function abrirButacas() {
     const modalButaca = document.getElementById("modal-butacas");
@@ -677,11 +983,15 @@ async function abrirButacas() {
         linea.remove();
     });
 
+    asientosSeleccionados.clear();
+
     const login = await getLogin();
     if (login) {
-        crearLineasButacas(await getidSala());
+        const sesionId = document.querySelector(".PreTicketSala").dataset.sesionId;
+        const cantidad = Number(document.querySelector(".cantidadTicket").textContent);
+        maxAsientosSeleccion = cantidad > 0 ? cantidad : 1;
+        await crearLineasButacas(sesionId);
         modalButaca.hidden = false;
-
     }
 }
 
@@ -698,13 +1008,86 @@ async function getIdAndTipoSala() {
 
 async function getidSala() {
     const array = await getIdAndTipoSala();
-    const tipoSeleccionado = document.querySelector(".PreTicketSala").textContent.trim();
+    const sesionId = document.querySelector(".PreTicketSala").dataset.sesionId;
 
-    const sala = array.find(s => s.tipo === tipoSeleccionado);
+    const sala = array.find(s => String(s.sesion_id) === String(sesionId));
     if (!sala) {
-        console.warn("No se encontró sala de tipo:", tipoSeleccionado);
+        console.warn("No se encontró la sesión:", sesionId);
         return null;
     }
     console.log("Encontrado, la sala es: " + sala.sala_id + " | " + sala.tipo);
     return sala.sala_id;
+}
+async function contarLibres(sesionId) {
+    const resp = await fetch("http://localhost:8080/api/getButacasFromSesion/" + sesionId);
+    if (!resp.ok) return 0;
+    const butacas = await resp.json();
+    return butacas.filter(b => b.estado === "LIBRE").length;
+}
+
+async function procesarPago() {
+    const tipoButaca = document.querySelector(".tipoButaca").value;
+    const sesionId = document.querySelector(".PreTicketSala").dataset.sesionId;
+    const cantidad = Number(document.querySelector(".cantidadTicket").textContent);
+
+    // Validar cantidad <= libres
+    const libres = await contarLibres(sesionId);
+    if (cantidad > libres) {
+        pushNotifyError("Sin butacas", "Solo quedan " + libres + " butacas libres");
+        return;
+    }
+
+    if (tipoButaca === "Elegida") {
+        abrirButacas();
+    } else {
+        // Aleatoria: compra directa
+        await comprarEntradas(sesionId, "Aleatoria", cantidad, []);
+    }
+}
+
+async function confirmarCompraButacas() {
+    const sesionId = document.querySelector(".PreTicketSala").dataset.sesionId;
+    const cantidad = Number(document.querySelector(".cantidadTicket").textContent);
+    if (asientosSeleccionados.size !== cantidad) {
+        pushNotifyError("Seleccion incompleta", "Debes seleccionar " + cantidad + " butacas");
+        return;
+    }
+    const ok = await comprarEntradas(sesionId, "Elegida", cantidad, Array.from(asientosSeleccionados));
+    if (ok) {
+        asientosSeleccionados.clear();
+    }
+}
+
+async function comprarEntradas(sesionId, seleccion, cantidad, butacaIds) {
+    const nombre = document.getElementById("user-nombre").textContent;
+    try {
+        const resp = await fetch("http://localhost:8080/api/comprar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                usuario: nombre,
+                sesion_id: Number(sesionId),
+                seleccion: seleccion,
+                cantidad: cantidad,
+                butaca_ids: butacaIds
+            })
+        });
+        const data = await resp.json().catch(() => ({}));
+        if (resp.ok && data.ok) {
+            PushNotify("Compra realizada", "Tus entradas se han comprado correctamente");
+            borrarCarro();
+            cerrarButacas();
+            // Si ya no quedan entradas en el carrito, se cierra
+            if (document.querySelectorAll(".PreTicket").length === 0) {
+                ocultarCarrito();
+            }
+            return true;
+        } else {
+            pushNotifyError("Error", data.mensaje || "No se pudo completar la compra");
+            return false;
+        }
+    } catch (e) {
+        pushNotifyError("Error", "No se pudo completar la compra");
+        return false;
+    }
 }

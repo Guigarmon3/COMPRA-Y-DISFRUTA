@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS ticket;
 DROP TABLE IF EXISTS sesion;
 DROP TABLE IF EXISTS butaca;
 DROP TABLE IF EXISTS sala;
+DROP TABLE IF EXISTS tipo_sala;
 DROP TABLE IF EXISTS pelicula;
 DROP TABLE IF EXISTS genero;
 DROP TABLE IF EXISTS usuario;
@@ -40,16 +41,24 @@ CREATE TABLE pelicula (
   CONSTRAINT pelicula_ibfk_1 FOREIGN KEY (genero_id) REFERENCES genero (id)
 );
 
-CREATE TABLE sala (
+CREATE TABLE tipo_sala (
   id int NOT NULL AUTO_INCREMENT,
   nombre varchar(100) NOT NULL,
-  tipo varchar(100) NOT NULL,
   precio_aleatorio decimal(5,2) NOT NULL,
   precio_elegido decimal(5,2) NOT NULL,
   descripcion text,
   PRIMARY KEY (id),
+  UNIQUE KEY nombre (nombre)
+);
+
+CREATE TABLE sala (
+  id int NOT NULL AUTO_INCREMENT,
+  nombre varchar(100) NOT NULL,
+  tipo_sala_id int NOT NULL,
+  PRIMARY KEY (id),
   UNIQUE KEY nombre (nombre),
-  UNIQUE KEY tipo (tipo)
+  KEY tipo_sala_id (tipo_sala_id),
+  CONSTRAINT sala_ibfk_1 FOREIGN KEY (tipo_sala_id) REFERENCES tipo_sala (id)
 );
 
 CREATE TABLE sesion (
@@ -85,7 +94,7 @@ CREATE TABLE ticket (
   UNIQUE KEY sesion_id (sesion_id, butaca_id),
   KEY usuario_id (usuario_id),
   KEY butaca_id (butaca_id),
-  CONSTRAINT ticket_ibfk_1 FOREIGN KEY (usuario_id) REFERENCES usuario (id),
+  CONSTRAINT ticket_ibfk_1 FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE CASCADE,
   CONSTRAINT ticket_ibfk_2 FOREIGN KEY (sesion_id) REFERENCES sesion (id),
   CONSTRAINT ticket_ibfk_3 FOREIGN KEY (butaca_id) REFERENCES butaca (id)
 );

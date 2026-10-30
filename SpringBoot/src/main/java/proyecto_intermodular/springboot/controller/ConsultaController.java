@@ -5,6 +5,7 @@ import proyecto_intermodular.springboot.Modal.ROL;
 import proyecto_intermodular.springboot.Modal.Usuario;
 import proyecto_intermodular.springboot.service.ConsultaService;
 
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +32,23 @@ public class ConsultaController {
     }
 
     @PostMapping("/api/crearUsuario")
-    public void crerUsuario(@RequestBody Usuario usuario) {
-        cs.CrearUsuario(usuario);
+    public ResponseEntity<?> crearUsuario(@RequestBody Usuario usuario) {
+        try {
+            cs.CrearUsuario(usuario);
+            return ResponseEntity.ok(Map.of("ok", true));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("ok", false, "mensaje", e.getMessage()));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(500)
+                    .body(Map.of("ok", false, "mensaje", e.getMessage()));
+        } catch (Exception e) {
+            String mensaje = e.getMessage() == null || e.getMessage().isBlank()
+                    ? "Error inesperado al crear el usuario"
+                    : "Error inesperado al crear el usuario: " + e.getMessage();
+            return ResponseEntity.status(500)
+                    .body(Map.of("ok", false, "mensaje", mensaje));
+        }
     }
 
     @GetMapping("/api/login/{email}/{passwd}")
@@ -61,10 +77,38 @@ public class ConsultaController {
     @GetMapping("/api/getsesiones/{id}")
     public List<Map<String, Object>> getSesiones(@PathVariable int id) {return cs.getSesiones(id);}
 
-    @GetMapping("/api/getButacasFromSala/{id_sala}")
-    public List<Map<String, Object>> getButacasFromSala(@PathVariable int id_sala) {return cs.getButacasFromSala(id_sala);}
+    @GetMapping("/api/getButacasFromSesion/{sesion_id}")
+    public List<Map<String, Object>> getButacasFromSesion(@PathVariable int sesion_id) {return cs.getButacasFromSesion(sesion_id);}
 
     @GetMapping("/api/getIdSesion/{nombrePelicula}")
     public List<Map<String, Object>> getIdSesion(@PathVariable String nombrePelicula) {return cs.getIdSesion(nombrePelicula);}
 
+
+    @PostMapping("/api/comprar")
+    public ResponseEntity<?> comprar(@RequestBody Map<String, Object> body) {
+        try {
+            String usuario = String.valueOf(body.get("usuario"));
+            int sesionId = Integer.parseInt(String.valueOf(body.get("sesion_id")));
+            String seleccion = String.valueOf(body.get("seleccion"));
+            int cantidad = Integer.parseInt(String.valueOf(body.get("cantidad")));
+            List<Integer> butacaIds = new java.util.ArrayList<>();
+            Object raw = body.get("butaca_ids");
+            if (raw instanceof List<?> lista) {
+                for (Object o : lista) butacaIds.add(Integer.parseInt(String.valueOf(o)));
+            }
+            cs.comprar(usuario, sesionId, seleccion, cantidad, butacaIds);
+            return ResponseEntity.ok(Map.of("ok", true));
+        } catch (Exception e) {
+            return ResponseEntity.status(409).body(Map.of("ok", false, "mensaje", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/api/ticket/{id}")
+    public void deleteTicket(@PathVariable int id) { cs.deleteTicket(id); }
+
+    @DeleteMapping("/api/usuario/{id}")
+    public void deleteUser(@PathVariable int id) { cs.deleteUser(id); }
+
+    @GetMapping("/api/tickets/{nombre}")
+    public List<Map<String, Object>> getTicketsByUsuario(@PathVariable String nombre) { return cs.getTicketsByUsuario(nombre); }
 }

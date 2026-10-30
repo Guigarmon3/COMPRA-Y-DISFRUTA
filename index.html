@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="Testing/testis.css">
+    <link rel="stylesheet" href="styles.css?v=20261030-2">
+    <link rel="stylesheet" href="Testing/testis.css?v=20261030-1">
 
     <!-- Libreria de NOTIFICACIONES -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify/dist/simple-notify.css" />
@@ -146,7 +146,7 @@
             </form>
 
             <!-- Formulario de registro -->
-            <form id="form-registro" class="form-auth" onsubmit="return false;" hidden>
+            <form id="form-registro" class="form-auth" onsubmit="crearUsuario(); return false;" hidden>
                 <label for="reg-nombre">Nombre</label>
                 <input type="text" id="reg-nombre" maxlength="100" autocomplete="name" required>
 
@@ -160,7 +160,7 @@
                 </div>
 
                 <p class="mensaje" id="mensaje-registro" role="alert"></p>
-                <button type="submit" class="btn-login btn-ancho" onclick="crearUsuario()">Crear cuenta</button>
+                <button type="submit" class="btn-login btn-ancho" id="btn-crear-cuenta">Crear cuenta</button>
             </form>
         </div>
     </div>
@@ -219,7 +219,7 @@
         <div class="carrito-lista"></div>
         <div class="precioTotalCarrito">
             <p>Total: 0€</p>
-            <button class="comprarCarrito" onclick="abrirButacas()">REALIZAR PAGO</button>
+            <button class="comprarCarrito" onclick="procesarPago()">REALIZAR PAGO</button>
         </div>
         
     </div>
@@ -234,11 +234,14 @@
             </span>
             <div class="lista_butacas">
             </div>
+            <div style="text-align:center; margin-top:10px;">
+                <button class="btn-comprar" onclick="confirmarCompraButacas()">Confirmar compra</button>
+            </div>
         </div>
     </div>
     
     <!-- Ventana Tickets -->
-    <div class="modal" id="modal-tickets">
+    <div class="modal" id="modal-tickets" hidden>
         <div class="tickets modal-caja modal-ancho" role="dialog" aria-modal="true" aria-labelledby="tickets-titulo">
             <button class="modal-cerrar" onclick="cerrarTickets()" aria-label="Cerrar">&times;</button>
             <h1 id="tickets-titulo">Tus Tickets</h1>
@@ -253,23 +256,12 @@
                     <p>Hora cita</p>
                     <button>DevolverEntradas</button>
                 </div>
-
-                <div class="ticket">
-                    <img src="./imagenes/Carteleras/LaBolaNegra.jpg" alt="Imagen Pelicula" class="img-ticket">
-                    <span>
-                        <h1>nombrePeli</h1>
-                        <h2>salaSeleccioanda</h2>
-                    </span>
-                    <p>Fecha de la cita</p>
-                    <p>Hora cita</p>
-                    <button>DevolverEntradas</button>
-                </div>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
-    <script src="Testing/tests.js"></script>
-    <script src="Librerias/notify.js"></script>
+    <script src="script.js?v=20261030-4"></script>
+    <script src="Testing/tests.js?v=20261030-1"></script>
+    <script src="Librerias/notify.js?v=20261030-1"></script>
 </body>
 </html>

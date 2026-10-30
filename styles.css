@@ -203,6 +203,15 @@ main {
     padding: 48px 32px;
     /* Deja espacio para que la cabecera fija no tape el título al navegar */
     scroll-margin-top: 110px;
+    transition: padding-right 0.35s ease;
+}
+
+/* Con el carrito abierto, el contenido se desplaza a la izquierda
+   para quedar centrado en el espacio libre y no taparse con el panel. */
+body.carrito-abierto #eventos,
+body.carrito-abierto #salas,
+body.carrito-abierto #informacion {
+    padding-right: 452px;
 }
 
 /* Eventos */
@@ -212,7 +221,8 @@ main {
     align-items: center;
     gap: 32px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, 220px);
+    /* auto-fit colapsa las columnas vacías para que los carteles queden centrados */
+    grid-template-columns: repeat(auto-fit, 220px);
 }
 
 .cartel {
@@ -277,7 +287,7 @@ main {
 .lista-salas {
     display: grid;
     justify-content: center;
-    grid-template-columns: repeat(auto-fill, 280px);
+    grid-template-columns: repeat(auto-fit, 280px);
     gap: 24px;
 }
 
@@ -574,6 +584,46 @@ body:has(.modal:not([hidden])) {
 }
 
 .tipoTicket:focus {
+    outline: none;
+    border-color: #f97316;
+}
+
+/* Selectores de sala, fecha y hora de la sesión */
+.sesionSelectores {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.campoSeleccion {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.campoSeleccion label {
+    flex: 0 0 42px;
+    color: #cbd5e1;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.selectSesion {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    padding: 4px 6px;
+    background-color: #0f172a;
+    color: #ffffff;
+    border: 1px solid #475569;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.selectSesion:focus {
     outline: none;
     border-color: #f97316;
 }
@@ -1102,6 +1152,16 @@ body:has(.modal:not([hidden])) {
 
 .button-admin .getcategoria:hover {
     background-color: #ea580c;
+}
+
+/* En pantallas estrechas el carrito ya ocupa casi todo el ancho,
+   así que no desplazamos el contenido. */
+@media (max-width: 1000px) {
+    body.carrito-abierto #eventos,
+    body.carrito-abierto #salas,
+    body.carrito-abierto #informacion {
+        padding-right: 32px;
+    }
 }
 
 /* Móvil */
