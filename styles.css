@@ -251,6 +251,14 @@ body.carrito-abierto #informacion {
     font-size: 15px;
 }
 
+.cartel-duracion {
+    display: block;
+    margin-top: 4px;
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 400;
+}
+
 /* Cuando pasas el ratón por un cartel, los demás se desenfocan */
 #cartelera:has(.cartel:hover) .cartel:not(:hover) {
     filter: blur(1px);
@@ -872,6 +880,23 @@ body:has(.modal:not([hidden])) {
     font-size: 12.8px;
     font-weight: 600;
     padding: 3.2px 11.2px;
+}
+
+.evento-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.evento-duracion {
+    color: #cbd5e1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.evento-duracion:not(:empty)::before {
+    content: "\23F1\FE0E  ";
 }
 
 .evento-resumen {

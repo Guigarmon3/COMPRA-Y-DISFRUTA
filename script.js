@@ -49,11 +49,26 @@ function verPassword(idInput, boton) {
 
 
 
+// Convierte minutos en un texto legible: 148 -> "2 h 28 min", 120 -> "2 h", 45 -> "45 min"
+function formatearDuracion(minutos) {
+    const total = parseInt(minutos, 10);
+    if (isNaN(total) || total <= 0) {
+        return "";
+    }
+    const horas = Math.floor(total / 60);
+    const mins = total % 60;
+    if (horas === 0) {
+        return mins + " min";
+    }
+    return mins === 0 ? horas + " h" : horas + " h " + mins + " min";
+}
+
 function abrirEvento(cartel) {
     // Los datos están en los atributos data-* del cartel
     document.getElementById("evento-img").src = cartel.getAttribute("data-imagen");
     document.getElementById("evento-nombre").textContent = cartel.getAttribute("data-nombre");
     document.getElementById("evento-categoria").textContent = cartel.getAttribute("data-categoria");
+    document.getElementById("evento-duracion").textContent = cartel.getAttribute("data-duracion");
     document.getElementById("evento-resumen").textContent = cartel.getAttribute("data-resumen");
     document.getElementById("modal-evento").hidden = false;
 }
@@ -280,6 +295,12 @@ async function MostrarEventos() {
 
         const nombre = document.createElement("p");
         nombre.textContent = element.nombre;
+
+        const duracion = formatearDuracion(element.duracion_min);
+        const duracionTexto = document.createElement("span");
+        duracionTexto.className = "cartel-duracion";
+        duracionTexto.textContent = duracion;
+        nombre.append(duracionTexto);
         pelicula.append(nombre);
 
         const cat = await GetCategoria(element.id);
@@ -287,6 +308,7 @@ async function MostrarEventos() {
         pelicula.setAttribute("data-imagen", element.imagen);
         pelicula.setAttribute("data-nombre", element.nombre);
         pelicula.setAttribute("data-categoria", cat);
+        pelicula.setAttribute("data-duracion", duracion);
         pelicula.setAttribute("data-resumen", element.resumen);
 
         div.appendChild(pelicula);
