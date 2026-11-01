@@ -81,7 +81,6 @@ async function getNombreTest() {
     } else {
         const nombre = await respuesta.text();
         console.log(nombre);
-        alert(nombre);
     }   
 }
 

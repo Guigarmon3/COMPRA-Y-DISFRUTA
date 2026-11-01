@@ -3,6 +3,9 @@ const button_loggin = document.querySelector(".btn-login");
 const nombre = document.getElementById("user-nombre");
 nombre.style.display = "none"
 
+const btntickets = document.querySelector(".btn-tickets");
+btntickets.style.display = "none";
+
 // ---------- Login ----------
 function abrirLogin() {
     mostrarLogin();
@@ -511,6 +514,7 @@ async function iniciarSesion() {
                 sesion = true;
             }
             nombre.style.display = "block";
+            btntickets.style.display = "block";
             nombre.textContent = await getNombre(email)+"";
             button_loggin.style.display = "none";
             cerrarLogin();
