@@ -111,4 +111,40 @@ public class ConsultaController {
 
     @GetMapping("/api/tickets/{nombre}")
     public List<Map<String, Object>> getTicketsByUsuario(@PathVariable String nombre) { return cs.getTicketsByUsuario(nombre); }
+
+    @GetMapping("/api/categorias/all")
+    public List<Map<String, Object>> getAllCategorias() {return cs.getAllCategorias();}
+
+    @GetMapping("/api/eventos/crear")
+    public ResponseEntity<String> crearEvento(
+            @RequestParam String nombre,
+            @RequestParam("genero_id") int generoId,
+            @RequestParam String resumen,
+            @RequestParam String imagen,
+            @RequestParam("duracion_min") int duracionMin) {
+
+        cs.crearEvento(nombre, generoId, resumen, imagen, duracionMin);
+        return ResponseEntity.ok("Evento creado");
+    }
+
+    @GetMapping("/api/salas/crear")
+    public ResponseEntity<String> crearSala(@RequestParam String nombre,@RequestParam double precio_aleatorio,@RequestParam double precio_elegido,@RequestParam String descripcion) {
+        cs.crearSala(nombre, precio_aleatorio, precio_elegido, descripcion);
+        return ResponseEntity.ok("Sala creada");
+    }
+
+    @GetMapping("/api/sesiones/")
+    public List<Map<String, Object>> getSesiones() {return cs.getSesiones();}
+
+    // Me cuenta cuantas sesiones existen que entren dentro de el rango de la nueva sesion
+    @GetMapping("/api/sesiones/buscar/{fecha}/{hora}/{sala_id}/{duracion_minutos}")
+    public int buscarSesiones(@PathVariable String fecha,@PathVariable String hora,@PathVariable int sala_id,@PathVariable int duracion_minutos) {return cs.buscarSesiones(fecha, hora, sala_id, duracion_minutos);}
+
+    // Crear las sesiones
+    @PostMapping("/api/sesiones/crear/{fecha}/{hora}/{pelicula_id}/{sala_id}")
+    public void crearSesion(@PathVariable String fecha, @PathVariable String hora, @PathVariable int pelicula_id, @PathVariable int sala_id) {cs.crearSesion(fecha, hora, pelicula_id, sala_id);}
+
+    // Get de la duracio nde una pelicula
+    @GetMapping("/api/eventos/getDuracion/{pelicula_id}")
+    public Integer getDuracion(@PathVariable int pelicula_id) {return cs.getDuracion(pelicula_id);}
 }

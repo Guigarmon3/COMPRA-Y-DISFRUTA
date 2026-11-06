@@ -129,6 +129,26 @@ BEGIN
   END WHILE;
 END$$
 
+-- Al crear un tipo de sala se crea automáticamente una sala de ese tipo
+-- ('Sala <id del tipo>'). A su vez, sala_crear_butacas genera sus 168 butacas.
+CREATE TRIGGER tipo_sala_crear_sala
+AFTER INSERT ON tipo_sala
+FOR EACH ROW
+BEGIN
+  INSERT INTO sala (nombre, tipo_sala_id)
+  VALUES (CONCAT('Sala ', NEW.id), NEW.id);
+END$$
+
+-- Al borrar un tipo de sala se borran antes sus butacas y su sala.
+-- Si la sala tiene sesiones o tickets, el borrado falla por las FK.
+CREATE TRIGGER tipo_sala_borrar_sala
+BEFORE DELETE ON tipo_sala
+FOR EACH ROW
+BEGIN
+  DELETE FROM butaca WHERE sala_id IN (SELECT id FROM sala WHERE tipo_sala_id = OLD.id);
+  DELETE FROM sala WHERE tipo_sala_id = OLD.id;
+END$$
+
 -- No permite crear una sesión que se solape con otra de la misma sala.
 -- Cada sesión ocupa [inicio, inicio + duración de la película + 15 min de limpieza).
 CREATE TRIGGER sesion_no_solape_ins
@@ -197,7 +217,8 @@ INSERT INTO pelicula (id, nombre, genero_id, resumen, imagen, duracion_min) VALU
 (4, 'Tiburón',                 4, 'Un tiburón blanco siembra el pánico en una playa y tres hombres salen a cazarlo en alta mar.', 'https://en.wikipedia.org/wiki/Special:FilePath/Jaws_movie_poster.jpg?width=400', 124),
 (5, 'El gran hotel Budapest',  5, 'Un conserje legendario y su joven aprendiz se ven envueltos en el robo de un cuadro famoso.', 'https://en.wikipedia.org/wiki/Special:FilePath/The_Grand_Budapest_Hotel.png?width=400', 99);
 
--- Tipos de sala: nombre del tipo, precios y descripción
+-- Tipos de sala: al insertar cada uno, el trigger tipo_sala_crear_sala
+-- crea su sala (Sala 1..10) y sala_crear_butacas sus 168 butacas (1.680 en total).
 INSERT INTO tipo_sala (id, nombre, precio_aleatorio, precio_elegido, descripcion) VALUES
 (1,  'Cine infantil',     5.00,  6.00, 'Sesiones para peques con volumen suave y luz tenue.'),
 (2,  'Cine 3D',           9.00, 10.50, 'Proyección en tres dimensiones con gafas incluidas.'),
@@ -209,20 +230,6 @@ INSERT INTO tipo_sala (id, nombre, precio_aleatorio, precio_elegido, descripcion
 (8,  'Cine 4D',          12.00, 14.00, 'Butacas que se mueven y efectos de viento, agua y aroma.'),
 (9,  'Teatro',           15.00, 18.00, 'Obras en directo con escenario y patio de butacas.'),
 (10, 'Conciertos',       20.00, 25.00, 'Música en directo con un sonido pensado para el escenario.');
-
--- Una única sala por cada tipo de sala (10 salas, 10 tipos).
--- Las butacas (168 por sala = 1.680) las genera automáticamente el trigger sala_crear_butacas.
-INSERT INTO sala (id, nombre, tipo_sala_id) VALUES
-(1,  'Sala 1',  1),
-(2,  'Sala 2',  2),
-(3,  'Sala 3',  3),
-(4,  'Sala 4',  4),
-(5,  'Sala 5',  5),
-(6,  'Sala 6',  6),
-(7,  'Sala 7',  7),
-(8,  'Sala 8',  8),
-(9,  'Sala 9',  9),
-(10, 'Sala 10', 10);
 
 -- Sesiones: los triggers validan que no haya solapes en cada sala
 INSERT INTO sesion (id, fecha_hora, pelicula_id, sala_id) VALUES
@@ -287,3 +294,12 @@ ORDER BY t.sesion_id, t.butaca_id;
 --
 -- Debe FUNCIONAR: horario libre
 -- INSERT INTO sesion (fecha_hora, pelicula_id, sala_id) VALUES ('2026-10-24 23:30:00', 1, 4);
+--
+-- Debe crear automáticamente 'Sala 11' con 168 butacas
+-- INSERT INTO tipo_sala (nombre, precio_aleatorio, precio_elegido, descripcion)
+-- VALUES ('Cine Premium', 13.00, 15.00, 'Prueba del trigger');
+-- SELECT * FROM sala WHERE tipo_sala_id = 11;
+-- SELECT COUNT(*) FROM butaca WHERE sala_id = 11;  -- 168
+--
+-- Debe borrar el tipo, su sala y sus butacas
+-- DELETE FROM tipo_sala WHERE nombre = 'Cine Premium';

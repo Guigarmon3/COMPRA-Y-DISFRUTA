@@ -3,18 +3,20 @@
  *
  * Marca & Acentos:
  *   - Azul Cineo:    #1E3A8A  (Botones principales, enlaces, marcas)
- *   - Naranja Taquik: #F97316  (Hover, ofertas, elementos destacados)
- *   - Amarillo Ámbar:#FBBF24  (Calificaciones, estrellas, badges de estreno)
+ *   - Naranja: #F97316  (Hover, ofertas, elementos destacados)
+ *   - Amarillo:#FBBF24  (Calificaciones, estrellas, badges de estreno)
  *
  * Fondos & Superficies:
  *   - Fondo Principal: #0F172A (Azul noche oscuro para el <body>)
  *   - Header/Surfaces: #1E293B (Gris slate oscuro para header, footer y modales)
- *   - Tarjetas (Cards):#334155 (Azul grisáceo para contenedores de eventos)
+ *   - Tarjetas :#334155 (Azul grisáceo para contenedores de eventos)
  *
  * Textos & Tipografía:
  *   - Texto Primario:  #FFFFFF (Blanco puro para títulos principales y botones)
  *   - Texto Secundario:#CBD5E1 (Gris claro para enlaces, subtítulos y descripciones)
- *   - Texto Muted:     #64748B (Gris neutro para placeholders y texto secundario)
+ *   - Texto indicativo:     #64748B (Gris neutro para placeholders y texto secundario)
+ *
+ * NOTA: los estilos del panel de administración están en Testing/testis.css
  *******************************************************************************/
 
 * {
@@ -22,7 +24,6 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
-    /* Estilo sharp: esquinas rectas de 90° en toda la web */
     border-radius: 0;
 }
 
@@ -147,23 +148,6 @@ main {
 #user-nombre:hover {
     cursor: default;
     box-shadow: 0px ;
-}
-#admin-pannel {
-    background-color: #fbbf24;
-    color: #0f172a;
-    border: 2px solid #0f172a;
-    padding: 9px 26px;
-    font-size: 15.2px;
-    font-weight: bolder;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-}
-
-#admin-pannel:hover {
-    background-color: #fbbf24;
-    transform: translate(-2px, -2px);
-    box-shadow: 4px 4px 0 #f97316;
 }
 
 
@@ -400,7 +384,7 @@ body.carrito-abierto #informacion {
 }
 
 /* El atributo hidden necesita esto porque display:flex lo anula */
-.modal[hidden], .carrito[hidden], #admin-pannel[hidden], .butacas[hidden] { 
+.modal[hidden], .carrito[hidden], .butacas[hidden] {
     display: none;
 }
 
@@ -422,7 +406,7 @@ body:has(.modal:not([hidden])) {
     animation: aparecer 0.25s ease;
 }
 
-/* Variante ancha para las ventanas grandes (butacas, tickets, administración) */
+/* Variante ancha para las ventanas grandes (butacas, tickets) */
 .modal-ancho {
     max-width: 760px;
 }
@@ -1126,58 +1110,7 @@ body:has(.modal:not([hidden])) {
     background-color: #f97316;
 }
 
-/* ---------- Ventana de administración ---------- */
-
-.botones-admin-test {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-    margin-top: 8px;
-}
-
-.button-admin {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 16px;
-    background-color: #334155;
-    border: 2px solid #475569;
-    border-top: 4px solid #fbbf24;
-}
-
-.button-admin h3 {
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: 600;
-}
-
-.button-admin input {
-    padding: 8px 10px;
-    background-color: #0f172a;
-    color: #ffffff;
-    border: 1px solid #475569;
-    font-size: 14px;
-}
-
-.button-admin input:focus {
-    outline: none;
-    border-color: #f97316;
-}
-
-.button-admin .getcategoria {
-    margin-top: auto;
-    padding: 9px;
-    background-color: #f97316;
-    color: #ffffff;
-    border: 2px solid #ffffff;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.button-admin .getcategoria:hover {
-    background-color: #ea580c;
-}
+/* ---------- Responsive ---------- */
 
 /* En pantallas estrechas el carrito ya ocupa casi todo el ancho,
    así que no desplazamos el contenido. */

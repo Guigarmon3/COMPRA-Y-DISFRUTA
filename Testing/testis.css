@@ -1,47 +1,343 @@
-.botones-admin-test {
+/*******************************************************************************
+ * TESTING / ADMIN - Panel de administración
+ * Usa la paleta oficial de Taquik: #f97316 / #fbbf24 / #1e293b / #334155 / #0f172a
+ ******************************************************************************/
+
+/* ---------- Botón del panel (cabecera) ---------- */
+
+#admin-pannel {
+    background-color: #fbbf24;
+    color: #0f172a;
+    border: 2px solid #0f172a;
+    padding: 9px 26px;
+    font-size: 15.2px;
+    font-weight: bolder;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+#admin-pannel:hover {
+    background-color: #fbbf24;
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 #f97316;
+}
+
+#admin-pannel:active {
+    transform: translate(0, 0);
+    box-shadow: none;
+}
+
+#admin-pannel[hidden] {
+    display: none;
+}
+
+/* ---------- Ventana de administración ---------- */
+
+.modal-caja.modal-admin-ancho {
+    width: 96%;
+    max-width: 1600px;
+    border-top: 6px solid #fbbf24; /* distingue el panel de admin del resto de modales */
+    scrollbar-width: thin;
+    scrollbar-color: #f97316 #0f172a;
+}
+
+.modal-admin-ancho::-webkit-scrollbar {
+    width: 10px;
+}
+
+.modal-admin-ancho::-webkit-scrollbar-track {
+    background-color: #0f172a;
+}
+
+.modal-admin-ancho::-webkit-scrollbar-thumb {
+    background-color: #f97316;
+    border: 2px solid #0f172a;
+}
+
+/* Título: mismo subrayado naranja que los títulos de sección */
+#admin-titulo {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 28px;
+}
+
+#admin-titulo::after {
+    content: "";
+    display: block;
+    width: 56px;
+    height: 4px;
+    margin: 10px auto 0;
+    background-color: #f97316;
+}
+
+/* ---------- Menú desplegable (reutilizable) ---------- */
+
+.menu-admin {
+    margin-top: 8px;
+    background-color: #1e293b;
+    border: 2px solid #475569;
+    box-shadow: 5px 5px 0 #0f172a;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.menu-admin + .menu-admin {
+    margin-top: 20px;
+}
+
+.menu-admin:hover {
+    border-color: #64748b;
+}
+
+.menu-admin[open] {
+    border-left: 4px solid #f97316;
+}
+
+/* Cabecera clicable con marcador y indicador + / − */
+.menu-admin > summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.menu-admin > summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Cuadradito amarillo antes del título */
+.menu-admin > summary::before {
+    content: "";
+    flex: none;
+    width: 10px;
+    height: 10px;
+    background-color: #fbbf24;
+    box-shadow: 2px 2px 0 #f97316;
+}
+
+/* Indicador a la derecha */
+.menu-admin > summary::after {
+    content: "+";
+    margin-left: auto;
+    color: #fbbf24;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.menu-admin > summary:hover {
+    color: #f97316;
+    background-color: #334155;
+}
+
+.menu-admin[open] > summary {
+    color: #f97316;
+    border-bottom: 2px solid #475569;
+}
+
+.menu-admin[open] > summary::after {
+    content: "\2212";
+    color: #f97316;
+}
+
+/* Al abrir, la rejilla aparece con la misma animación que los modales */
+.menu-admin[open] > .menu-admin-grid {
+    animation: aparecer 0.25s ease;
+}
+
+/* ---------- Rejilla ---------- */
+
+.menu-admin-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
     padding: 20px;
 }
 
-.button-admin {
-    box-sizing: border-box;
-    width: 100%;
-    min-width: 0;
+.menu-admin-grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.menu-admin-grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* ---------- Tarjeta ---------- */
+
+.menu-admin-card {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 10px;
+    padding: 18px;
+    background-color: #334155;
+    border: 2px solid #475569;
+    border-top: 4px solid #fbbf24;
+    box-shadow: 4px 4px 0 #0f172a;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+/* Las tarjetas de "Testing" (2º menú) llevan el azul de marca para distinguirlas */
+.menu-admin:nth-of-type(2) .menu-admin-card {
+    border-top-color: #1e40af;
+}
+
+.menu-admin-card:hover,
+.menu-admin-card:focus-within {
+    transform: translate(-2px, -2px);
+    border-color: #f97316;
+    box-shadow: 6px 6px 0 #0f172a;
+}
+
+/* Título de la tarjeta con línea discontinua tipo "ticket" */
+.menu-admin-card h3 {
+    display: flex;
     align-items: center;
     gap: 8px;
-    border: 2px solid #64748b;
-    box-shadow: 6px 6px 0 #0f172a;
-    background-color: #334155;
-    padding: 25px;
-    text-align: center;
+    padding-bottom: 10px;
+    margin-bottom: 2px;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    border-bottom: 2px dashed #64748b;
 }
 
-.button-admin input {
-    box-sizing: border-box;
+.menu-admin-card h3::before {
+    content: "";
+    flex: none;
+    width: 8px;
+    height: 8px;
+    background-color: #f97316;
+}
+
+/* ---------- Campos (input, select, textarea) ---------- */
+
+.menu-admin-card input,
+.menu-admin-card select,
+.menu-admin-card textarea {
     width: 100%;
-    max-width: 100%;
-    padding: 6px 10px;
+    padding: 9px 11px;
+    background-color: #0f172a;
+    color: #ffffff;
+    border: 1px solid #475569;
     font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.menu-admin-card input:hover,
+.menu-admin-card select:hover,
+.menu-admin-card textarea:hover {
+    border-color: #64748b;
+}
+
+.menu-admin-card input::placeholder,
+.menu-admin-card textarea::placeholder {
+    color: #64748b;
+}
+
+.menu-admin-card input:focus,
+.menu-admin-card select:focus,
+.menu-admin-card textarea:focus {
     outline: none;
+    border-color: #f97316;
+    box-shadow: 3px 3px 0 #f97316;
 }
 
-.button-admin button {
-    padding: 6px 12px;
-    font-size: 14px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
+/* Campo inválido (cuando tiene "required" y se ha tocado) */
+.menu-admin-card input:user-invalid {
+    border-color: #dc2626;
+    box-shadow: 3px 3px 0 #7f1d1d;
+}
+
+/* Textarea: solo crece en vertical */
+.menu-admin-card textarea {
+    min-height: 90px;
+    resize: vertical;
+    line-height: 1.4;
+}
+
+/* Select con flecha propia en amarillo */
+.menu-admin-card select {
+    appearance: none;
     cursor: pointer;
+    padding-right: 34px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23fbbf24' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
 }
 
-.button-admin button:hover {
-    background-color: #0056b3;
+.menu-admin-card select option {
+    background-color: #1e293b;
+    color: #ffffff;
+}
+
+/* Quita las flechitas de los input number */
+.menu-admin-card input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.menu-admin-card input[type="number"]::-webkit-inner-spin-button,
+.menu-admin-card input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Evita el fondo claro del autocompletado del navegador */
+.menu-admin-card input:-webkit-autofill {
+    -webkit-text-fill-color: #ffffff;
+    box-shadow: 0 0 0 100px #0f172a inset;
+}
+
+/* ---------- Botón de la tarjeta ---------- */
+
+/* Siempre abajo aunque la tarjeta tenga menos campos */
+.menu-admin-card button {
+    margin-top: auto;
+    padding: 10px;
+    background-color: #f97316;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.menu-admin-card button:hover {
+    background-color: #ea580c;
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 #0f172a;
+}
+
+.menu-admin-card button:active {
+    transform: translate(0, 0);
+    box-shadow: none;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1000px) {
+    .menu-admin-grid,
+    .menu-admin-grid.cols-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .menu-admin-grid,
+    .menu-admin-grid.cols-2,
+    .menu-admin-grid.cols-4 {
+        grid-template-columns: 1fr;
+        padding: 14px;
+        gap: 16px;
+    }
+
+    .menu-admin > summary {
+        font-size: 14px;
+        padding: 12px 14px;
+    }
 }

@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20261030-2">
+    <link rel="stylesheet" href="styles.css?v=20261030-3">
     <link rel="stylesheet" href="Testing/testis.css?v=20261030-1">
 
     <!-- Libreria de NOTIFICACIONES -->
@@ -16,7 +16,7 @@
 
     <!-- Libreria de CONFIRMACIONES -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.all.min.js"></script>
-    
+
 </head>
 <body>
     <header class="main-header">
@@ -31,8 +31,6 @@
             <a href="#salas" class="nav-link">Salas</a>
             <a href="#informacion" class="nav-link">Información</a>
         </nav>
-
-
 
         <!-- Zona de acciones/usuario -->
         <span class="user-actions">
@@ -81,7 +79,7 @@
                     </details>
                     <details>
                         <summary>¿Puedo hacer una devolución?</summary>
-                        <p>Sí, puedes hacer una devolución. Si el error es nuestro te devolvemos el 100%; si no, el 80%.</p>                    
+                        <p>Sí, puedes hacer una devolución. Si el error es nuestro te devolvemos el 100%; si no, el 80%.</p>
                     </details>
                     <details>
                         <summary>¿Como puedo hacer una devolución?</summary>
@@ -168,46 +166,82 @@
         </div>
     </div>
 
-    <!-- Ventana de admministración -->
+    <!-- Ventana de administración -->
     <div class="modal" id="modal-admin" hidden>
-        <div class="modal-caja modal-ancho" role="dialog" aria-modal="true" aria-labelledby="admin-titulo">
+        <div class="modal-caja modal-ancho modal-admin-ancho" role="dialog" aria-modal="true" aria-labelledby="admin-titulo">
             <button class="modal-cerrar" onclick="cerrarAdmin()" aria-label="Cerrar">&times;</button>
             <h2 id="admin-titulo">Panel de administración</h2>
-            <div class="botones-admin-test">
-                <div class="button-admin">
-                    <h3>Obtener Nombre Categoria</h3>
-                    <input type="number" id="getcatest"> 
-                    <button class="getcategoria" onclick="GetCategoriatests()">Ejecutar</button>
+
+<details class="menu-admin">
+                <summary>Botones Creación</summary>
+
+                <div class="menu-admin-grid">
+                    <div class="menu-admin-card">
+                        <h3>Crear Evento</h3>
+                        <input type="text" id="CreEventoNombre" placeholder="Nombre Evento">
+                        <select name="Categorias" id="CreEventoCategoria"></select>
+                        <input type="url" placeholder="Image URL" id="CreEventoImagen">
+                        <input type="number" id="CreEventoDuracion" placeholder="Duracion en Minutos ">
+                        <textarea name="resumen" id="CreEventoResumen"></textarea>
+                        <button onclick="CrearEvento()">Crear</button>
+                    </div>
+
+                    <div class="menu-admin-card">
+                        <h3>Crear Usuario</h3>
+                        <input type="text" id="admin-register-nombre" placeholder="Nombre" required>
+                        <input type="text" id="admin-register-email" placeholder="Email" required>
+                        <input type="text" id="admin-register-passwd" placeholder="Contraseña" required>
+                        <button onclick="crearUsuarioTest()">Ejecutar</button>
+                    </div>
+
+                    <div class="menu-admin-card">
+                        <h3>Crear Sala</h3>
+                        <input type="text" id="CreSalaNombre" placeholder="Nombre Sala">
+                        <input type="number" id="CreSalaPreAleatorio" placeholder="precio butaca aleatoria">
+                        <input type="number" id="CreSalaPreElegida" placeholder="precio butaca elegida">
+                        <textarea name="resumen" id="CreSalaResumen"></textarea>
+                        <button onclick="CrearSala()">Crear</button>
+                    </div>
                 </div>
-                <div class="button-admin">
-                    <h3>Mostrar Eventos</h3>
-                    <button class="getcategoria" onclick="MostrarEventosTest()">Ejecutar</button>
+            </details>
+
+
+            <details class="menu-admin">
+                <summary>Botones Testing</summary>
+
+                <div class="menu-admin-grid">
+                    <div class="menu-admin-card">
+                        <h3>Obtener Nombre Categoria</h3>
+                        <input type="number" id="getcatest" placeholder="ID de categoría">
+                        <button onclick="GetCategoriatests()">Ejecutar</button>
+                    </div>
+
+                    <div class="menu-admin-card">
+                        <h3>Mostrar Eventos</h3>
+                        <button onclick="MostrarEventosTest()">Ejecutar</button>
+                    </div>
+
+                    <div class="menu-admin-card">
+                        <h3>Obtener Nombre</h3>
+                        <input type="email" id="admin-getNombre-email" placeholder="Email" required>
+                        <button onclick="getNombreTest()">Ejecutar</button>
+                    </div>
+
+                    <div class="menu-admin-card">
+                        <h3>Obtener Rol</h3>
+                        <input type="email" id="admin-getRol-email" placeholder="Email" required>
+                        <button onclick="getRolTest()">Ejecutar</button>
+                    </div>
+
+                    <div class="menu-admin-card">
+                        <h3>Verificar Usuario</h3>
+                        <input type="email" id="admin-verificar-email" placeholder="Email" required>
+                        <input type="text" id="admin-verificar-nombre" placeholder="Nombre" required>
+                        <button onclick="verificarUsuarioTest()">Ejecutar</button>
+                    </div>
                 </div>
-                <div class="button-admin">
-                    <h3>Crear Usuario</h3>
-                    <input type="text" id="admin-register-nombre" placeholder="nombre" required> 
-                    <input type="text" id="admin-register-email" placeholder="email" required> 
-                    <input type="text" id="admin-register-passwd" placeholder="contraseña" required>
-                    <button class="getcategoria" onclick="crearUsuarioTest()">Ejecutar</button>
-                </div>
-                <div class="button-admin">
-                    <h3>Obtener Nombre</h3>
-                    <input type="email" id="admin-getNombre-email" placeholder="Email" required>
-                    <button class="getcategoria" onclick="getNombreTest()">Ejecutar</button>
-                </div>
-                <div class="button-admin">
-                    <h3>Obtener Rol</h3>
-                    <input type="email" id="admin-getRol-email" placeholder="Email" required>
-                    <button class="getcategoria" onclick="getRolTest()">Ejecutar</button>
-                </div>
-                <div class="button-admin">
-                    <h3>Verificar Usuario</h3>
-                    <input type="email" id="admin-verificar-email" placeholder="Email" required>
-                    <input type="text" id="admin-verificar-nombre" placeholder="Nombre" required>
-                    <button class="getcategoria" onclick="verificarUsuarioTest()">Ejecutar</button>
-                </div>
-                </div>
-            </div>
+            </details>
+        </div>
     </div>
 
     <!-- Carrito -->
@@ -224,7 +258,7 @@
             <p>Total: 0€</p>
             <button class="comprarCarrito" onclick="procesarPago()">REALIZAR PAGO</button>
         </div>
-        
+
     </div>
 
     <!-- Ventana de butacas -->
@@ -242,7 +276,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Ventana Tickets -->
     <div class="modal" id="modal-tickets" hidden>
         <div class="tickets modal-caja modal-ancho" role="dialog" aria-modal="true" aria-labelledby="tickets-titulo">

@@ -1,9 +1,11 @@
 package proyecto_intermodular.springboot.repository;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import proyecto_intermodular.springboot.Modal.ROL;
+import proyecto_intermodular.springboot.Modal.Sesion;
 import proyecto_intermodular.springboot.Modal.Usuario;
 
 import java.util.List;
@@ -59,15 +61,19 @@ public class ConsultaRepository {
 
     public String getName(String email) {
         try {
-            return String.valueOf(comando.queryForObject("select nombre from usuario where email = ?",String.class, email));
-        } catch(Error e){
+            return String.valueOf(comando.queryForObject("select nombre from usuario where email = ?", String.class, email));
+        } catch (Error e) {
             return "Error";
         }
     }
 
-    public ROL getRol(String email) {return comando.queryForObject("select rol from usuario where email = ?", ROL.class, email);}
+    public ROL getRol(String email) {
+        return comando.queryForObject("select rol from usuario where email = ?", ROL.class, email);
+    }
 
-    public ROL getRolAdmin(String nombre) {return comando.queryForObject("select rol from usuario where nombre = ?", ROL.class, nombre);}
+    public ROL getRolAdmin(String nombre) {
+        return comando.queryForObject("select rol from usuario where nombre = ?", ROL.class, nombre);
+    }
 
     public int contUser(String nombre, String email) {
         try {
@@ -77,9 +83,13 @@ public class ConsultaRepository {
         }
     }
 
-    public String getImage(String nombre) {return  comando.queryForObject("select imagen from pelicula where nombre = ?", String.class, nombre);}
+    public String getImage(String nombre) {
+        return comando.queryForObject("select imagen from pelicula where nombre = ?", String.class, nombre);
+    }
 
-    public int getIdPelia(String nombre) {return comando.queryForObject("select id from pelicula where nombre = ?", int.class, nombre);}
+    public int getIdPelia(String nombre) {
+        return comando.queryForObject("select id from pelicula where nombre = ?", int.class, nombre);
+    }
 
     public List<Map<String, Object>> getSesiones(int id) {
         return comando.queryForList("""
@@ -105,7 +115,9 @@ public class ConsultaRepository {
                 """, sesionId, sesionId);
     }
 
-    public boolean estaRegistrado(String nombre) {return comando.queryForObject("select count(*) from usuario where nombre = ?", int.class, nombre) > 0;}
+    public boolean estaRegistrado(String nombre) {
+        return comando.queryForObject("select count(*) from usuario where nombre = ?", int.class, nombre) > 0;
+    }
 
     public List<Map<String, Object>> getIdSesion(String nombrePelicula) {
         return comando.queryForList("""
@@ -182,4 +194,36 @@ public class ConsultaRepository {
                 ORDER BY s.fecha_hora, b.fila, b.numero_butaca
                 """, nombre);
     }
+
+    public List<Map<String, Object>> getAllCategorias() {
+        return comando.queryForList("SELECT id, nombre FROM genero order by id");
+    }
+
+    public void  crearEvento(String nombre, int genero_id, String resumen, String imagen, int dureacion_min) {comando.update("insert into pelicula(nombre, genero_id, resumen, imagen, duracion_min) values(?,?,?,?,?)",nombre, genero_id, resumen, imagen, dureacion_min);}
+
+    public void crearSala(String nombre, double precio_aleatorio, double precio_elegido, String descripcion) {comando.update("insert into tipo_sala(nombre, precio_aleatorio, precio_elegido, descripcion) values(?,?,?,?)", nombre, precio_aleatorio, precio_elegido, descripcion);}
+
+    public List<Map<String, Object>> getSesiones() {return comando.queryForList("SELECT s.id, DATE(s.fecha_hora) AS fecha, TIME(s.fecha_hora) AS hora, p.nombre as nombre_pelicula, ts.nombre as tipo_sala  FROM sesion AS s inner join pelicula p on p.id = s.pelicula_id inner join sala sa on s.sala_id = sa.id inner join tipo_sala ts on sa.tipo_sala_id = ts.id order by id;");}
+
+    public void crearSesion(String fecha, String hora, int pelicula_id, int sala_id) {
+        comando.update(
+                "INSERT INTO sesion (fecha_hora, pelicula_id, sala_id) " +
+                        "VALUES (STR_TO_DATE(CONCAT(?, ' ', ?), '%d-%m-%Y %H:%i:%s'), ?, ?)",
+                fecha, hora, pelicula_id, sala_id
+        );
+    }
+
+    // Cuenta sesiones que se solapan con [inicio, inicio + duracion)
+    public int buscarSesiones(String fecha, String hora, int sala_id, int duracion_minutos) {
+        return comando.queryForObject(
+                "SELECT COUNT(*) FROM sesion s JOIN pelicula p ON p.id = s.pelicula_id " +
+                        "WHERE s.sala_id = ? " +
+                        "AND s.fecha_hora < DATE_ADD(STR_TO_DATE(CONCAT(?, ' ', ?), '%d-%m-%Y %H:%i:%s'), INTERVAL ? MINUTE) " +
+                        "AND DATE_ADD(s.fecha_hora, INTERVAL p.duracion_min MINUTE) > STR_TO_DATE(CONCAT(?, ' ', ?), '%d-%m-%Y %H:%i:%s')",
+                Integer.class,
+                sala_id, fecha, hora, duracion_minutos, fecha, hora
+        );
+    }
+
+    public Integer getDuracion(int pelicula_id) { return comando.queryForObject("select duracion_min from pelicula where id = ?;", Integer.class, pelicula_id);}
 }

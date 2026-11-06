@@ -178,6 +178,9 @@ async function abrirAdmin() {
     if (await getLogin() === true) {
         if (await getRolLogin() === "ADMIN") {
             document.getElementById("modal-admin").hidden = false;
+            crearOpcionesCategoria()
+        } else {
+        pushNotifyError("Error", "No eres administrador, no tienes acceso a esto");
         }
     }
 }
@@ -495,6 +498,8 @@ async function getRolLogin() {
             }
         }   
     } else {
+        cerrarEvento();
+        abrirLogin();
         pushNotifyError("Error", "No has iniciado sesion")
         return false;
     }
@@ -849,6 +854,8 @@ async function creteTicket(nombre) {
         lista.appendChild(PreTicket);
         actualizarTotal();
     } else {
+        cerrarEvento();
+        abrirLogin();
         pushNotifyError("Error", "No has iniciado sesión");
     }
 
@@ -1044,6 +1051,7 @@ async function getidSala() {
     console.log("Encontrado, la sala es: " + sala.sala_id + " | " + sala.tipo);
     return sala.sala_id;
 }
+
 async function contarLibres(sesionId) {
     const resp = await fetch("http://localhost:8080/api/getButacasFromSesion/" + sesionId);
     if (!resp.ok) return 0;
@@ -1117,3 +1125,5 @@ async function comprarEntradas(sesionId, seleccion, cantidad, butacaIds) {
         return false;
     }
 }
+
+

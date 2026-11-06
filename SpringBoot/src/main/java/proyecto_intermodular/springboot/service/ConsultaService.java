@@ -125,4 +125,12 @@ public class ConsultaService {
     public void deleteUser(int id) { consulta.deleteUser(id); }
 
     public List<Map<String, Object>> getTicketsByUsuario(String nombre) { return consulta.getTicketsByUsuario(nombre); }
+
+    public List<Map<String, Object>> getAllCategorias() {return consulta.getAllCategorias();}
+    public void  crearEvento(String nombre, int genero_id, String resumen, String imagen, int dureacion_min) {consulta.crearEvento(nombre, genero_id, resumen, imagen, dureacion_min);}
+    public void crearSala(String nombre, double precio_aleatorio, double precio_elegido, String descripcion) {consulta.crearSala(nombre, precio_aleatorio, precio_elegido, descripcion);}
+    public List<Map<String, Object>> getSesiones() {return consulta.getSesiones();}
+    public int buscarSesiones(String fecha, String hora, int sala_id, int duracion_minutos) {return consulta.buscarSesiones(fecha, hora, sala_id, duracion_minutos);}
+    public void crearSesion(String fecha, String hora, int pelicula_id, int sala_id) {consulta.crearSesion(fecha, hora, pelicula_id, sala_id);}
+    public Integer getDuracion(int pelicula_id) {return consulta.getDuracion(pelicula_id);}
 }
