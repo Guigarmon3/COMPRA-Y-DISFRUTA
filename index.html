@@ -7,9 +7,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20261030-3">
+    <link rel="stylesheet" href="Testing/testis.css?v=20261030-1">
+
+    <!-- Libreria de NOTIFICACIONES -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify/dist/simple-notify.css" />
+    <script src="https://cdn.jsdelivr.net/npm/simple-notify/dist/simple-notify.min.js"></script>
+
+    <!-- Libreria de CONFIRMACIONES -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.26.25/dist/sweetalert2.all.min.js"></script>
+
 </head>
-  <body>
+<body>
     <header class="main-header">
         <!-- Logo -->
         <a href="#" class="logo-container">
@@ -18,40 +27,278 @@
 
         <!-- Menú de navegación -->
         <nav class="nav-menu">
-            <a href="#peliculas" class="nav-link">Películas</a>
+            <a href="#eventos" class="nav-link">Eventos</a>
             <a href="#salas" class="nav-link">Salas</a>
             <a href="#informacion" class="nav-link">Información</a>
         </nav>
 
         <!-- Zona de acciones/usuario -->
         <span class="user-actions">
-            <button class="btn-login">Entrar</button>
+            <button class="btn-tickets" onclick="abrirTickets()">Tickets</button>
+            <button class="btn-login" onclick="abrirLogin()">Entrar</button>
+            <p id="user-nombre"></p>
+            <button id="admin-pannel" onclick="abrirAdmin()" hidden>ADMIN PANNEL</button>
         </span>
     </header>
 
-    <!-- Zona de peliculas -->
-    <section id="peliculas">
-        <h1 id="p-titulo">PELICULAS DISPONIBLES</h1>
-        <span>
-            <div class="cartel">
-              <img src="imagenes/Carteleras/cars.jpg" alt="cars portada">
-              <p class="p-c-nombre">Cars 20</p>
+    <main id="main">
+        <!-- Zona de eventos -->
+        <section id="eventos">
+            <h1 id="e-titulo">EVENTOS DISPONIBLES</h1>
+            <div id="cartelera">
             </div>
-        </span>
-    </section>
+        </section>
 
-    <!--Zona de Salas-->
-    <section id="salas">
-      <h1 id="s-titulo">TIPOS DE SALAS</h1>
-    </section>
+        <!-- Zona de salas -->
+        <section id="salas">
+            <h1 id="s-titulo">TIPOS DE SALAS</h1>
+            <div class="lista-salas">
+            </div>
+        </section>
 
-    <!--Zona de información-->
-    <section id="informacion">
-      <h1 id="i-titulo">INFORMACIÓN</h1>
-    </section>
+        <!-- Zona de información -->
+        <section id="informacion">
+            <h1 id="i-titulo">INFORMACIÓN</h1>
+            <div class="info-contenido">
 
-<footer class="footer-bottom">
-   <p>© 2026 Taquik Todos los derechos reservados.</p> 
-</footer>
+                <div class="info-bloque">
+                    <h3>Contacto</h3>
+                    <p>info@taquik.com</p>
+                    <p>Teléfono: 900 000 000</p>
+                </div>
+
+                <div class="info-bloque">
+                    <h3>Preguntas frecuentes</h3>
+                    <details>
+                        <summary>¿Qué diferencia hay entre butaca elegida y aleatoria?</summary>
+                        <p>Con la elegida escoges tu sitio y con la aleatoria te lo asignamos nosotros. La aleatoria es más barata.</p>
+                    </details>
+                    <details>
+                        <summary>¿Necesito una cuenta para comprar?</summary>
+                        <p>Sí, tienes que entrar con tu email y contraseña para poder comprar entradas.</p>
+                    </details>
+                    <details>
+                        <summary>¿Puedo hacer una devolución?</summary>
+                        <p>Sí, puedes hacer una devolución. Si el error es nuestro te devolvemos el 100%; si no, el 80%.</p>
+                    </details>
+                    <details>
+                        <summary>¿Como puedo hacer una devolución?</summary>
+                        <p>Para hacer una devolucion, tendrás que llamar a el numero de telefono 900 000 000 y solicitarla ante un operador</p>
+                    </details>
+                    <details>
+                        <summary>¿Cuantas butacas hay en cada sala?</summary>
+                        <p>Hay un total de 12 filas con 14 butacas en cada una, lo que viene a ser unas 168 por sala</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-bottom">
+        <p>© 2026 Taquik. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Ventana de detalle de evento -->
+    <div class="modal" id="modal-evento" hidden>
+        <div class="modal-caja modal-evento" role="dialog" aria-modal="true" aria-labelledby="evento-nombre">
+            <button class="modal-cerrar" onclick="cerrarEvento()" aria-label="Cerrar">&times;</button>
+
+            <img id="evento-img" class="evento-img" src="" alt="">
+
+            <div class="evento-info">
+                <h2 id="evento-nombre"></h2>
+                <div class="evento-meta">
+                    <span class="evento-categoria" id="evento-categoria"></span>
+                    <span class="evento-duracion" id="evento-duracion"></span>
+                </div>
+                <p class="evento-resumen" id="evento-resumen"></p>
+                <button class="btn-comprar" id="btn-comprar" onclick="creteTicket(document.getElementById('evento-nombre').textContent)">Comprar entradas</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventana de login / registro -->
+    <div class="modal" id="modal-login" hidden>
+        <div class="modal-caja" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+            <button class="modal-cerrar" onclick="cerrarLogin()" aria-label="Cerrar">&times;</button>
+
+            <img src="imagenes/Logo.png" alt="" class="modal-logo">
+            <h2 id="modal-titulo">Bienvenido a Taquik</h2>
+
+            <!-- Pestañas -->
+            <div class="tabs">
+                <button type="button" class="tab activa" id="tab-login" onclick="mostrarLogin()">Entrar</button>
+                <button type="button" class="tab" id="tab-registro" onclick="mostrarRegistro()">Crear cuenta</button>
+            </div>
+
+            <!-- Formulario de login -->
+            <form id="form-login" class="form-auth" onsubmit="return false;">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" placeholder="tucorreo@ejemplo.com" autocomplete="email" required>
+
+                <label for="login-passwd">Contraseña</label>
+                <div class="campo-passwd">
+                    <input type="password" id="login-passwd" autocomplete="current-password" required>
+                    <button type="button" class="btn-ver" onclick="verPassword('login-passwd', this)">Ver</button>
+                </div>
+
+                <p class="mensaje" id="mensaje-login" role="alert"></p>
+                <button type="submit" class="btn-login btn-ancho" onclick="iniciarSesion()">Entrar</button>
+            </form>
+
+            <!-- Formulario de registro -->
+            <form id="form-registro" class="form-auth" onsubmit="crearUsuario(); return false;" hidden>
+                <label for="reg-nombre">Nombre</label>
+                <input type="text" id="reg-nombre" maxlength="100" autocomplete="name" required>
+
+                <label for="reg-email">Email</label>
+                <input type="email" id="reg-email" placeholder="tucorreo@ejemplo.com" autocomplete="email" required>
+
+                <label for="reg-passwd">Contraseña</label>
+                <div class="campo-passwd">
+                    <input type="password" id="reg-passwd" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required>
+                    <button type="button" class="btn-ver" onclick="verPassword('reg-passwd', this)">Ver</button>
+                </div>
+
+                <p class="mensaje" id="mensaje-registro" role="alert"></p>
+                <button type="submit" class="btn-login btn-ancho" id="btn-crear-cuenta">Crear cuenta</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ventana de administración -->
+    <div class="modal" id="modal-admin" hidden>
+        <div class="modal-caja modal-ancho modal-admin-ancho" role="dialog" aria-modal="true" aria-labelledby="admin-titulo">
+            <button class="modal-cerrar" onclick="cerrarAdmin()" aria-label="Cerrar">&times;</button>
+            <h2 id="admin-titulo">Panel de administración</h2>
+
+<details class="menu-admin">
+                <summary>Botones Creación</summary>
+
+                <div class="menu-admin-grid">
+                    <div class="menu-admin-card">
+                        <h3>Crear Evento</h3>
+                        <input type="text" id="CreEventoNombre" placeholder="Nombre Evento">
+                        <select name="Categorias" id="CreEventoCategoria"></select>
+                        <input type="url" placeholder="Image URL" id="CreEventoImagen">
+                        <input type="number" id="CreEventoDuracion" placeholder="Duracion en Minutos ">
+                        <textarea name="resumen" id="CreEventoResumen"></textarea>
+                        <button onclick="CrearEvento()">Crear</button>
+                    </div>
+
+                    <div class="menu-admin-card">
+                        <h3>Crear Usuario</h3>
+                        <input type="text" id="admin-register-nombre" placeholder="Nombre" required>
+                        <input type="text" id="admin-register-email" placeholder="Email" required>
+                        <input type="text" id="admin-register-passwd" placeholder="Contraseña" required>
+                        <button onclick="crearUsuarioTest()">Ejecutar</button>
+                    </div>
+
+                    <div class="menu-admin-card">
+                        <h3>Crear Sala</h3>
+                        <input type="text" id="CreSalaNombre" placeholder="Nombre Sala">
+                        <input type="number" id="CreSalaPreAleatorio" placeholder="precio butaca aleatoria">
+                        <input type="number" id="CreSalaPreElegida" placeholder="precio butaca elegida">
+                        <textarea name="resumen" id="CreSalaResumen"></textarea>
+                        <button onclick="CrearSala()">Crear</button>
+                    </div>
+                </div>
+            </details>
+
+
+            <details class="menu-admin">
+                <summary>Botones Testing</summary>
+
+                <div class="menu-admin-grid">
+                    <div class="menu-admin-card">
+                        <h3>Obtener Nombre Categoria</h3>
+                        <input type="number" id="getcatest" placeholder="ID de categoría">
+                        <button onclick="GetCategoriatests()">Ejecutar</button>
+                    </div>
+
+                    <div class="menu-admin-card">
+                        <h3>Mostrar Eventos</h3>
+                        <button onclick="MostrarEventosTest()">Ejecutar</button>
+                    </div>
+
+                    <div class="menu-admin-card">
+                        <h3>Obtener Nombre</h3>
+                        <input type="email" id="admin-getNombre-email" placeholder="Email" required>
+                        <button onclick="getNombreTest()">Ejecutar</button>
+                    </div>
+
+                    <div class="menu-admin-card">
+                        <h3>Obtener Rol</h3>
+                        <input type="email" id="admin-getRol-email" placeholder="Email" required>
+                        <button onclick="getRolTest()">Ejecutar</button>
+                    </div>
+
+                    <div class="menu-admin-card">
+                        <h3>Verificar Usuario</h3>
+                        <input type="email" id="admin-verificar-email" placeholder="Email" required>
+                        <input type="text" id="admin-verificar-nombre" placeholder="Nombre" required>
+                        <button onclick="verificarUsuarioTest()">Ejecutar</button>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <!-- Carrito -->
+    <div class="carrito" hidden>
+        <div class="carrito-cabecera">
+            <h2>Tu compra</h2>
+            <div class="carrito-botones">
+                <button class="carrito-borrar" id="btn-minimizar" onclick="minimizarCarrito()" aria-label="Minimizar">&minus;</button>
+                <button class="carrito-borrar" onclick="cerrarCarrito()" aria-label="Cerrar">&times;</button>
+            </div>
+        </div>
+        <div class="carrito-lista"></div>
+        <div class="precioTotalCarrito">
+            <p>Total: 0€</p>
+            <button class="comprarCarrito" onclick="procesarPago()">REALIZAR PAGO</button>
+        </div>
+
+    </div>
+
+    <!-- Ventana de butacas -->
+    <div class="modal" id="modal-butacas" hidden>
+        <div class="butacas modal-caja modal-ancho" role="dialog" aria-modal="true" aria-labelledby="textoButaca">
+            <button class="modal-cerrar" onclick="cerrarButacas()" aria-label="Cerrar">&times;</button>
+            <h1 id="textoButaca">Selecciona tu Butaca</h1>
+            <span class="pantalla">
+                <h1>PANTALLA</h1>
+            </span>
+            <div class="lista_butacas">
+            </div>
+            <div style="text-align:center; margin-top:10px;">
+                <button class="btn-comprar" onclick="confirmarCompraButacas()">Confirmar compra</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ventana Tickets -->
+    <div class="modal" id="modal-tickets" hidden>
+        <div class="tickets modal-caja modal-ancho" role="dialog" aria-modal="true" aria-labelledby="tickets-titulo">
+            <button class="modal-cerrar" onclick="cerrarTickets()" aria-label="Cerrar">&times;</button>
+            <h1 id="tickets-titulo">Tus Tickets</h1>
+            <div id="lista-tickets">
+                <div class="ticket">
+                    <img src="./imagenes/Carteleras/cars.jpg" alt="Imagen Pelicula" class="img-ticket">
+                    <span>
+                        <h1>nombrePeli</h1>
+                        <h2>salaSeleccioanda</h2>
+                    </span>
+                    <p>Fecha de la cita</p>
+                    <p>Hora cita</p>
+                    <button>DevolverEntradas</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js?v=20261030-4"></script>
+    <script src="Testing/tests.js?v=20261030-1"></script>
+    <script src="Librerias/notify.js?v=20261030-1"></script>
 </body>
 </html>
